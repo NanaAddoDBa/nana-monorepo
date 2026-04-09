@@ -17,7 +17,7 @@ export type AboutOverviewStat = {
   label: string
 }
 
-export const aboutOverviewIconKeys = [
+export const AboutOverviewIconKeys = [
   "testTube",
   "laptop",
   "database",
@@ -30,7 +30,7 @@ export const aboutOverviewIconKeys = [
   "users",
 ] as const
 
-export type AboutOverviewIconKey = (typeof aboutOverviewIconKeys)[number]
+export type AboutOverviewIconKey = (typeof AboutOverviewIconKeys)[number]
 
 export type AboutOverviewExpertiseItem = {
   id: string
@@ -71,4 +71,50 @@ export interface SkillsData {
   productivity: SkillCategory[]
   languageSkills: LanguageSkill[]
   softSkills: SkillCategory[]
+}
+
+export type ExperienceItem = {
+  id: string
+  role: string
+  company: string
+  location: string
+  workType?: string
+  period: string
+  summary: string
+  responsibilities: string[]
+  skills: string[]
+}
+
+export type WorkExperienceData = {
+  eyebrow: string
+  heading: string
+  intro: string
+  items: ExperienceItem[]
+}
+
+export type EducationItem = {
+  id: string
+  degree: string
+  institution: string
+  location: string
+  startDate: string
+  endDate: string
+  isCurrent?: boolean
+  description?: string
+}
+
+export type CertificationItem = {
+  id: string
+  title: string
+  issuer: string
+  location?: string
+  issuedAt?: string
+  credentialUrl?: string
+}
+
+export type CredentialsData = {
+  educationHeading: string
+  educationItems: EducationItem[]
+  certificationsHeading: string
+  certificationItems: CertificationItem[]
 }

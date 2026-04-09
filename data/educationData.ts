@@ -1,66 +1,54 @@
-// src/assets/data/educationData.ts
+import type { CredentialsData } from "@/types/aboutTypes"
 
-export interface Education {
-  degree: string;
-  school: string;
-  date: string;
-  location?: string;
-  description?: string[];
-  type: 'degree' | 'certification';
-}
-
-export const educationData: {
-  degrees: Education[];
-  certifications: Education[];
-} = {
-  degrees: [
+export const credentialsData = {
+  educationHeading: "Education",
+  educationItems: [
     {
-      type: 'degree',
-      degree: "Master of Science in Computer Science",
-      school: "University of Passau",
+      id: "msc-computer-science-passau",
+      degree: "Master of Computer Science (MSc)",
+      institution: "University of Passau",
       location: "Passau, Germany",
-      date: "04/2023 – Present",
-      description: [
-        "Focus on Software Engineering and Systems Development",
-        "Research in Modern Web Technologies and Cloud Computing",
-      ]
+      startDate: "04.2023",
+      endDate: "Present",
+      isCurrent: true,
     },
     {
-      type: 'degree',
-      degree: "Bachelor of Science in Computer Science",
-      school: "Christian Service University College",
-      location: "Ghana",
-      date: "10/2015 – 06/2019",
-      description: [
-        "Graduated with First Class Honors",
-        "Focus on Programming and Software Development",
-      ]
-    }
+      id: "bsc-computer-science-csu",
+      degree: "Bachelor of Computer Science (BSc)",
+      institution: "Christian Service University",
+      location: "Kumasi, Ghana",
+      startDate: "08.2015",
+      endDate: "06.2019",
+    },
   ],
-  certifications: [
+  certificationsHeading: "Certifications",
+  certificationItems: [
     {
-      type: 'certification',
-      degree: "Advanced Diploma in Database Administration",
-      school: "IPMC",
-      location: "Ghana",
-      date: "2018",
-      description: [
-        "Database Design and Implementation",
-        "Database Security and Administration",
-        "Performance Tuning and Optimization"
-      ]
+      id: "react-complete-guide",
+      title: "React - The Complete Guide (incl. Next.js, Redux)",
+      issuer: "Udemy",
     },
     {
-      type: 'certification',
-      degree: "Advanced Diploma in Software Engineering",
-      school: "IPMC",
+      id: "modern-javascript-beginning",
+      title: "Modern JavaScript From The Beginning 2.0",
+      issuer: "Udemy",
+    },
+    {
+      id: "cypress-web-automation",
+      title: "Cypress: Web Automation Testing from Zero to Hero",
+      issuer: "Udemy",
+    },
+    {
+      id: "software-development-advanced-diploma",
+      title: "Software Development | Advanced Diploma",
+      issuer: "IPMC",
       location: "Ghana",
-      date: "2018",
-      description: [
-        "Software Development Life Cycle",
-        "Object-Oriented Programming",
-        "Web and Mobile Application Development"
-      ]
-    }
-  ]
-};
+    },
+    {
+      id: "database-administration-advanced-diploma",
+      title: "Database Administration | Advanced Diploma",
+      issuer: "IPMC",
+      location: "Ghana",
+    },
+  ],
+} satisfies CredentialsData
