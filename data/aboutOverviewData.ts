@@ -4,7 +4,7 @@ export const aboutOverviewData = {
   eyebrow: "Overview",
   heading: "Professional Summary",
   summary:
-    "I build thoughtful digital experiences that balance technical depth, maintainable architecture, and clear user-centered design. My background spans software testing, web development, database work, and technical problem-solving, with a strong focus on quality, performance, and practical implementation.",
+    "I build modern frontend experiences that combine thoughtful design, maintainable architecture, and reliable implementation. With a strong foundation in software quality and web development, I focus on creating responsive, accessible, and scalable interfaces that are clear for users and practical for teams to maintain.",
   stats: [
     {
       id: "experience",
@@ -13,7 +13,7 @@ export const aboutOverviewData = {
     },
     {
       id: "focus",
-      value: "QA + UI",
+      value: "Frontend UI",
       label: "Core Focus",
     },
     {
@@ -25,48 +25,48 @@ export const aboutOverviewData = {
   expertiseHeading: "Key Areas of Expertise",
   expertiseItems: [
     {
-      id: "qa-testing",
-      title: "QA & Testing",
+      id: "frontend-development",
+      title: "Frontend Development",
       description:
-        "Experienced in automated and manual testing, with a focus on software reliability, test strategy, and continuous quality improvement.",
-      iconKey: "testTube",
-    },
-    {
-      id: "web-development",
-      title: "Web Development",
-      description:
-        "Builds responsive and maintainable web applications using modern frontend frameworks and strong implementation patterns.",
+        "Build responsive and maintainable interfaces with a strong focus on clarity, usability, and scalable implementation.",
       iconKey: "laptop",
     },
     {
-      id: "database-management",
-      title: "Database Management",
+      id: "ui-engineering",
+      title: "UI Engineering",
       description:
-        "Comfortable working with database design, optimization, and data integrity to support reliable application behavior.",
-      iconKey: "database",
+        "Translate design intent into polished, reusable interface patterns that work consistently across devices and screen sizes.",
+      iconKey: "palette",
     },
     {
-      id: "programming",
-      title: "Programming",
+      id: "component-architecture",
+      title: "Component Architecture",
       description:
-        "Strong foundation across multiple programming languages with an emphasis on readable, efficient, and scalable code.",
-      iconKey: "code",
+        "Organize frontend systems with reusable components, typed data structures, and clear separation of responsibilities.",
+      iconKey: "blocks",
     },
     {
-      id: "quality-control",
-      title: "Quality Control",
+      id: "frontend-testing",
+      title: "Frontend Testing",
       description:
-        "Applies structured validation, careful review, and systematic improvement processes to maintain high delivery standards.",
-      iconKey: "bug",
+        "Apply structured testing practices to improve reliability, reduce regressions, and support confident iteration.",
+      iconKey: "testTube",
     },
     {
-      id: "content-communication",
-      title: "Content & Communication",
+      id: "performance-quality",
+      title: "Performance & Quality",
       description:
-        "Able to create technical content, documentation, and clear communication assets that support product and team goals.",
-      iconKey: "newspaper",
+        "Focus on clean implementation, accessibility, and performance-minded decisions that improve the overall user experience.",
+      iconKey: "zap",
+    },
+    {
+      id: "collaboration-delivery",
+      title: "Collaboration & Delivery",
+      description:
+        "Work effectively across tools, documentation, and team workflows to keep development organized, communicative, and efficient.",
+      iconKey: "users",
     },
   ],
   closingNote:
-    "Always learning, always refining, and consistently aiming to turn complexity into clear, reliable user experiences.",
+    "I enjoy turning complex requirements into clean, reliable, and user-focused frontend experiences.",
 } satisfies AboutOverviewData

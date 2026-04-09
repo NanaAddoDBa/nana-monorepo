@@ -17,11 +17,26 @@ export type AboutOverviewStat = {
   label: string
 }
 
+export const aboutOverviewIconKeys = [
+  "testTube",
+  "laptop",
+  "database",
+  "code",
+  "bug",
+  "newspaper",
+  "palette",
+  "blocks",
+  "zap",
+  "users",
+] as const
+
+export type AboutOverviewIconKey = (typeof aboutOverviewIconKeys)[number]
+
 export type AboutOverviewExpertiseItem = {
   id: string
   title: string
   description: string
-  iconKey: "testTube" | "laptop" | "database" | "code" | "bug" | "newspaper"
+  iconKey: AboutOverviewIconKey
 }
 
 export type AboutOverviewData = {
@@ -32,4 +47,28 @@ export type AboutOverviewData = {
   expertiseHeading: string
   expertiseItems: AboutOverviewExpertiseItem[]
   closingNote: string
+}
+
+export interface SkillItem {
+  name: string
+  slug: string
+}
+
+export interface SkillCategory {
+  category: string
+  items: SkillItem[]
+}
+
+export interface LanguageSkill {
+  name: string
+  slug: string
+  level: string
+}
+
+export interface SkillsData {
+  programming: SkillCategory[]
+  testing: SkillCategory[]
+  productivity: SkillCategory[]
+  languageSkills: LanguageSkill[]
+  softSkills: SkillCategory[]
 }
