@@ -1,19 +1,38 @@
-import { Button } from "@/components/ui/button"
+import { SiteFooter } from "@/components/layout/footer/siteFooter"
+import { SiteHeader } from "@/components/layout/header/SiteHeader"
+import { AboutSection } from "@/components/sections/about/aboutSection"
+import { ContactSection } from "@/components/sections/contact/contactSection"
+import { HeroSection } from "@/components/sections/hero/heroSection"
+import { ProjectsSection } from "@/components/sections/projects/projectsSection"
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+    <>
+      <div className="border-2 border-red-500">
+        <SiteHeader />
       </div>
-    </div>
+
+      <main className="border-2 border-blue-500">
+        <div className="border-2 border-green-500">
+          <HeroSection />
+        </div>
+
+        <div className="border-2 border-yellow-500">
+          <AboutSection />
+        </div>
+
+        <div className="border-2 border-purple-500">
+          <ProjectsSection />
+        </div>
+
+        <div className="border-2 border-pink-500">
+          <ContactSection />
+        </div>
+      </main>
+
+      <div className="border-2 border-orange-500">
+        <SiteFooter />
+      </div>
+    </>
   )
 }
