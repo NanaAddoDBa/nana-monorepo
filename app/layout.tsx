@@ -1,19 +1,23 @@
-import { Geist_Mono, Raleway, Noto_Serif } from "next/font/google"
+import { Geist_Mono, Noto_Serif, Raleway } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils"
 
 const notoSerifHeading = Noto_Serif({
   subsets: ["latin"],
-  variable: "--font-heading",
+  variable: "--font-noto-serif-heading",
 })
 
-const raleway = Raleway({ subsets: ["latin"], variable: "--font-sans" })
+const raleway = Raleway({
+  subsets: ["latin"],
+  variable: "--font-raleway",
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-geist-mono",
 })
 
 export default function RootLayout({
@@ -26,16 +30,16 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        "antialiased",
-        fontMono.variable,
-        "font-sans",
+        "font-sans antialiased",
         raleway.variable,
-        notoSerifHeading.variable
+        notoSerifHeading.variable,
+        fontMono.variable
       )}
     >
-      <body className="flex h-svh flex-col">
+      <body>
         <ThemeProvider>
-          <div className="flex h-svh flex-col gap-4">{children}</div>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

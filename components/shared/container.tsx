@@ -9,7 +9,7 @@ type ContainerProps = {
 
 export function Container({ children, className }: Readonly<ContainerProps>) {
   return (
-    <div className={cn("w-full px-2 sm:px-4 lg:px-6", className)}>
+    <div className={cn("w-full px-4 sm:px-6 lg:px-8", className)}>
       {children}
     </div>
   )

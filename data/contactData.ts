@@ -1,43 +1,58 @@
-import { Mail, Phone, MapPin, Clock ,LucideIcon} from "lucide-react";
+import { Mail, Phone, MapPin, Clock, type LucideIcon } from "lucide-react"
 
 interface ContactMethod {
-  label: string;
-  value: string;
-  icon: LucideIcon;
-  href: string;
+  label: string
+  value: string
+  icon: LucideIcon
+  href: string
 }
 
 interface Availability {
-  timezone: string;
-  hours: string;
-  days: string;
-  icon: LucideIcon;
-  calendlyLink: string;
+  timezone: string
+  hours: string
+  days: string
+  icon: LucideIcon
+  calendlyLink: string
 }
 
 interface FormField {
-  label: string;
-  placeholder: string;
-  required: boolean;
+  label: string
+  placeholder: string
+  required: boolean
+}
+
+interface ContactValueField {
+  emailLabel: string
+  emailPlaceholder: string
+  phoneLabel: string
+  phonePlaceholder: string
+  required: boolean
+}
+
+interface PreferredContactMethod {
+  id: "email" | "phone"
+  label: string
 }
 
 interface ContactData {
-  title: string;
-  subtitle: string;
+  title: string
+  subtitle: string
   contactInfo: {
-    email: ContactMethod;
-    phone: ContactMethod;
-    location: ContactMethod;
-  };
-  availability: Availability;
+    email: ContactMethod
+    phone: ContactMethod
+    location: ContactMethod
+  }
+  availability: Availability
   formFields: {
-    name: FormField;
-    email: FormField;
-    subject: FormField;
-    message: FormField;
-  };
-  successMessage: string;
-  errorMessage: string;
+    name: FormField
+    contactValue: ContactValueField
+    subject: FormField
+    message: FormField
+  }
+  preferredContactMethods: PreferredContactMethod[]
+  submitLabel: string
+  successMessage: string
+  errorMessage: string
 }
 
 export const contactData: ContactData = {
@@ -66,16 +81,35 @@ export const contactData: ContactData = {
   availability: {
     timezone: "CET (UTC+1)",
     hours: "9:00 AM - 6:00 PM",
-    days: "Monday - Friday",
+    days: "Monday - Saturday",
     icon: Clock,
-    calendlyLink: "https://calendly.com/yourusername",
+    calendlyLink: "https://calendly.com/nanaaddoldoe/30min",
   },
   formFields: {
     name: { label: "Name", placeholder: "Enter your name", required: true },
-    email: { label: "Email", placeholder: "Enter your email", required: true },
-    subject: { label: "Subject", placeholder: "What's this about?", required: true },
-    message: { label: "Message", placeholder: "Your message here...", required: true },
+    contactValue: {
+      emailLabel: "Email",
+      emailPlaceholder: "Enter your email",
+      phoneLabel: "Phone",
+      phonePlaceholder: "Enter your phone number",
+      required: true,
+    },
+    subject: {
+      label: "Subject",
+      placeholder: "Enter your subject",
+      required: true,
+    },
+    message: {
+      label: "Message",
+      placeholder: "Enter your message",
+      required: true,
+    },
   },
+  preferredContactMethods: [
+    { id: "email", label: "Email" },
+    { id: "phone", label: "Phone" },
+  ],
+  submitLabel: "Send Message",
   successMessage: "Thanks for reaching out! I'll get back to you soon.",
   errorMessage: "Something went wrong. Please try again later.",
-};
+}
