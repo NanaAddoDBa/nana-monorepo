@@ -4,6 +4,7 @@ import { Container } from "@/components/shared/container"
 import { cn } from "@/lib/utils"
 
 type SectionShellProps = {
+  id?: string
   children: ReactNode
   className?: string
   contentClassName?: string
@@ -23,6 +24,7 @@ function getViewportClass(viewport: SectionShellProps["viewport"]) {
 }
 
 export function SectionShell({
+  id,
   children,
   className,
   contentClassName,
@@ -42,7 +44,7 @@ export function SectionShell({
   )
 
   return (
-    <section className={cn("w-full", className)}>
+    <section id={id} className={cn("w-full", className)}>
       {withContainer ? <Container>{content}</Container> : content}
     </section>
   )

@@ -49,6 +49,7 @@ export function HeroSection() {
 
   return (
     <SectionShell
+      id="hero"
       className="relative"
       viewport="hero-fit"
       contentClassName="flex items-center"
