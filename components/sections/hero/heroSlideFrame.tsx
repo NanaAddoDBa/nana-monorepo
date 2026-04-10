@@ -14,16 +14,12 @@ export function HeroSlideFrame({
   return (
     <div
       className={cn(
-        "w-full px-8 py-6 sm:px-10 sm:py-8 lg:px-12 lg:py-10 xl:px-14",
+        "w-full px-8 pt-6 pb-14 sm:px-10 sm:pt-8 sm:pb-16 lg:px-12 lg:pt-10 lg:pb-20 xl:px-14",
         className
       )}
     >
-      <div className="grid h-[calc(100svh-5.5rem)] grid-rows-[minmax(0,1fr)_3.5rem]">
-        <div className="min-h-0 overflow-hidden">{children}</div>
-
-        <div aria-hidden="true" className="flex items-center justify-center">
-          <div className="h-3 w-24" />
-        </div>
+      <div className="flex min-h-[28rem] items-center md:min-h-[30rem] lg:min-h-[34rem]">
+        <div className="w-full">{children}</div>
       </div>
     </div>
   )

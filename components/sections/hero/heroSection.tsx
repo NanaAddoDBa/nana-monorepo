@@ -48,12 +48,7 @@ export function HeroSection() {
   }, [api])
 
   return (
-    <SectionShell
-      id="hero"
-      className="relative"
-      viewport="hero-fit"
-      contentClassName="flex items-center"
-    >
+    <SectionShell id="hero" className="relative">
       <div
         className="relative"
         onMouseEnter={() => autoplay.current.stop()}
