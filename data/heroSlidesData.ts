@@ -21,6 +21,10 @@ export const heroSlidesData = [
       downloadGroupId: "primaryCv",
       variant: "secondary",
     },
+    image: {
+      src: "/images/profile/nana-portrait.png",
+      alt: "Portrait of Nana Addo Dankwa Bampoe Addo",
+    },
     supportingPoints: [
       "Next.js & React",
       "TypeScript-driven development",

@@ -13,6 +13,10 @@ export type HeroSlideDownloadGroupAction = {
   downloadGroupId: string
   variant: HeroSlideActionVariant
 }
+export type HeroSlideImage = {
+  src: string
+  alt: string
+}
 
 export type HeroSlideAction = HeroSlideLinkAction | HeroSlideDownloadGroupAction
 
@@ -27,5 +31,6 @@ export type HeroSlide = {
   primaryAction: HeroSlideAction
   secondaryAction?: HeroSlideAction
   supportingPoints?: string[]
+  image?: HeroSlideImage
   density?: HeroSlideDensity
 }

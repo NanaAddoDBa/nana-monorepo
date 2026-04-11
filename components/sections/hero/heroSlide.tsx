@@ -2,6 +2,7 @@ import type { HeroSlide as HeroSlideData } from "@/types/heroTypes"
 import { cn } from "@/lib/utils"
 
 import { HeroActions } from "./heroActions"
+import Image from "next/image"
 
 type HeroSlideProps = {
   slide: HeroSlideData
@@ -78,12 +79,27 @@ export function HeroSlide({ slide, headingId }: Readonly<HeroSlideProps>) {
         </div>
 
         <div className="lg:col-span-5 xl:col-span-6">
-          <div className="mx-auto aspect-[4/5] w-full max-w-[320px] rounded-2xl border border-border/70 bg-card/40 shadow-sm backdrop-blur-sm lg:mr-0 lg:ml-auto">
-            <div className="flex h-full items-center justify-center rounded-2xl border border-border/40 bg-gradient-to-b from-background/40 to-card/60">
-              <span className="text-sm text-muted-foreground">
-                Hero visual panel
-              </span>
-            </div>
+          <div className="mx-auto w-full max-w-[320px] lg:mr-0 lg:ml-auto">
+            {slide.image ? (
+              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border/70 bg-card/40 shadow-sm">
+                <Image
+                  src={slide.image.src}
+                  alt={slide.image.alt}
+                  width={320}
+                  height={400}
+                  className="h-full w-full object-cover"
+                  priority={headingId === "hero-heading"}
+                />
+              </div>
+            ) : (
+              <div className="aspect-[4/5] rounded-2xl border border-border/70 bg-card/40 shadow-sm backdrop-blur-sm">
+                <div className="flex h-full items-center justify-center rounded-2xl border border-border/40 bg-gradient-to-b from-background/40 to-card/60">
+                  <span className="text-sm text-muted-foreground">
+                    Hero visual panel
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
