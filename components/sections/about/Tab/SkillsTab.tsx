@@ -5,64 +5,74 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
-import { skillsData } from "@/data/skillsData"
-import type { LanguageSkill, SkillCategory } from "@/types/aboutSectionTypes"
+import { skillsData } from "@/data/aboutData"
+import type {
+  LanguageSkill,
+  SkillCategory,
+  SkillsData,
+} from "@/types/aboutSectionTypes"
 
-type CategorySection = {
-  id: string
-  title: string
-  type: "categories"
-  data: SkillCategory[]
-}
+type CategorizedSkillsKey =
+  | "programming"
+  | "testing"
+  | "productivity"
+  | "softSkills"
+type LanguageSkillsKey = "languageSkills"
 
-type LanguageSection = {
-  id: string
-  title: string
-  type: "languages"
-  data: LanguageSkill[]
-}
-
-type SkillsAccordionSection = CategorySection | LanguageSection
+type SkillsAccordionSection =
+  | {
+      id: string
+      title: string
+      type: "categories"
+      dataKey: CategorizedSkillsKey
+    }
+  | {
+      id: string
+      title: string
+      type: "languages"
+      dataKey: LanguageSkillsKey
+    }
 
 const skillsAccordionSections: SkillsAccordionSection[] = [
   {
     id: "programming",
     title: "Programming",
     type: "categories",
-    data: skillsData.programming,
+    dataKey: "programming",
   },
   {
     id: "testing",
     title: "Testing & QA",
     type: "categories",
-    data: skillsData.testing,
+    dataKey: "testing",
   },
   {
     id: "productivity",
     title: "Productivity & Tools",
     type: "categories",
-    data: skillsData.productivity,
+    dataKey: "productivity",
   },
   {
     id: "languages-spoken",
     title: "Languages Spoken",
     type: "languages",
-    data: skillsData.languageSkills,
+    dataKey: "languageSkills",
   },
   {
     id: "soft-skills",
     title: "Soft Skills",
     type: "categories",
-    data: skillsData.softSkills,
+    dataKey: "softSkills",
   },
 ]
 
+const skillsPanelClassName =
+  "rounded-2xl border border-border/60 bg-secondary/25"
+const skillChipClassName =
+  "inline-flex rounded-sm border border-border/60 bg-background/40 px-3 py-2 text-xs font-semibold tracking-[0.04em] text-card-foreground uppercase"
+
 function SkillChip({ name }: Readonly<{ name: string }>) {
-  return (
-    <span className="inline-flex rounded-sm border border-border/60 bg-background/40 px-3 py-2 text-xs font-semibold tracking-[0.04em] text-card-foreground uppercase">
-      {name}
-    </span>
-  )
+  return <span className={skillChipClassName}>{name}</span>
 }
 
 function SkillCategoryBlock({
@@ -71,7 +81,7 @@ function SkillCategoryBlock({
   category: SkillCategory
 }>) {
   return (
-    <div className="space-y-4 rounded-2xl border border-border/60 bg-secondary/25 p-5">
+    <div className={`space-y-4 p-5 ${skillsPanelClassName}`}>
       <h3 className="text-xs font-semibold tracking-[0.22em] text-muted-foreground uppercase">
         {category.category}
       </h3>
@@ -91,7 +101,9 @@ function LanguageSkillCard({
   language: LanguageSkill
 }>) {
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-secondary/25 px-4 py-4">
+    <div
+      className={`flex items-center justify-between px-4 py-4 ${skillsPanelClassName}`}
+    >
       <span className="text-sm font-medium text-card-foreground">
         {language.name}
       </span>
@@ -108,18 +120,22 @@ function SkillsSectionContent({
   section: SkillsAccordionSection
 }>) {
   if (section.type === "languages") {
+    const languages = skillsData[section.dataKey]
+
     return (
       <div className="grid gap-3 md:grid-cols-2">
-        {section.data.map((language) => (
+        {languages.map((language) => (
           <LanguageSkillCard key={language.slug} language={language} />
         ))}
       </div>
     )
   }
 
+  const categories = skillsData[section.dataKey]
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {section.data.map((category) => (
+      {categories.map((category) => (
         <SkillCategoryBlock key={category.category} category={category} />
       ))}
     </div>

@@ -1,5 +1,6 @@
 import {
   Bug,
+  Blocks,
   Code,
   Database,
   Laptop,
@@ -8,12 +9,11 @@ import {
   TestTube2,
   Users,
   Zap,
-  Blocks,
   type LucideIcon,
 } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { aboutOverviewData } from "@/data/aboutOverviewData"
+import { aboutOverviewData } from "@/data/aboutData"
 import type {
   AboutOverviewExpertiseItem,
   AboutOverviewIconKey,
@@ -32,6 +32,8 @@ const overviewIconMap: Record<AboutOverviewIconKey, LucideIcon> = {
   users: Users,
 }
 
+const overviewCardClassName = "border-border/60 bg-secondary/30 shadow-none"
+
 function OverviewStatCard({
   value,
   label,
@@ -40,7 +42,7 @@ function OverviewStatCard({
   label: string
 }>) {
   return (
-    <Card className="border-border/60 bg-secondary/30 shadow-none">
+    <Card className={overviewCardClassName}>
       <CardContent className="p-4">
         <div className="space-y-1">
           <p className="font-heading text-2xl text-card-foreground">{value}</p>
@@ -61,7 +63,7 @@ function OverviewExpertiseCard({
   const Icon = overviewIconMap[item.iconKey]
 
   return (
-    <Card className="border-border/60 bg-secondary/30 shadow-none">
+    <Card className={overviewCardClassName}>
       <CardContent className="flex h-full flex-col gap-4 p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -107,15 +109,16 @@ export function OverviewTab() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+        <ul
+          className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1"
+          aria-label="Overview statistics"
+        >
           {aboutOverviewData.stats.map((stat) => (
-            <OverviewStatCard
-              key={stat.id}
-              value={stat.value}
-              label={stat.label}
-            />
+            <li key={stat.id}>
+              <OverviewStatCard value={stat.value} label={stat.label} />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       <div className="h-px bg-border/60" />
@@ -125,14 +128,19 @@ export function OverviewTab() {
           {aboutOverviewData.expertiseHeading}
         </h4>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <ul
+          className="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+          aria-label={aboutOverviewData.expertiseHeading}
+        >
           {aboutOverviewData.expertiseItems.map((item) => (
-            <OverviewExpertiseCard key={item.id} item={item} />
+            <li key={item.id}>
+              <OverviewExpertiseCard item={item} />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
-      <Card className="border-border/60 bg-secondary/30 shadow-none">
+      <Card className={overviewCardClassName}>
         <CardContent className="p-5">
           <p className="text-sm leading-7 text-muted-foreground">
             {aboutOverviewData.closingNote}

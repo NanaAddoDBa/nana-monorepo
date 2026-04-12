@@ -1,9 +1,84 @@
 import { CheckCircle2 } from "lucide-react"
 
-import { workExperienceData } from "@/data/workExperienceData"
+import { workExperienceData } from "@/data/aboutData"
+import { cn } from "@/lib/utils"
+
+type ExperienceItem = (typeof workExperienceData.items)[number]
+
+type ExperienceDetailsProps = {
+  item: ExperienceItem
+  align?: "left" | "right"
+  compact?: boolean
+}
+
+function ExperienceDetails({
+  item,
+  align = "left",
+  compact = false,
+}: Readonly<ExperienceDetailsProps>) {
+  const isRightAligned = align === "right"
+
+  return (
+    <div className={cn("space-y-3", isRightAligned && "text-right")}>
+      <p className="text-xs font-semibold tracking-[0.24em] text-primary uppercase">
+        {item.period}
+      </p>
+
+      <div className="space-y-1">
+        <h3
+          className={cn(
+            "font-semibold text-card-foreground",
+            compact ? "text-xl" : "text-2xl"
+          )}
+        >
+          {item.role}
+        </h3>
+
+        <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
+          {item.company}, {item.location}
+          {item.workType ? ` · ${item.workType}` : ""}
+        </p>
+      </div>
+
+      <p className="text-sm leading-7 text-muted-foreground">{item.summary}</p>
+
+      <ul className="space-y-4 pt-2">
+        {item.responsibilities.map((responsibility) => (
+          <li
+            key={responsibility}
+            className={cn(
+              "flex items-start gap-3",
+              isRightAligned && "justify-end"
+            )}
+          >
+            {isRightAligned ? (
+              <>
+                <p className="max-w-xs text-sm leading-7 text-muted-foreground">
+                  {responsibility}
+                </p>
+                <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                </span>
+                <p className="text-sm leading-7 text-muted-foreground">
+                  {responsibility}
+                </p>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 type ExperienceTimelineItemProps = {
-  item: (typeof workExperienceData.items)[number]
+  item: ExperienceItem
   align: "left" | "right"
 }
 
@@ -18,47 +93,12 @@ function ExperienceTimelineItem({
       <div className="absolute top-0 left-3 h-full w-px bg-border/60 lg:hidden" />
 
       <div
-        className={isLeft ? "hidden lg:flex lg:justify-end" : "hidden lg:block"}
+        className={cn(
+          "hidden lg:block",
+          isLeft ? "lg:flex lg:justify-end" : undefined
+        )}
       >
-        {isLeft ? (
-          <div className="max-w-sm space-y-3 text-right">
-            <p className="text-xs font-semibold tracking-[0.24em] text-primary uppercase">
-              {item.period}
-            </p>
-
-            <div className="space-y-1">
-              <h3 className="text-2xl font-semibold text-card-foreground">
-                {item.role}
-              </h3>
-
-              <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-                {item.company}, {item.location}
-                {item.workType ? ` · ${item.workType}` : ""}
-              </p>
-            </div>
-
-            <p className="text-sm leading-7 text-muted-foreground">
-              {item.summary}
-            </p>
-
-            <ul className="space-y-4 pt-2">
-              {item.responsibilities.map((responsibility) => (
-                <li
-                  key={responsibility}
-                  className="flex items-start justify-end gap-3"
-                >
-                  <p className="max-w-xs text-sm leading-7 text-muted-foreground">
-                    {responsibility}
-                  </p>
-
-                  <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        {isLeft ? <ExperienceDetails item={item} align="right" /> : null}
       </div>
 
       <div className="relative z-10 hidden lg:flex lg:items-start lg:justify-center">
@@ -66,85 +106,17 @@ function ExperienceTimelineItem({
       </div>
 
       <div
-        className={
-          isLeft ? "hidden lg:block" : "hidden lg:flex lg:justify-start"
-        }
+        className={cn(
+          "hidden lg:block",
+          !isLeft ? "lg:flex lg:justify-start" : undefined
+        )}
       >
-        {!isLeft ? (
-          <div className="max-w-sm space-y-3">
-            <p className="text-xs font-semibold tracking-[0.24em] text-primary uppercase">
-              {item.period}
-            </p>
-
-            <div className="space-y-1">
-              <h3 className="text-2xl font-semibold text-card-foreground">
-                {item.role}
-              </h3>
-
-              <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-                {item.company}, {item.location}
-                {item.workType ? ` · ${item.workType}` : ""}
-              </p>
-            </div>
-
-            <p className="text-sm leading-7 text-muted-foreground">
-              {item.summary}
-            </p>
-
-            <ul className="space-y-4 pt-2">
-              {item.responsibilities.map((responsibility) => (
-                <li key={responsibility} className="flex items-start gap-3">
-                  <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                  </span>
-
-                  <p className="text-sm leading-7 text-muted-foreground">
-                    {responsibility}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        {!isLeft ? <ExperienceDetails item={item} align="left" /> : null}
       </div>
 
       <div className="relative pl-10 lg:hidden">
         <div className="absolute top-1.5 left-[0.32rem] z-10 h-3 w-3 rounded-full border border-primary/60 bg-background shadow-[0_0_20px_rgba(196,181,253,0.35)]" />
-
-        <div className="space-y-3">
-          <p className="text-xs font-semibold tracking-[0.24em] text-primary uppercase">
-            {item.period}
-          </p>
-
-          <div className="space-y-1">
-            <h3 className="text-xl font-semibold text-card-foreground">
-              {item.role}
-            </h3>
-
-            <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-              {item.company}, {item.location}
-              {item.workType ? ` · ${item.workType}` : ""}
-            </p>
-          </div>
-
-          <p className="text-sm leading-7 text-muted-foreground">
-            {item.summary}
-          </p>
-
-          <ul className="space-y-4 pt-2">
-            {item.responsibilities.map((responsibility) => (
-              <li key={responsibility} className="flex items-start gap-3">
-                <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                </span>
-
-                <p className="text-sm leading-7 text-muted-foreground">
-                  {responsibility}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ExperienceDetails item={item} compact />
       </div>
     </article>
   )

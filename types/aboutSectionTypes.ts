@@ -51,26 +51,26 @@ export type AboutOverviewData = {
   closingNote: string
 }
 
-export type NamedSlugItem = {
+export type SkillItem = {
   name: string
   slug: string
 }
 
-export type CategorizedItems<TItem = NamedSlugItem> = {
+export type SkillCategory = {
   category: string
-  items: TItem[]
+  items: SkillItem[]
 }
 
-export type LanguageSkill = NamedSlugItem & {
+export type LanguageSkill = SkillItem & {
   level: string
 }
 
 export type SkillsData = {
-  programming: CategorizedItems[]
-  testing: CategorizedItems[]
-  productivity: CategorizedItems[]
+  programming: SkillCategory[]
+  testing: SkillCategory[]
+  productivity: SkillCategory[]
   languageSkills: LanguageSkill[]
-  softSkills: CategorizedItems[]
+  softSkills: SkillCategory[]
 }
 
 export type ExperienceItem = {

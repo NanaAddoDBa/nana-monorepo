@@ -1,0 +1,5 @@
+export { aboutTabsData } from "@/data/aboutTabsData"
+export { aboutOverviewData } from "@/data/aboutOverviewData"
+export { skillsData } from "@/data/skillsData"
+export { workExperienceData } from "@/data/workExperienceData"
+export { credentialsData } from "@/data/credentialsData"

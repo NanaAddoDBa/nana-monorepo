@@ -1,6 +1,6 @@
 import type { CredentialsData } from "@/types/aboutSectionTypes"
 
-export const credentialsData = {
+export const credentialsData: CredentialsData = {
   educationHeading: "Education",
   educationItems: [
     {
@@ -51,4 +51,4 @@ export const credentialsData = {
       location: "Ghana",
     },
   ],
-} satisfies CredentialsData
+}

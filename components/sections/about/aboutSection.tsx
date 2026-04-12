@@ -1,5 +1,5 @@
-import { Container } from "@/components/shared/container"
-import { aboutTabsData } from "@/data/aboutTabsData"
+import { SectionShell } from "@/components/shared/sectionShell"
+import { aboutTabsData } from "@/data/aboutData"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -15,45 +15,41 @@ const aboutTabPanels = {
   education: <EducationTab />,
 } as const
 
+const visibleAboutTabs = aboutTabsData.filter(
+  (tab) => tab.value !== "certifications"
+)
+
 export function AboutSection() {
   return (
-    <section id="about" aria-labelledby="about-heading">
-      <Container>
-        <div className="py-12 md:py-16">
-          <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid h-12 w-full grid-cols-2 md:grid-cols-4">
-              {aboutTabsData
-                .filter((tab) => tab.value !== "certifications")
-                .map((tab) => (
-                  <TabsTrigger
-                    key={tab.id}
-                    value={tab.value}
-                    className="h-fulltext-muted-foreground transition-colors data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                  >
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-            </TabsList>
+    <SectionShell id="about" aria-labelledby="about-heading">
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid h-12 w-full grid-cols-2 md:grid-cols-4">
+          {visibleAboutTabs.map((tab) => (
+            <TabsTrigger
+              key={tab.id}
+              value={tab.value}
+              className="h-full text-muted-foreground transition-colors data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-            {aboutTabsData
-              .filter((tab) => tab.value !== "certifications")
-              .map((tab) => (
-                <TabsContent key={tab.id} value={tab.value} className="mt-4">
-                  <Card>
-                    <CardContent className="p-6 md:p-8 lg:p-10">
-                      {tab.value === "overview" ? (
-                        <h2 id="about-heading" className="sr-only">
-                          About Me
-                        </h2>
-                      ) : null}
-                      {aboutTabPanels[tab.value]}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              ))}
-          </Tabs>
-        </div>
-      </Container>
-    </section>
+        {visibleAboutTabs.map((tab) => (
+          <TabsContent key={tab.id} value={tab.value} className="mt-4">
+            <Card>
+              <CardContent className="p-6 md:p-8 lg:p-10">
+                {tab.value === "overview" ? (
+                  <h2 id="about-heading" className="sr-only">
+                    About Me
+                  </h2>
+                ) : null}
+                {aboutTabPanels[tab.value as keyof typeof aboutTabPanels]}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </SectionShell>
   )
 }
