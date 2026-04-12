@@ -10,6 +10,7 @@ type SectionShellProps = {
   contentClassName?: string
   withContainer?: boolean
   viewport?: "auto" | "screen-fit" | "hero-fit"
+  "aria-labelledby"?: string
 }
 
 function getViewportClass(viewport: SectionShellProps["viewport"]) {
@@ -30,6 +31,7 @@ export function SectionShell({
   contentClassName,
   withContainer = true,
   viewport = "auto",
+  "aria-labelledby": ariaLabelledBy,
 }: Readonly<SectionShellProps>) {
   const content = (
     <div
@@ -44,7 +46,11 @@ export function SectionShell({
   )
 
   return (
-    <section id={id} className={cn("w-full", className)}>
+    <section
+      id={id}
+      aria-labelledby={ariaLabelledBy}
+      className={cn("w-full", className)}
+    >
       {withContainer ? <Container>{content}</Container> : content}
     </section>
   )
