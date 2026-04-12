@@ -5,11 +5,13 @@ export type AboutTabId =
   | "education"
   | "certifications"
 
-export type AboutTab = {
-  id: AboutTabId
+export type SectionTab<TId extends string> = {
+  id: TId
   label: string
-  value: AboutTabId
+  value: TId
 }
+
+export type AboutTab = SectionTab<AboutTabId>
 
 export type AboutOverviewStat = {
   id: string
@@ -49,28 +51,26 @@ export type AboutOverviewData = {
   closingNote: string
 }
 
-export interface SkillItem {
+export type NamedSlugItem = {
   name: string
   slug: string
 }
 
-export interface SkillCategory {
+export type CategorizedItems<TItem = NamedSlugItem> = {
   category: string
-  items: SkillItem[]
+  items: TItem[]
 }
 
-export interface LanguageSkill {
-  name: string
-  slug: string
+export type LanguageSkill = NamedSlugItem & {
   level: string
 }
 
-export interface SkillsData {
-  programming: SkillCategory[]
-  testing: SkillCategory[]
-  productivity: SkillCategory[]
+export type SkillsData = {
+  programming: CategorizedItems[]
+  testing: CategorizedItems[]
+  productivity: CategorizedItems[]
   languageSkills: LanguageSkill[]
-  softSkills: SkillCategory[]
+  softSkills: CategorizedItems[]
 }
 
 export type ExperienceItem = {

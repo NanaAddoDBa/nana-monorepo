@@ -9,7 +9,7 @@ export const heroSlidesData = [
     title: "Hello, I’m Nana Addo Dankwa Bampoe Addo",
     highlightLine: "Software Developer",
     description:
-      "I enjoy building modern web applications with clean architecture and purposeful design, creating maintainable digital products that balance strong user experience, scalable structure, and practical engineering decisions.",
+      "I build modern web applications with clean architecture, purposeful design, and maintainable frontend systems that stay clear as products grow.",
     primaryAction: {
       type: "link",
       label: "View Projects",
@@ -37,11 +37,10 @@ export const heroSlidesData = [
     variant: "skills",
     density: "compact",
     eyebrow: "Core Strengths",
-    title:
-      "Frontend craft backed by API thinking, testing awareness, and scalable structure",
+    title: "Frontend Engineering",
     highlightLine: "Clean Systems, Thoughtful Interfaces",
     description:
-      "My work spans modern frontend development, backend integration, and clean implementation patterns that stay readable, modular, and easy to evolve over time.",
+      "I build responsive interfaces, API-connected experiences, and scalable frontend systems with strong attention to maintainability and delivery quality.",
     primaryAction: {
       type: "link",
       label: "About Me",
@@ -54,22 +53,16 @@ export const heroSlidesData = [
       href: "#projects",
       variant: "secondary",
     },
-    supportingPoints: [
-      "React, Next.js, Tailwind CSS",
-      "Node.js, Express.js, REST APIs",
-      "Testing, databases, and team collaboration",
-    ],
   },
   {
     id: "proof",
     variant: "projects",
     density: "compact",
     eyebrow: "Selected Proof",
-    title:
-      "From e-commerce platform improvements to regulatory workflow digitization",
-    highlightLine: "Projects With Real-World Impact",
+    title: "Real-World Projects",
+    highlightLine: "Impact Through Execution",
     description:
-      "My project experience includes improving reliability and performance in product workflows and contributing to systems that support operational efficiency, accountability, and better user outcomes.",
+      "My work includes product-focused web development, workflow tooling, and systems designed to improve reliability, efficiency, and user outcomes.",
     primaryAction: {
       type: "link",
       label: "Explore Projects",
@@ -82,10 +75,5 @@ export const heroSlidesData = [
       href: "#contact",
       variant: "secondary",
     },
-    supportingPoints: [
-      "E-commerce platform development",
-      "Internal tooling for regulatory processes",
-      "Current MSc in Computer Science",
-    ],
   },
 ] satisfies HeroSlide[]
