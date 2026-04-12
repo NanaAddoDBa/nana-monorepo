@@ -1,61 +1,8 @@
-import { Mail, Phone, MapPin, Clock, type LucideIcon } from "lucide-react"
+import { Mail, Phone, MapPin, Clock } from "lucide-react"
 
-interface ContactMethod {
-  label: string
-  value: string
-  icon: LucideIcon
-  href: string
-}
+import type { ContactData } from "@/types/contactSectionTypes"
 
-interface Availability {
-  timezone: string
-  hours: string
-  days: string
-  icon: LucideIcon
-  calendlyLink: string
-}
-
-interface FormField {
-  label: string
-  placeholder: string
-  required: boolean
-}
-
-interface ContactValueField {
-  emailLabel: string
-  emailPlaceholder: string
-  phoneLabel: string
-  phonePlaceholder: string
-  required: boolean
-}
-
-interface PreferredContactMethod {
-  id: "email" | "phone"
-  label: string
-}
-
-interface ContactData {
-  title: string
-  subtitle: string
-  contactInfo: {
-    email: ContactMethod
-    phone: ContactMethod
-    location: ContactMethod
-  }
-  availability: Availability
-  formFields: {
-    name: FormField
-    contactValue: ContactValueField
-    subject: FormField
-    message: FormField
-  }
-  preferredContactMethods: PreferredContactMethod[]
-  submitLabel: string
-  successMessage: string
-  errorMessage: string
-}
-
-export const contactData: ContactData = {
+export const contactData = {
   title: "Let's Connect",
   subtitle: "Get in touch for opportunities or collaborations",
   contactInfo: {
@@ -112,4 +59,4 @@ export const contactData: ContactData = {
   submitLabel: "Send Message",
   successMessage: "Thanks for reaching out! I'll get back to you soon.",
   errorMessage: "Something went wrong. Please try again later.",
-}
+} satisfies ContactData

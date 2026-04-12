@@ -7,13 +7,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-interface SocialLink {
-  name: string
-  href: string
-  icon: LucideIcon
-  ariaLabel: string
-}
-
+import type { SocialLink } from "@/types/socialLinkTypes"
 export const socialLinks: SocialLink[] = [
   {
     name: "GitHub",
