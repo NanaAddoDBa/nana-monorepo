@@ -1,4 +1,4 @@
-import type { AboutTab } from "@/types/aboutTypes"
+import type { AboutTab } from "@/types/aboutSectionTypes"
 
 export const aboutTabsData = [
   {

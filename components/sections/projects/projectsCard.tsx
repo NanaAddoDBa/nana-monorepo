@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 
-import type { ProjectItem } from "@/types/projectsTypes"
+import type { ProjectItem } from "@/types/projectsSectionTypes"
 import {
   Card,
   CardContent,

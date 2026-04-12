@@ -1,4 +1,4 @@
-import type { SkillsData } from "@/types/aboutTypes"
+import type { SkillsData } from "@/types/aboutSectionTypes"
 export const skillsData: SkillsData = {
   programming: [
     {

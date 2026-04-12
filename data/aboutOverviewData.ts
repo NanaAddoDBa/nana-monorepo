@@ -1,4 +1,4 @@
-import type { AboutOverviewData } from "@/types/aboutTypes"
+import type { AboutOverviewData } from "@/types/aboutSectionTypes"
 
 export const aboutOverviewData = {
   eyebrow: "Overview",

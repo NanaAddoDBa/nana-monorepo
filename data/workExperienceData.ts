@@ -1,4 +1,4 @@
-import type { WorkExperienceData } from "@/types/aboutTypes"
+import type { WorkExperienceData } from "@/types/aboutSectionTypes"
 
 export const workExperienceData = {
   eyebrow: "Experience",

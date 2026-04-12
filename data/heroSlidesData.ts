@@ -1,4 +1,4 @@
-import type { HeroSlide } from "@/types/heroTypes"
+import type { HeroSlide } from "@/types/heroSectionTypes"
 
 export const heroSlidesData = [
   {

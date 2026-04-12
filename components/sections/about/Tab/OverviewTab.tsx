@@ -17,7 +17,7 @@ import { aboutOverviewData } from "@/data/aboutOverviewData"
 import type {
   AboutOverviewExpertiseItem,
   AboutOverviewIconKey,
-} from "@/types/aboutTypes"
+} from "@/types/aboutSectionTypes"
 
 const overviewIconMap: Record<AboutOverviewIconKey, LucideIcon> = {
   testTube: TestTube2,

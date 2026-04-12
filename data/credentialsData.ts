@@ -1,4 +1,4 @@
-import type { CredentialsData } from "@/types/aboutTypes"
+import type { CredentialsData } from "@/types/aboutSectionTypes"
 
 export const credentialsData = {
   educationHeading: "Education",

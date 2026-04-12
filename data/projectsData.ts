@@ -1,4 +1,4 @@
-import type { ProjectsData } from "@/types/projectsTypes"
+import type { ProjectsData } from "@/types/projectsSectionTypes"
 
 export const projectsData = {
   heading: "Projects",

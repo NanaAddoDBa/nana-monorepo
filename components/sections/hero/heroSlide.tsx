@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-import type { HeroSlide as HeroSlideData } from "@/types/heroTypes"
+import type { HeroSlide as HeroSlideData } from "@/types/heroSectionTypes"
 import { cn } from "@/lib/utils"
 
 import { HeroActions } from "./heroActions"

@@ -16,7 +16,7 @@ import type {
   HeroSlideAction,
   HeroSlideDownloadGroupAction,
   HeroSlideLinkAction,
-} from "@/types/heroTypes"
+} from "@/types/heroSectionTypes"
 
 type HeroActionsSize = "default" | "compact"
 

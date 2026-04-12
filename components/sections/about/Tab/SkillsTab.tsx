@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
 import { skillsData } from "@/data/skillsData"
-import type { LanguageSkill, SkillCategory } from "@/types/aboutTypes"
+import type { LanguageSkill, SkillCategory } from "@/types/aboutSectionTypes"
 
 type CategorySection = {
   id: string
