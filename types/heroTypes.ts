@@ -1,3 +1,7 @@
+// -----------------------------
+// ACTION TYPES (unchanged)
+// -----------------------------
+
 export type HeroSlideActionVariant = "primary" | "secondary"
 
 export type HeroSlideLinkAction = {
@@ -13,16 +17,31 @@ export type HeroSlideDownloadGroupAction = {
   downloadGroupId: string
   variant: HeroSlideActionVariant
 }
+
+export type HeroSlideAction = HeroSlideLinkAction | HeroSlideDownloadGroupAction
+
+// -----------------------------
+// SHARED TYPES
+// -----------------------------
+
+export type HeroSlideDensity = "default" | "compact"
+
 export type HeroSlideImage = {
   src: string
   alt: string
 }
 
-export type HeroSlideAction = HeroSlideLinkAction | HeroSlideDownloadGroupAction
+// -----------------------------
+// VARIANT SYSTEM (NEW)
+// -----------------------------
 
-export type HeroSlideDensity = "default" | "compact"
+export type HeroSlideVariant = "image" | "skills" | "projects"
 
-export type HeroSlide = {
+// -----------------------------
+// BASE TYPE (shared across all)
+// -----------------------------
+
+type HeroSlideBase = {
   id: string
   eyebrow: string
   title: string
@@ -31,6 +50,41 @@ export type HeroSlide = {
   primaryAction: HeroSlideAction
   secondaryAction?: HeroSlideAction
   supportingPoints?: string[]
-  image?: HeroSlideImage
   density?: HeroSlideDensity
 }
+
+// -----------------------------
+// VARIANT: IMAGE (Slide 1)
+// -----------------------------
+
+export type HeroSlideImageVariant = HeroSlideBase & {
+  variant: "image"
+  image: HeroSlideImage
+}
+
+// -----------------------------
+// VARIANT: SKILLS (Slide 2)
+// -----------------------------
+
+export type HeroSlideSkillsVariant = HeroSlideBase & {
+  variant: "skills"
+  // no image allowed
+}
+
+// -----------------------------
+// VARIANT: PROJECTS (Slide 3)
+// -----------------------------
+
+export type HeroSlideProjectsVariant = HeroSlideBase & {
+  variant: "projects"
+  // no image allowed
+}
+
+// -----------------------------
+// FINAL UNION TYPE
+// -----------------------------
+
+export type HeroSlide =
+  | HeroSlideImageVariant
+  | HeroSlideSkillsVariant
+  | HeroSlideProjectsVariant

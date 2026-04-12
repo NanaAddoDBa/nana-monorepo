@@ -18,7 +18,7 @@ export function HeroSlideFrame({
         className
       )}
     >
-      <div className="flex min-h-[28rem] items-center md:min-h-[30rem] lg:min-h-[34rem]">
+      <div className="flex items-center">
         <div className="w-full">{children}</div>
       </div>
     </div>

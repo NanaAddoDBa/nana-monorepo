@@ -3,6 +3,7 @@ import type { HeroSlide } from "@/types/heroTypes"
 export const heroSlidesData = [
   {
     id: "intro",
+    variant: "image",
     density: "default",
     eyebrow: "welcome to my personal website",
     title: "Hello, I’m Nana Addo Dankwa Bampoe Addo",
@@ -33,6 +34,7 @@ export const heroSlidesData = [
   },
   {
     id: "strengths",
+    variant: "skills",
     density: "compact",
     eyebrow: "Core Strengths",
     title:
@@ -60,6 +62,7 @@ export const heroSlidesData = [
   },
   {
     id: "proof",
+    variant: "projects",
     density: "compact",
     eyebrow: "Selected Proof",
     title:
