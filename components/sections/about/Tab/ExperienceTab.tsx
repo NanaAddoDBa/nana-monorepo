@@ -1,9 +1,8 @@
 import { CheckCircle2 } from "lucide-react"
 
 import { workExperienceData } from "@/data/aboutData"
+import type { ExperienceItem } from "@/types/aboutSectionTypes"
 import { cn } from "@/lib/utils"
-
-type ExperienceItem = (typeof workExperienceData.items)[number]
 
 type ExperienceDetailsProps = {
   item: ExperienceItem
@@ -87,16 +86,14 @@ function ExperienceTimelineItem({
   align,
 }: Readonly<ExperienceTimelineItemProps>) {
   const isLeft = align === "left"
+  const isRight = align === "right"
 
   return (
     <article className="relative lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-10 lg:py-10">
       <div className="absolute top-0 left-3 h-full w-px bg-border/60 lg:hidden" />
 
       <div
-        className={cn(
-          "hidden lg:block",
-          isLeft ? "lg:flex lg:justify-end" : undefined
-        )}
+        className={cn("hidden lg:block", isLeft && "lg:flex lg:justify-end")}
       >
         {isLeft ? <ExperienceDetails item={item} align="right" /> : null}
       </div>
@@ -106,12 +103,9 @@ function ExperienceTimelineItem({
       </div>
 
       <div
-        className={cn(
-          "hidden lg:block",
-          !isLeft ? "lg:flex lg:justify-start" : undefined
-        )}
+        className={cn("hidden lg:block", isRight && "lg:flex lg:justify-start")}
       >
-        {!isLeft ? <ExperienceDetails item={item} align="left" /> : null}
+        {isRight ? <ExperienceDetails item={item} align="left" /> : null}
       </div>
 
       <div className="relative pl-10 lg:hidden">

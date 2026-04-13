@@ -15,8 +15,12 @@ const aboutTabPanels = {
   education: <EducationTab />,
 } as const
 
+type VisibleAboutTab = (typeof aboutTabsData)[number] & {
+  id: keyof typeof aboutTabPanels
+}
+
 const visibleAboutTabs = aboutTabsData.filter(
-  (tab) => tab.value !== "certifications"
+  (tab): tab is VisibleAboutTab => tab.id !== "certifications"
 )
 
 export function AboutSection() {
@@ -27,7 +31,7 @@ export function AboutSection() {
           {visibleAboutTabs.map((tab) => (
             <TabsTrigger
               key={tab.id}
-              value={tab.value}
+              value={tab.id}
               className="h-full text-muted-foreground transition-colors data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
             >
               {tab.label}
@@ -36,15 +40,15 @@ export function AboutSection() {
         </TabsList>
 
         {visibleAboutTabs.map((tab) => (
-          <TabsContent key={tab.id} value={tab.value} className="mt-4">
+          <TabsContent key={tab.id} value={tab.id} className="mt-4">
             <Card>
               <CardContent className="p-6 md:p-8 lg:p-10">
-                {tab.value === "overview" ? (
+                {tab.id === "overview" ? (
                   <h2 id="about-heading" className="sr-only">
                     About Me
                   </h2>
                 ) : null}
-                {aboutTabPanels[tab.value as keyof typeof aboutTabPanels]}
+                {aboutTabPanels[tab.id]}
               </CardContent>
             </Card>
           </TabsContent>

@@ -1,6 +1,6 @@
 import type { WorkExperienceData } from "@/types/aboutSectionTypes"
 
-export const workExperienceData = {
+export const workExperienceData: WorkExperienceData = {
   eyebrow: "Experience",
   heading: "Professional Experience",
   intro:
@@ -45,4 +45,4 @@ export const workExperienceData = {
       skills: ["Authentication", "Workflow Optimization", "Agile Development"],
     },
   ],
-} satisfies WorkExperienceData
+}

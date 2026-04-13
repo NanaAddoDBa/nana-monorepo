@@ -8,7 +8,6 @@ export type AboutTabId =
 export type SectionTab<TId extends string> = {
   id: TId
   label: string
-  value: TId
 }
 
 export type AboutTab = SectionTab<AboutTabId>

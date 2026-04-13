@@ -5,66 +5,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
-import { skillsData } from "@/data/aboutData"
-import type {
-  LanguageSkill,
-  SkillCategory,
-  SkillsData,
-} from "@/types/aboutSectionTypes"
+import { skillsAccordionSectionsData, skillsData } from "@/data/skillsData"
+import type { LanguageSkill, SkillCategory } from "@/types/aboutSectionTypes"
 
-type CategorizedSkillsKey =
-  | "programming"
-  | "testing"
-  | "productivity"
-  | "softSkills"
-type LanguageSkillsKey = "languageSkills"
-
-type SkillsAccordionSection =
-  | {
-      id: string
-      title: string
-      type: "categories"
-      dataKey: CategorizedSkillsKey
-    }
-  | {
-      id: string
-      title: string
-      type: "languages"
-      dataKey: LanguageSkillsKey
-    }
-
-const skillsAccordionSections: SkillsAccordionSection[] = [
-  {
-    id: "programming",
-    title: "Programming",
-    type: "categories",
-    dataKey: "programming",
-  },
-  {
-    id: "testing",
-    title: "Testing & QA",
-    type: "categories",
-    dataKey: "testing",
-  },
-  {
-    id: "productivity",
-    title: "Productivity & Tools",
-    type: "categories",
-    dataKey: "productivity",
-  },
-  {
-    id: "languages-spoken",
-    title: "Languages Spoken",
-    type: "languages",
-    dataKey: "languageSkills",
-  },
-  {
-    id: "soft-skills",
-    title: "Soft Skills",
-    type: "categories",
-    dataKey: "softSkills",
-  },
-]
+type SkillsAccordionSection = (typeof skillsAccordionSectionsData)[number]
 
 const skillsPanelClassName =
   "rounded-2xl border border-border/60 bg-secondary/25"
@@ -152,7 +96,7 @@ export function SkillsTab() {
           defaultValue="programming"
           className="w-full"
         >
-          {skillsAccordionSections.map((section) => (
+          {skillsAccordionSectionsData.map((section) => (
             <AccordionItem
               key={section.id}
               value={section.id}

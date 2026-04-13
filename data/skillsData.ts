@@ -1,4 +1,5 @@
 import type { SkillsData } from "@/types/aboutSectionTypes"
+
 export const skillsData: SkillsData = {
   programming: [
     {
@@ -35,7 +36,6 @@ export const skillsData: SkillsData = {
       ],
     },
   ],
-
   testing: [
     {
       category: "Frontend Testing",
@@ -46,7 +46,6 @@ export const skillsData: SkillsData = {
       ],
     },
   ],
-
   productivity: [
     {
       category: "Collaboration & Documentation",
@@ -60,12 +59,10 @@ export const skillsData: SkillsData = {
       ],
     },
   ],
-
   languageSkills: [
     { name: "English", slug: "english", level: "Native" },
     { name: "German", slug: "german", level: "Intermediate (B1)" },
   ],
-
   softSkills: [
     {
       category: "Collaboration & Communication",
@@ -85,3 +82,36 @@ export const skillsData: SkillsData = {
     },
   ],
 }
+
+export const skillsAccordionSectionsData = [
+  {
+    id: "programming",
+    title: "Programming",
+    type: "categories",
+    dataKey: "programming",
+  },
+  {
+    id: "testing",
+    title: "Testing & QA",
+    type: "categories",
+    dataKey: "testing",
+  },
+  {
+    id: "productivity",
+    title: "Productivity & Tools",
+    type: "categories",
+    dataKey: "productivity",
+  },
+  {
+    id: "languages-spoken",
+    title: "Languages Spoken",
+    type: "languages",
+    dataKey: "languageSkills",
+  },
+  {
+    id: "soft-skills",
+    title: "Soft Skills",
+    type: "categories",
+    dataKey: "softSkills",
+  },
+] as const
