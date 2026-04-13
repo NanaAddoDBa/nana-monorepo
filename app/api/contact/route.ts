@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 import { sendContactEmail } from "@/lib/email/sendContactEmail"
+import { sendTelegramMessage } from "@/lib/telegram/sendTelegramMessage"
 import { contactFormSchema } from "@/lib/validations/contactFormSchema"
 
 export async function POST(request: Request) {
@@ -22,7 +23,11 @@ export async function POST(request: Request) {
       )
     }
 
-    await sendContactEmail(result.data)
+    if (result.data.preferredContactMethod === "phone") {
+      await sendTelegramMessage(result.data)
+    } else {
+      await sendContactEmail(result.data)
+    }
 
     return Response.json(
       {
