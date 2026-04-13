@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -76,7 +76,10 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
     }
   }
 
-  const preferredContactMethod = form.watch("preferredContactMethod")
+  const preferredContactMethod = useWatch({
+    control: form.control,
+    name: "preferredContactMethod",
+  })
 
   const isEmailMethod = preferredContactMethod === "email"
 
