@@ -30,7 +30,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "Email",
-    href: "mailto:andybampoe.ad@gmail.com",
+    href: "mailto:nanaaddoldoe@gmail.com",
     icon: Mail,
     ariaLabel: "Send me an email to get in touch directly.",
   },

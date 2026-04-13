@@ -8,9 +8,9 @@ export const contactData = {
   contactInfo: {
     email: {
       label: "Email",
-      value: "andybampoe.ad@gmail.com",
+      value: "nanaaddoldoe@gmail.com",
       icon: Mail,
-      href: "mailto:andybampoe.ad@gmail.com",
+      href: "mailto:nanaaddoldoe@gmail.com",
     },
     phone: {
       label: "Phone",
