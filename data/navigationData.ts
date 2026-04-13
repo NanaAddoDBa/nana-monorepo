@@ -1,4 +1,15 @@
+import { aboutTabsData } from "@/data/aboutData"
 import type { NavigationItem } from "@/types/navigationTypes"
+
+const aboutNavigationItems = aboutTabsData
+  .filter((tab) => tab.id !== "certifications")
+  .map((tab) => ({
+    id: `about-${tab.id}`,
+    label: tab.label,
+    href: tab.href,
+    ariaLabel: tab.ariaLabel,
+    description: tab.description,
+  }))
 
 export const navigationData = [
   {
@@ -6,51 +17,31 @@ export const navigationData = [
     label: "Home",
     href: "#hero",
     ariaLabel: "Go to hero section",
+    description: "Intro, identity, and the main hero preview.",
   },
   {
     id: "about",
     label: "About",
     href: "#about",
     ariaLabel: "Go to about section",
-    items: [
-      {
-        id: "about-skills",
-        label: "Skills",
-        href: "#about-skills",
-        ariaLabel: "Go to skills content",
-      },
-      {
-        id: "about-experience",
-        label: "Experience",
-        href: "#about-experience",
-        ariaLabel: "Go to experience content",
-      },
-      {
-        id: "about-education",
-        label: "Education",
-        href: "#about-education",
-        ariaLabel: "Go to education content",
-      },
-      {
-        id: "about-certifications",
-        label: "Certifications",
-        href: "#about-certifications",
-        ariaLabel: "Go to certifications content",
-      },
-    ],
+    description:
+      "Professional summary, skills, experience, and education in a tabbed section.",
+    items: aboutNavigationItems,
   },
   {
     id: "projects",
     label: "Projects",
     href: "#projects",
     ariaLabel: "Go to projects section",
-    // TODO: Add an optional one-tier Projects subnav later only if project depth
-    // clearly justifies it, for example: Featured, Case Studies, or flagship projects.
+    description:
+      "Featured project work, case studies, and implementation outcomes.",
   },
   {
     id: "contact",
     label: "Contact",
     href: "#contact",
     ariaLabel: "Go to contact section",
+    description:
+      "Contact details, availability, and the message form for reaching out.",
   },
 ] as const satisfies readonly NavigationItem[]

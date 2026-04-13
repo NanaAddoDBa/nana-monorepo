@@ -1,3 +1,6 @@
+import { z } from "zod"
+
+import { sendContactEmail } from "@/lib/email/sendContactEmail"
 import { contactFormSchema } from "@/lib/validations/contactFormSchema"
 
 export async function POST(request: Request) {
@@ -7,15 +10,19 @@ export async function POST(request: Request) {
     const result = contactFormSchema.safeParse(json)
 
     if (!result.success) {
+      const flattenedErrors = z.flattenError(result.error)
+
       return Response.json(
         {
           success: false,
           message: "Invalid form submission.",
-          fieldErrors: result.error.flatten().fieldErrors,
+          fieldErrors: flattenedErrors.fieldErrors,
         },
         { status: 400 }
       )
     }
+
+    await sendContactEmail(result.data)
 
     return Response.json(
       {
@@ -24,11 +31,14 @@ export async function POST(request: Request) {
       },
       { status: 200 }
     )
-  } catch {
+  } catch (error) {
     return Response.json(
       {
         success: false,
-        message: "Unable to process contact form submission.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to process contact form submission.",
       },
       { status: 500 }
     )

@@ -5,9 +5,14 @@ export type AboutTabId =
   | "education"
   | "certifications"
 
+export type AboutTabHref = `#about-${AboutTabId}`
+
 export type SectionTab<TId extends string> = {
   id: TId
   label: string
+  href: `#about-${TId}`
+  ariaLabel?: string
+  description?: string
 }
 
 export type AboutTab = SectionTab<AboutTabId>
