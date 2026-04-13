@@ -3,6 +3,8 @@
 import * as React from "react"
 import Autoplay from "embla-carousel-autoplay"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+
+import { SectionShell } from "@/components/shared/sectionShell"
 import { Button } from "@/components/ui/button"
 import {
   Carousel,
@@ -12,18 +14,18 @@ import {
 } from "@/components/ui/carousel"
 import { heroSlidesData } from "@/data/heroSlidesData"
 import { cn } from "@/lib/utils"
-import { SectionShell } from "@/components/shared/sectionShell"
+
 import { HeroSlide } from "./heroSlide"
 import { HeroSlideFrame } from "./heroSlideFrame"
 
 export function HeroSection() {
   const [api, setApi] = React.useState<CarouselApi>()
   const [currentIndex, setCurrentIndex] = React.useState(0)
-  const [slideCount, setSlideCount] = React.useState(0)
 
   const autoplay = React.useRef(
     Autoplay({
       delay: 5000,
+      rootNode: (emblaRoot) => emblaRoot.parentElement,
     })
   )
 
@@ -34,7 +36,6 @@ export function HeroSection() {
 
     const updateCarouselState = () => {
       setCurrentIndex(api.selectedScrollSnap())
-      setSlideCount(api.scrollSnapList().length)
     }
 
     updateCarouselState()
@@ -49,11 +50,7 @@ export function HeroSection() {
 
   return (
     <SectionShell id="hero" className="relative">
-      <div
-        className="relative"
-        onMouseEnter={() => autoplay.current.stop()}
-        onMouseLeave={() => autoplay.current.play()}
-      >
+      <div className="relative">
         <Carousel
           setApi={setApi}
           opts={{
@@ -101,9 +98,9 @@ export function HeroSection() {
 
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center">
           <div className="pointer-events-auto flex items-center gap-2">
-            {Array.from({ length: slideCount }).map((_, index) => (
+            {heroSlidesData.map((slide, index) => (
               <button
-                key={`hero-pagination-${index}`}
+                key={`hero-pagination-${slide.id}`}
                 type="button"
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={currentIndex === index ? "true" : undefined}

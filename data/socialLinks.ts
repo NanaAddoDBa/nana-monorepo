@@ -1,11 +1,4 @@
-import {
-  Mail,
-  Briefcase,
-  Play,
-  AtSign,
-  FolderGit2,
-  type LucideIcon,
-} from "lucide-react"
+import { Mail, Briefcase, Play, AtSign, FolderGit2 } from "lucide-react"
 
 import type { SocialLink } from "@/types/socialLinkTypes"
 export const socialLinks: SocialLink[] = [
