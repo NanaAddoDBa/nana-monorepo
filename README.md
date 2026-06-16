@@ -40,12 +40,20 @@ Target defaults:
 
 ## Local App Workflow
 
-For now, run commands from the app directory:
+Run the current app from the repository root:
 
 ```bash
-cd apps/nana-portfolio
 pnpm install
 pnpm dev
 ```
 
-Root-level monorepo commands will be added in a later phase.
+Useful root commands:
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm build
+pnpm ci
+```
+
+The root `Makefile` mirrors these simple targets for environments with `make` installed.
