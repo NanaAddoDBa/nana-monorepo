@@ -1,5 +1,11 @@
 .PHONY: install dev typecheck lint build ci print-config
 
+ifeq ($(OS),Windows_NT)
+PATH := $(REPO_ROOT)/node_modules/.bin;$(PATH)
+else
+PATH := $(REPO_ROOT)/node_modules/.bin:$(PATH)
+endif
+
 install:
 	pnpm --dir $(APP_DIR) install --frozen-lockfile
 
