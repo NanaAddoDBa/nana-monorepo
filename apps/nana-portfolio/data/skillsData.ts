@@ -7,6 +7,7 @@ export const skillsData: SkillsData = {
       items: [
         { name: "JavaScript", slug: "javascript" },
         { name: "TypeScript", slug: "typescript" },
+        { name: "SQL", slug: "sql" },
         { name: "HTML", slug: "html5" },
         { name: "CSS", slug: "css3" },
       ],
@@ -16,6 +17,7 @@ export const skillsData: SkillsData = {
       items: [
         { name: "React", slug: "react" },
         { name: "Next.js", slug: "next-dot-js" },
+        { name: "Node.js", slug: "node-dot-js" },
         { name: "Vue.js", slug: "vue-dot-js" },
       ],
     },
@@ -28,8 +30,12 @@ export const skillsData: SkillsData = {
       ],
     },
     {
-      category: "Tools & Workflow",
+      category: "APIs, Data & Workflow",
       items: [
+        { name: "REST APIs", slug: "rest-apis" },
+        { name: "PostgreSQL", slug: "postgresql" },
+        { name: "Database Management", slug: "database-management" },
+        { name: "Workflow Automation", slug: "workflow-automation" },
         { name: "GitHub", slug: "github" },
         { name: "GitLab", slug: "gitlab" },
         { name: "Figma", slug: "figma" },
@@ -38,11 +44,23 @@ export const skillsData: SkillsData = {
   ],
   testing: [
     {
-      category: "Frontend Testing",
+      category: "Testing & QA",
       items: [
         { name: "Jest", slug: "jest" },
         { name: "Cypress", slug: "cypress" },
         { name: "Postman", slug: "postman" },
+        { name: "Manual Testing", slug: "manual-testing" },
+        { name: "Debugging", slug: "debugging" },
+        { name: "Regression Testing", slug: "regression-testing" },
+      ],
+    },
+    {
+      category: "AI & Automation",
+      items: [
+        { name: "LLM-Assisted Development", slug: "llm-assisted-development" },
+        { name: "Agentic Coding Tools", slug: "agentic-coding-tools" },
+        { name: "Prompt Engineering", slug: "prompt-engineering" },
+        { name: "Developer Automation", slug: "developer-automation" },
       ],
     },
   ],

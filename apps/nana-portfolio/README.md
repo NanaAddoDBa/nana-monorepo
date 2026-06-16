@@ -1,6 +1,14 @@
-# NanaPortfolio
+# Nana Portfolio
 
-A modern personal portfolio built with Next.js App Router, React, TypeScript, Tailwind CSS, and shadcn/ui, following a modular, data-driven, and scalable architecture with clean separation of concerns.
+A personal portfolio built with Next.js App Router, React, TypeScript, Tailwind CSS, and shadcn/ui.
+
+## Features
+
+- Responsive portfolio sections for hero, about, experience, education, projects, and contact
+- GitHub-backed project feed with local project data as a fallback
+- Dark and light theme support
+- Contact form with shared client/server validation
+- Google Docs/Drive-backed Software Engineer CV links for English and German
 
 ## Tech Stack
 
@@ -11,33 +19,55 @@ A modern personal portfolio built with Next.js App Router, React, TypeScript, Ta
 - shadcn/ui
 - pnpm
 
-## Project Goals
+## Development
 
-This project is being built incrementally with a strong focus on:
+Install dependencies:
 
-- modular architecture
-- reusable components
-- data-driven UI structure
-- clean separation of concerns
-- maintainability and scalability
-- responsive, modern UI
-- dark and light theme support
+```bash
+pnpm install
+```
 
-## Current Foundation Status
+Start the local development server:
 
-The project currently includes:
+```bash
+pnpm dev
+```
 
-- Next.js application scaffold
-- TypeScript configuration
-- Tailwind CSS setup
-- shadcn/ui initialization
-- theme provider wiring
-- base folder architecture for layout, sections, shared components, data, config, types, and utilities
-- placeholder layout and section components to support composition-first page structure
+Run checks:
 
-## Structure Direction
+```bash
+pnpm typecheck
+pnpm lint
+pnpm build
+```
 
-The app is organized so that:
+## CV Links
+
+The portfolio shows two public CV options:
+
+- `Software Engineer CV (EN)`
+- `Software Engineer CV (DE)`
+
+Set these through environment variables:
+
+```bash
+NEXT_PUBLIC_CV_EN_URL=
+NEXT_PUBLIC_CV_DE_URL=
+NEXT_PUBLIC_CV_EN_UPDATED=
+NEXT_PUBLIC_CV_DE_UPDATED=
+```
+
+You can paste either:
+
+- a Google Docs link such as `https://docs.google.com/document/d/.../edit`
+- a Google Drive file link such as `https://drive.google.com/file/d/.../view`
+- a direct PDF URL
+
+Google Docs links are converted to PDF export links automatically. Keep the
+Google links stable, then update the document/PDF in Drive when the CV changes.
+The portfolio can keep using the same URL.
+
+## Project Structure
 
 - `app/` contains routing, global layout, and route handlers
 - `components/layout/` contains layout-specific UI such as header and footer
@@ -46,23 +76,4 @@ The app is organized so that:
 - `components/ui/` contains shadcn/ui primitives
 - `data/` contains content/config data separate from UI
 - `types/` contains shared and feature-specific TypeScript types
-- `lib/` contains utilities, validation, actions, mappers, and constants
-- `config/` contains app-level configuration
-
-## Development
-
-Install dependencies:
-
-```bash
-npx shadcn@latest add button
-```
-
-This will place the ui components in the `components` directory.
-
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+- `lib/` contains utilities, validation, actions, and service adapters

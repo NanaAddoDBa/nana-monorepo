@@ -100,9 +100,17 @@ function HeroDownloadGroupAction({
 
         {downloadGroup.documents.map((document) => (
           <DropdownMenuItem key={document.id} asChild>
-            <a href={document.href} download>
+            <a
+              href={document.href}
+              target={document.href.startsWith("http") ? "_blank" : undefined}
+              rel={document.href.startsWith("http") ? "noreferrer" : undefined}
+              download={document.href.startsWith("http") ? undefined : true}
+            >
               <Download data-icon="inline-start" />
-              <span>{document.label}</span>
+              <span>
+                {document.label}
+                {document.updatedAt ? ` - Updated ${document.updatedAt}` : ""}
+              </span>
             </a>
           </DropdownMenuItem>
         ))}

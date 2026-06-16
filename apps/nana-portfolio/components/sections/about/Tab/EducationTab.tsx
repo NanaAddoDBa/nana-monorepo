@@ -50,9 +50,7 @@ function LocationRow({
 }
 
 function EducationCard({ item }: Readonly<{ item: EducationItem }>) {
-  const period = item.isCurrent
-    ? `${item.startDate} — Present`
-    : `${item.startDate} — ${item.endDate}`
+  const period = `${item.startDate} - ${item.endDate}`
 
   return (
     <Card className={educationCardClassName}>

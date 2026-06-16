@@ -1,12 +1,16 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm, useWatch } from "react-hook-form"
+import { z } from "zod/v4"
+import {
+  type FieldErrors,
+  type Resolver,
+  useForm,
+  useWatch,
+} from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { contactData } from "@/data/contactData"
 import {
@@ -25,9 +29,46 @@ type ContactFormProps = {
   onSubmit?: (values: ContactFormValues) => Promise<void> | void
 }
 
+const contactFormResolver: Resolver<ContactFormValues> = async (values) => {
+  const result = contactFormSchema.safeParse(values)
+
+  if (result.success) {
+    return {
+      values: result.data,
+      errors: {},
+    }
+  }
+
+  const flattenedErrors = z.flattenError(result.error)
+  const errors = Object.fromEntries(
+    Object.entries(flattenedErrors.fieldErrors).flatMap(([field, messages]) => {
+      const firstMessage = messages?.[0]
+
+      if (!firstMessage) {
+        return []
+      }
+
+      return [
+        [
+          field,
+          {
+            type: "validation",
+            message: firstMessage,
+          },
+        ],
+      ]
+    })
+  ) as FieldErrors<ContactFormValues>
+
+  return {
+    values: {},
+    errors,
+  }
+}
+
 export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
   const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
+    resolver: contactFormResolver,
     defaultValues: {
       name: "",
       contactValue: "",
@@ -174,29 +215,22 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
           Preferred Contact Method
         </p>
 
-        <Controller
-          name="preferredContactMethod"
-          control={form.control}
-          render={({ field }) => (
-            <RadioGroup
-              value={field.value}
-              onValueChange={field.onChange}
-              className="flex flex-wrap gap-x-8 gap-y-3"
-            >
-              {contactData.preferredContactMethods.map((method) => (
-                <div key={method.id} className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value={method.id}
-                    id={`contact-method-${method.id}`}
-                  />
-                  <Label htmlFor={`contact-method-${method.id}`}>
-                    {method.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          )}
-        />
+        <div className="flex flex-wrap gap-x-8 gap-y-3" role="radiogroup">
+          {contactData.preferredContactMethods.map((method) => (
+            <div key={method.id} className="flex items-center space-x-2">
+              <input
+                id={`contact-method-${method.id}`}
+                type="radio"
+                value={method.id}
+                className="size-4 accent-primary"
+                {...form.register("preferredContactMethod")}
+              />
+              <Label htmlFor={`contact-method-${method.id}`}>
+                {method.label}
+              </Label>
+            </div>
+          ))}
+        </div>
 
         {form.formState.errors.preferredContactMethod ? (
           <p className="text-sm text-destructive">

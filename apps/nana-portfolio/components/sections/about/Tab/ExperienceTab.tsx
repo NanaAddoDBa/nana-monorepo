@@ -35,7 +35,7 @@ function ExperienceDetails({
 
         <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
           {item.company}, {item.location}
-          {item.workType ? ` · ${item.workType}` : ""}
+          {item.workType ? ` - ${item.workType}` : ""}
         </p>
       </div>
 

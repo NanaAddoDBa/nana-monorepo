@@ -101,6 +101,7 @@ export function HeroSection() {
             {heroSlidesData.map((slide, index) => (
               <button
                 key={`hero-pagination-${slide.id}`}
+                suppressHydrationWarning
                 type="button"
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={currentIndex === index ? "true" : undefined}

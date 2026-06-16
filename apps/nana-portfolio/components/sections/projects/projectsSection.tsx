@@ -1,10 +1,11 @@
 import { SectionShell } from "@/components/shared/sectionShell"
 import { projectsData } from "@/data/projectsData"
+import { getPortfolioProjects } from "@/lib/github/fetchGithubProjects"
 
 import { ProjectCard } from "./projectsCard"
 
-export function ProjectsSection() {
-  const featuredProjects = projectsData.items.filter(
+export async function ProjectsSection() {
+  const featuredProjects = (await getPortfolioProjects()).filter(
     (project) => project.featured
   )
 

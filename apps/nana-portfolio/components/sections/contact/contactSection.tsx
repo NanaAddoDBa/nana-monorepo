@@ -27,6 +27,10 @@ export function ContactSection() {
                 <p className="text-base leading-8 text-muted-foreground">
                   {contactData.subtitle}
                 </p>
+
+                <p className="max-w-xl rounded-sm border border-border/60 bg-secondary/25 px-4 py-3 text-sm leading-7 text-muted-foreground">
+                  {contactData.targetedCvNote}
+                </p>
               </div>
 
               <div className="space-y-4">

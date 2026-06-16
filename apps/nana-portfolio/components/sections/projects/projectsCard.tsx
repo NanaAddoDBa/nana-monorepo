@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, GitFork, Star } from "lucide-react"
 
 import type { ProjectItem } from "@/types/projectsSectionTypes"
 import {
@@ -14,6 +14,10 @@ type ProjectCardProps = {
   project: ProjectItem
 }
 
+function getProjectSourceLabel(project: ProjectItem) {
+  return project.source === "github" ? "GitHub Repository" : "Professional Work"
+}
+
 export function ProjectCard({ project }: Readonly<ProjectCardProps>) {
   const titleId = `${project.id}-title`
 
@@ -26,11 +30,31 @@ export function ProjectCard({ project }: Readonly<ProjectCardProps>) {
               {project.category}
             </span>
 
-            {project.organization ? (
-              <p className="text-sm font-medium text-muted-foreground">
-                {project.organization}
+            <div className="space-y-2">
+              {project.organization ? (
+                <p className="text-sm font-medium text-muted-foreground">
+                  {project.organization}
+                </p>
+              ) : null}
+
+              <p className="text-xs font-semibold tracking-[0.16em] text-primary uppercase">
+                {getProjectSourceLabel(project)}
               </p>
-            ) : null}
+
+              {project.source === "github" &&
+              (project.stars !== undefined || project.forks !== undefined) ? (
+                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1">
+                    <Star className="h-3.5 w-3.5" />
+                    {project.stars ?? 0}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <GitFork className="h-3.5 w-3.5" />
+                    {project.forks ?? 0}
+                  </span>
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
 

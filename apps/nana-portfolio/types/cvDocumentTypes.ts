@@ -5,6 +5,7 @@ export type CvDocument = {
   locale: CvDocumentLocale
   label: string
   href: string
+  updatedAt?: string
 }
 
 export type CvDocumentGroup = {

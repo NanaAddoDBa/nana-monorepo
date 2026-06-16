@@ -103,7 +103,6 @@ export type EducationItem = {
   location: string
   startDate: string
   endDate: string
-  isCurrent?: boolean
   description?: string
 }
 

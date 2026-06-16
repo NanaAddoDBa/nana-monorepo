@@ -39,6 +39,7 @@ export type PreferredContactMethod = {
 export type ContactData = {
   title: string
   subtitle: string
+  targetedCvNote: string
   contactInfo: {
     email: ContactMethod
     phone: ContactMethod

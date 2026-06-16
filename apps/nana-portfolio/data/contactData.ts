@@ -1,10 +1,12 @@
-import { Mail, Phone, MapPin, Clock } from "lucide-react"
+import { Clock, Mail, MapPin, Phone } from "lucide-react"
 
 import type { ContactData } from "@/types/contactSectionTypes"
 
 export const contactData = {
   title: "Let's Connect",
   subtitle: "Get in touch for opportunities or collaborations",
+  targetedCvNote:
+    "Need a role-specific CV? Request a targeted version for frontend, full-stack, test, QA, or automation-focused roles.",
   contactInfo: {
     email: {
       label: "Email",
@@ -20,9 +22,9 @@ export const contactData = {
     },
     location: {
       label: "Location",
-      value: "Dr. Hans Kapfinger Straße 13, Passau",
+      value: "Dr. Hans Kapfinger Strasse 13, Passau",
       icon: MapPin,
-      href: "https://maps.google.com/?q=Dr. Hans Kapfinger Straße 13, Passau",
+      href: "https://maps.google.com/?q=Dr. Hans Kapfinger Strasse 13, Passau",
     },
   },
   availability: {

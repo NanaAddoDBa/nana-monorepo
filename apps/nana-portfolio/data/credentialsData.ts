@@ -9,8 +9,7 @@ export const credentialsData: CredentialsData = {
       institution: "University of Passau",
       location: "Passau, Germany",
       startDate: "04.2023",
-      endDate: "Present",
-      isCurrent: true,
+      endDate: "03.2027",
     },
     {
       id: "bsc-computer-science-csu",

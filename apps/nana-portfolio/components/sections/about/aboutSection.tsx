@@ -50,13 +50,8 @@ function isAboutHash(hash: string) {
 }
 
 export function AboutSection() {
-  const [activeTab, setActiveTab] = React.useState<RenderedAboutTabId>(() => {
-    if (typeof window === "undefined") {
-      return "overview"
-    }
-
-    return resolveAboutTabFromHash(window.location.hash)
-  })
+  const [activeTab, setActiveTab] =
+    React.useState<RenderedAboutTabId>("overview")
 
   React.useEffect(() => {
     const syncTabWithHash = () => {

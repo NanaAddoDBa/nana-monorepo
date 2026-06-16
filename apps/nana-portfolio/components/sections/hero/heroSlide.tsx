@@ -95,6 +95,7 @@ function HeroImagePreview({
             src={slide.image.src}
             alt={slide.image.alt}
             fill
+            sizes="(min-width: 1280px) 24rem, (min-width: 1024px) 22rem, min(100vw, 20rem)"
             className="object-cover"
             priority={headingId === "hero-heading"}
           />
@@ -132,7 +133,7 @@ function HeroProjectsPreview() {
     <div className="flex justify-start lg:justify-end">
       <div className="w-full max-w-[24rem] rounded-xl border border-border/60 bg-card/60 p-5 shadow-sm">
         <p className="mb-4 text-center text-xs tracking-widest text-muted-foreground uppercase">
-          Selected Case Studies
+          Professional & GitHub Work
         </p>
 
         <div className="space-y-3">
@@ -149,7 +150,9 @@ function HeroProjectsPreview() {
                   {project.title}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {project.category}
+                  {project.source === "github"
+                    ? "GitHub Repository"
+                    : "Professional Work"}
                 </p>
               </a>
             ))}

@@ -13,6 +13,11 @@ export type ProjectItem = {
   featured?: boolean
   outcomes?: string[]
   links?: ProjectLink[]
+  owner?: string
+  updatedAt?: string
+  source?: "professional" | "github"
+  stars?: number
+  forks?: number
 }
 
 export type ProjectsData = {

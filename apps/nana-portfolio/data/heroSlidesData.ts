@@ -6,10 +6,10 @@ export const heroSlidesData = [
     variant: "image",
     density: "default",
     eyebrow: "welcome to my personal website",
-    title: "Hello, I’m Nana Addo Dankwa Bampoe Addo",
-    highlightLine: "Software Developer",
+    title: "Hello, I'm Nana Addo Dankwa Bampoe Addo",
+    highlightLine: "Software Engineer",
     description:
-      "I build modern web applications with clean architecture, purposeful design, and maintainable frontend systems that stay clear as products grow.",
+      "I build reliable web applications, automation-focused workflows, and maintainable software systems using modern frontend tools, testing practices, databases, and AI-assisted engineering.",
     primaryAction: {
       type: "link",
       label: "View Projects",
@@ -27,9 +27,9 @@ export const heroSlidesData = [
       alt: "Portrait of Nana Addo Dankwa Bampoe Addo",
     },
     supportingPoints: [
-      "Next.js & React",
-      "TypeScript-driven development",
-      "Maintainable frontend architecture",
+      "React, Next.js & TypeScript",
+      "Testing, APIs & databases",
+      "LLM-assisted automation",
     ],
   },
   {
@@ -37,10 +37,10 @@ export const heroSlidesData = [
     variant: "skills",
     density: "compact",
     eyebrow: "Core Strengths",
-    title: "Frontend Engineering",
-    highlightLine: "Clean Systems, Thoughtful Interfaces",
+    title: "Software Engineering",
+    highlightLine: "Frontend Depth, Full-Stack Awareness",
     description:
-      "I build responsive interfaces, API-connected experiences, and scalable frontend systems with strong attention to maintainability and delivery quality.",
+      "I bring 4+ years of front-end engineering experience with practical exposure to testing, database-backed workflows, API integration, LLM tools, agentic coding workflows, and automation.",
     primaryAction: {
       type: "link",
       label: "About Me",
@@ -59,10 +59,10 @@ export const heroSlidesData = [
     variant: "projects",
     density: "compact",
     eyebrow: "Selected Proof",
-    title: "Real-World Projects",
-    highlightLine: "Impact Through Execution",
+    title: "Applied Engineering Work",
+    highlightLine: "Delivery, Reliability, Automation",
     description:
-      "My work includes product-focused web development, workflow tooling, and systems designed to improve reliability, efficiency, and user outcomes.",
+      "My work spans product-focused web development, internal tooling, automated workflows, and systems built to improve reliability, efficiency, and user outcomes.",
     primaryAction: {
       type: "link",
       label: "Explore Projects",
@@ -71,7 +71,7 @@ export const heroSlidesData = [
     },
     secondaryAction: {
       type: "link",
-      label: "Let’s Connect",
+      label: "Let's Connect",
       href: "#contact",
       variant: "secondary",
     },

@@ -2,71 +2,71 @@ import type { AboutOverviewData } from "@/types/aboutSectionTypes"
 
 export const aboutOverviewData = {
   eyebrow: "Overview",
-  heading: "Professional Summary",
+  heading: "Software Engineer Profile",
   summary:
-    "I’m a Frontend Developer with experience building modern web applications using React, Next.js, TypeScript, and JavaScript. I enjoy turning requirements into clear, responsive, and maintainable user interfaces, and I care about creating frontend solutions that are reliable, user-friendly, and aligned with real product goals.",
+    "I'm a Software Engineer with 4+ years of front-end engineering experience building modern web applications with React, Next.js, TypeScript, and JavaScript. I also bring practical experience in testing, API integration, database-backed workflows, LLM-assisted development, agentic coding tools, and automation. I enjoy turning requirements into reliable, maintainable software that supports real users and product goals.",
   stats: [
     {
       id: "experience",
-      value: "06+",
-      label: "Years in Frontend Development",
+      value: "4+",
+      label: "Years in Frontend Engineering",
     },
     {
       id: "focus",
-      value: "React + Next.js",
-      label: "Primary Stack",
+      value: "React + TypeScript",
+      label: "Core Engineering Stack",
     },
     {
       id: "approach",
-      value: "User-Focused",
-      label: "Build Approach",
+      value: "Testing + Automation",
+      label: "Quality Approach",
     },
   ],
   expertiseHeading: "Key Areas of Expertise",
   expertiseItems: [
     {
       id: "frontend-development",
-      title: "Frontend Development",
+      title: "Frontend Engineering",
       description:
-        "Build responsive web interfaces that are practical, maintainable, and designed around real user needs.",
+        "Build responsive, accessible, and maintainable web interfaces with React, Next.js, TypeScript, JavaScript, HTML, CSS, and modern component patterns.",
       iconKey: "laptop",
     },
     {
-      id: "ui-engineering",
-      title: "UI Engineering",
+      id: "software-engineering",
+      title: "Software Engineering",
       description:
-        "Turn ideas and design direction into polished interfaces that feel consistent across devices and screen sizes.",
-      iconKey: "palette",
+        "Translate requirements into structured features, API-connected workflows, reusable modules, and maintainable code that can evolve with product needs.",
+      iconKey: "code",
     },
     {
-      id: "component-architecture",
-      title: "Component Architecture",
+      id: "testing-quality",
+      title: "Testing & Quality",
       description:
-        "Create reusable components and structured frontend systems that make applications easier to scale and maintain.",
-      iconKey: "blocks",
-    },
-    {
-      id: "frontend-testing",
-      title: "Frontend Testing",
-      description:
-        "Use testing to improve reliability, reduce regressions, and support safer iteration during development.",
+        "Use testing, debugging, validation, and review habits to reduce regressions and support safer iteration across user-facing workflows.",
       iconKey: "testTube",
     },
     {
-      id: "performance-quality",
-      title: "Performance & Quality",
+      id: "database-api-workflows",
+      title: "APIs & Databases",
       description:
-        "Focus on clean implementation, accessibility, and performance improvements that strengthen the overall user experience.",
+        "Work with API-driven features, data flows, and database-backed application behavior, including PostgreSQL-oriented project experience.",
+      iconKey: "database",
+    },
+    {
+      id: "llm-agentic-tools",
+      title: "LLM & Agentic Tools",
+      description:
+        "Use LLMs, agentic coding tools, and automation workflows to accelerate research, implementation, debugging, documentation, and productivity.",
       iconKey: "zap",
     },
     {
       id: "collaboration-delivery",
       title: "Collaboration & Delivery",
       description:
-        "Work closely with requirements, feedback, and team workflows to deliver frontend features clearly and efficiently.",
+        "Work with requirements, feedback, documentation, and team workflows to deliver clear, dependable software features.",
       iconKey: "users",
     },
   ],
   closingNote:
-    "I enjoy building frontend experiences that are reliable, easy to use, and thoughtful in both structure and design.",
+    "I am targeting Software Engineer roles where I can combine front-end depth, product thinking, testing discipline, database awareness, and AI-assisted automation to ship useful software.",
 } satisfies AboutOverviewData
