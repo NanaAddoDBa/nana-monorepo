@@ -88,3 +88,5 @@ docker-push
 ```
 
 This keeps workflow logic constant as the monorepo grows. Node.js and Go runtimes are supported by the central pipeline.
+
+The complete onboarding procedure for a new app is documented in [Adding and Deploying an App](docs/adding-an-app.md).
