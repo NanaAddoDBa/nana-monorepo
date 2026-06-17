@@ -6,6 +6,8 @@ TF_ENV ?= prod
 TF_DIR ?= infra/deployments/$(TF_ENV)/$(APP)
 TF_PLAN ?= tfplan
 GCP_PROJECT_ID ?= nana-monorepo
+GCP_REGION ?= europe-west3
+ARTIFACT_REGISTRY_REPOSITORY ?= apps
 SECRET ?=
 SECRET_ID ?=
 VALUE ?=
@@ -13,7 +15,7 @@ SECRET_FILE ?=
 SECRETS_FILE ?=
 SECRET_NAMES ?= RESEND_API_KEY,TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID
 
-.PHONY: gcp-bootstrap add-secret add-secrets tf-init tf-fmt tf-validate tf-plan tf-apply
+.PHONY: gcp-bootstrap add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-plan tf-apply
 
 gcp-bootstrap:
 	powershell -NoProfile -ExecutionPolicy Bypass -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step $(STEP)
@@ -23,6 +25,12 @@ add-secret:
 
 add-secrets:
 	powershell -NoProfile -ExecutionPolicy Bypass -File infra/scripts/add-secret-version.ps1 -ProjectId $(GCP_PROJECT_ID) -App $(APP) -SecretsFile "$(SECRETS_FILE)" -SecretNames "$(SECRET_NAMES)"
+
+deploy: build-cloud
+	powershell -NoProfile -ExecutionPolicy Bypass -File infra/scripts/deploy-cloud-run.ps1 -ProjectId $(GCP_PROJECT_ID) -Region $(GCP_REGION) -Repository $(ARTIFACT_REGISTRY_REPOSITORY) -App $(APP) -TerraformDirectory "$(TF_DIR)" -PlanFile "$(TF_PLAN)"
+
+service-url:
+	terraform -chdir=$(TF_DIR) output -raw service_uri
 
 tf-init:
 	terraform -chdir=$(TF_DIR) init -backend-config=backend.hcl

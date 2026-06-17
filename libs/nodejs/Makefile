@@ -6,7 +6,7 @@ IMAGE ?= $(GCP_REGION)-docker.pkg.dev/$(GCP_PROJECT_ID)/$(ARTIFACT_REGISTRY_REPO
 DOCKERFILE ?= $(REPO_ROOT)/libs/nodejs/docker/standalone/Dockerfile
 CLOUD_BUILD_CONFIG ?= $(REPO_ROOT)/libs/nodejs/docker/standalone/cloudbuild.yaml
 
-.PHONY: install dev typecheck lint build ci docker-auth docker-build docker-push docker-run image-build-cloud print-config
+.PHONY: install dev typecheck lint build ci docker-auth docker-build docker-push docker-run build-cloud image-build-cloud print-config
 
 ifeq ($(OS),Windows_NT)
 PATH := $(REPO_ROOT)/node_modules/.bin;$(PATH)
@@ -43,8 +43,10 @@ docker-push:
 docker-run:
 	docker run --rm -p 3000:3000 --env-file $(APP_DIR)/.env.local $(IMAGE)
 
-image-build-cloud:
+build-cloud:
 	gcloud builds submit $(REPO_ROOT) --project $(GCP_PROJECT_ID) --config $(CLOUD_BUILD_CONFIG) --substitutions _APP_DIR=$(APP_DIR),_IMAGE=$(IMAGE)
+
+image-build-cloud: build-cloud
 
 print-config:
 	@echo APP=$(APP)
