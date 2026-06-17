@@ -92,6 +92,12 @@ variable "allow_public_access" {
   default     = true
 }
 
+variable "deletion_protection" {
+  description = "Whether Terraform should prevent deleting the Cloud Run service."
+  type        = bool
+  default     = false
+}
+
 variable "labels" {
   description = "Labels applied to managed resources."
   type        = map(string)

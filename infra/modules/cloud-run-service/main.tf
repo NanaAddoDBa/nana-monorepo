@@ -20,11 +20,12 @@ resource "google_secret_manager_secret_iam_member" "runtime_secret_access" {
 }
 
 resource "google_cloud_run_v2_service" "this" {
-  project  = var.project_id
-  name     = var.service_name
-  location = var.region
-  ingress  = var.ingress
-  labels   = var.labels
+  project             = var.project_id
+  name                = var.service_name
+  location            = var.region
+  ingress             = var.ingress
+  labels              = var.labels
+  deletion_protection = var.deletion_protection
 
   template {
     service_account                  = google_service_account.runtime.email
@@ -79,6 +80,12 @@ resource "google_cloud_run_v2_service" "this" {
   depends_on = [
     google_secret_manager_secret_iam_member.runtime_secret_access,
   ]
+
+  lifecycle {
+    ignore_changes = [
+      scaling,
+    ]
+  }
 }
 
 resource "google_cloud_run_v2_service_iam_member" "public_invoker" {

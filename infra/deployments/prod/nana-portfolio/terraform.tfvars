@@ -12,6 +12,7 @@ max_instance_request_concurrency = 80
 min_instance_count               = 0
 max_instance_count               = 3
 allow_public_access              = true
+deletion_protection              = false
 
 env_vars = {
   NODE_ENV                = "production"
