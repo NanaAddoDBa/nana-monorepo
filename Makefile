@@ -15,7 +15,7 @@ SECRET_FILE ?=
 SECRETS_FILE ?=
 SECRET_NAMES ?= RESEND_API_KEY,TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID
 
-.PHONY: gcp-bootstrap add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-plan tf-apply
+.PHONY: gcp-bootstrap add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-validate-all tf-plan tf-apply
 
 gcp-bootstrap:
 	powershell -NoProfile -ExecutionPolicy Bypass -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step $(STEP)
@@ -41,6 +41,9 @@ tf-fmt:
 
 tf-validate:
 	terraform -chdir=$(TF_DIR) validate
+
+tf-validate-all:
+	powershell -NoProfile -ExecutionPolicy Bypass -File infra/scripts/validate-terraform.ps1
 
 tf-plan:
 	terraform -chdir=$(TF_DIR) plan -var-file=terraform.tfvars -out=$(TF_PLAN)

@@ -1,12 +1,14 @@
 param(
   [string]$BaseSha,
   [string]$HeadSha = "HEAD",
-  [string]$App = "changed"
+  [string]$App = "changed",
+  [switch]$IncludeMetadata
 )
 
 $ErrorActionPreference = "Stop"
 $allowedRuntimes = @("nodejs", "go")
 $configFiles = @(Get-ChildItem -Path "apps/*/pipeline.json" -File)
+$infraChanged = $false
 
 if ($configFiles.Count -eq 0) {
   Write-Output "[]"
@@ -77,12 +79,17 @@ if ($App -eq "all") {
 
   if ($invalidBaseSha) {
     $selectedConfigs = Get-AllConfigs
+    $infraChanged = $true
   } else {
     $changedFiles = @(git diff --name-only $BaseSha $HeadSha)
 
     if ($LASTEXITCODE -ne 0) {
       throw "Unable to determine changed files between $BaseSha and $HeadSha."
     }
+
+    $infraChanged = [bool]($changedFiles | Where-Object {
+        $_ -match "^(infra/|\.github/workflows/pipeline\.yml$)"
+      })
 
     $sharedPathChanged = $changedFiles | Where-Object {
       $_ -match "^(libs/|infra/modules/|infra/scripts/|Makefile$|\.github/workflows/pipeline\.yml$|\.github/scripts/detect-apps\.ps1$)"
@@ -106,4 +113,13 @@ if ($App -eq "all") {
   }
 }
 
-Write-Output (ConvertTo-Json -InputObject @($selectedConfigs) -Compress -Depth 10)
+if ($IncludeMetadata) {
+  $result = [PSCustomObject]@{
+    apps          = @($selectedConfigs)
+    infra_changed = $infraChanged
+  }
+
+  Write-Output ($result | ConvertTo-Json -Compress -Depth 10)
+} else {
+  Write-Output (ConvertTo-Json -InputObject @($selectedConfigs) -Compress -Depth 10)
+}
