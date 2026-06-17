@@ -67,3 +67,24 @@ make build APP=nana-portfolio
 ```
 
 On Windows, `pnpm` scripts are the primary local workflow unless `make` is installed.
+
+## Monorepo Pipeline
+
+GitHub Actions uses one central workflow:
+
+```text
+.github/workflows/pipeline.yml
+```
+
+Pull requests validate only affected apps. Merges to `master` validate, build, and deploy affected apps with immutable commit-SHA image tags. Shared library or infrastructure changes validate and deploy every registered app.
+
+Each deployable app registers its pipeline contract in `apps/<app>/pipeline.json` and implements the shared Make targets:
+
+```text
+install
+ci
+docker-build
+docker-push
+```
+
+This keeps workflow logic constant as the monorepo grows. Node.js and Go runtimes are supported by the central pipeline.
