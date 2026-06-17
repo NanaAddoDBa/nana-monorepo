@@ -37,8 +37,19 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
+RUN set -eux; \
+  server_path="$(find . -path '*/node_modules/*' -prune -o -name server.js -print | head -n 1)"; \
+  test -n "$server_path"; \
+  server_dir="$(dirname "$server_path")"; \
+  if [ "$server_dir" != "." ]; then \
+    mkdir -p "$server_dir/.next"; \
+    cp -R ./.next/static "$server_dir/.next/static"; \
+    cp -R ./public "$server_dir/public"; \
+  fi; \
+  printf '%s\n' "$server_path" > /app/server-path.txt
+
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node $(cat /app/server-path.txt)"]
