@@ -2,6 +2,7 @@
   "name": "nana-portfolio",
   "version": "0.0.1",
   "type": "module",
+  "packageManager": "pnpm@10.18.3",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

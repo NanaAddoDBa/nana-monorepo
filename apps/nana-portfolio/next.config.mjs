@@ -6,6 +6,7 @@ const workspaceRoot = path.resolve(appDir, "../..")
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   turbopack: {
     root: workspaceRoot,
   },
