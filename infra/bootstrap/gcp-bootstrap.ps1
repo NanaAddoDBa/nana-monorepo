@@ -71,6 +71,20 @@ function Get-RequiredConfig {
   return $Config[$Name]
 }
 
+function Get-OptionalConfig {
+  param(
+    [hashtable]$Config,
+    [string]$Name,
+    [string]$DefaultValue
+  )
+
+  if (!$Config.ContainsKey($Name) -or [string]::IsNullOrWhiteSpace($Config[$Name])) {
+    return $DefaultValue
+  }
+
+  return $Config[$Name]
+}
+
 function Invoke-Gcloud {
   param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Arguments)
 
@@ -201,16 +215,25 @@ function Ensure-WorkloadIdentity {
       --project $script:ProjectId
   }
 
+  $attributeMapping = "google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository,attribute.ref=assertion.ref"
+  $attributeCondition = "assertion.repository == '$script:GithubRepository' && assertion.ref == 'refs/heads/$script:GithubDeployBranch'"
+
   if (Test-GcloudResource iam workload-identity-pools providers describe $script:WifProviderId --location global --workload-identity-pool $script:WifPoolId --project $script:ProjectId) {
-    Write-Host "Workload Identity Provider already exists: $script:WifProviderId"
+    Write-Host "Updating Workload Identity Provider: $script:WifProviderId"
+    Invoke-Gcloud iam workload-identity-pools providers update-oidc $script:WifProviderId `
+      --location global `
+      --workload-identity-pool $script:WifPoolId `
+      --attribute-mapping $attributeMapping `
+      --attribute-condition $attributeCondition `
+      --project $script:ProjectId
   } else {
     Write-Host "Creating Workload Identity Provider: $script:WifProviderId"
     Invoke-Gcloud iam workload-identity-pools providers create-oidc $script:WifProviderId `
       --location global `
       --workload-identity-pool $script:WifPoolId `
       --display-name "GitHub" `
-      --attribute-mapping "google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository,attribute.ref=assertion.ref" `
-      --attribute-condition "assertion.repository == '$script:GithubRepository'" `
+      --attribute-mapping $attributeMapping `
+      --attribute-condition $attributeCondition `
       --issuer-uri "https://token.actions.githubusercontent.com" `
       --project $script:ProjectId
   }
@@ -250,6 +273,7 @@ $script:Region = Get-RequiredConfig -Config $config -Name "GCP_REGION"
 $script:StateBucket = Get-RequiredConfig -Config $config -Name "TF_STATE_BUCKET"
 $script:ArtifactRepository = Get-RequiredConfig -Config $config -Name "ARTIFACT_REGISTRY_REPOSITORY"
 $script:GithubRepository = Get-RequiredConfig -Config $config -Name "GITHUB_REPOSITORY"
+$script:GithubDeployBranch = Get-OptionalConfig -Config $config -Name "GITHUB_DEPLOY_BRANCH" -DefaultValue "master"
 $script:WifPoolId = Get-RequiredConfig -Config $config -Name "WIF_POOL_ID"
 $script:WifProviderId = Get-RequiredConfig -Config $config -Name "WIF_PROVIDER_ID"
 $script:TerraformServiceAccountId = Get-RequiredConfig -Config $config -Name "TERRAFORM_SERVICE_ACCOUNT_ID"
