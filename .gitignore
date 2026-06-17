@@ -50,6 +50,7 @@ next-env.d.ts
 *.tfstate.*
 tfplan
 *.tfplan
+image.auto.tfvars
 crash.log
 
 # local cloud bootstrap config

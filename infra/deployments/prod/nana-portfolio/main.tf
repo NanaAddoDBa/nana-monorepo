@@ -23,6 +23,7 @@ module "cloud_run_service" {
   min_instance_count               = var.min_instance_count
   max_instance_count               = var.max_instance_count
   allow_public_access              = var.allow_public_access
+  deletion_protection              = var.deletion_protection
   labels                           = var.labels
 
   depends_on = [
