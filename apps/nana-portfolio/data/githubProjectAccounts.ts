@@ -6,6 +6,7 @@ export const githubProjectFeedConfig = {
   requestTimeoutMs: 5000,
   excludedRepoNames: [
     "Nana-Portfolio",
+    "nana-monorepo",
     "nana-portfolio",
     "Mobile-expence-tracker",
     "everything-beaded-tv-ecommerce",
