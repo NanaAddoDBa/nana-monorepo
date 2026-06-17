@@ -1,0 +1,12 @@
+{
+  "name": "nana-monorepo",
+  "private": true,
+  "scripts": {
+    "install": "pnpm --dir apps/nana-portfolio install --frozen-lockfile",
+    "dev": "pnpm --dir apps/nana-portfolio dev",
+    "typecheck": "pnpm --dir apps/nana-portfolio typecheck",
+    "lint": "pnpm --dir apps/nana-portfolio lint",
+    "build": "pnpm --dir apps/nana-portfolio build",
+    "ci": "pnpm typecheck && pnpm lint && pnpm build"
+  }
+}
