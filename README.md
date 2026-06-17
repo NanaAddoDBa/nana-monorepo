@@ -1,6 +1,6 @@
 # Nana Monorepo
 
-This repository is being structured as a monorepo for Nana Addo's portfolio and future deployable applications.
+This repository is Nana Addo's personal monorepo. It will house all personal projects over time, with each project living as a dedicated app, package, or sub-project inside the repository.
 
 ## Apps
 
@@ -12,7 +12,9 @@ apps/
 
 ### `apps/nana-portfolio`
 
-The current portfolio website built with Next.js, React, TypeScript, and Tailwind CSS.
+The current portfolio website built with Next.js, React, TypeScript, and Tailwind CSS. Future projects can be added alongside it under `apps/` with their own Dockerfile, Makefile, and deployment configuration.
+
+`nana-portfolio` is the portfolio website project app housed inside this monorepo. Other personal projects will eventually be moved or created here as their own individual sub-projects, and they should still be documented and displayed as individual portfolio projects.
 
 App-specific documentation lives in:
 
@@ -22,7 +24,7 @@ apps/nana-portfolio/README.md
 
 ## Planned Infrastructure
 
-The repository is being prepared for reusable Google Cloud Run infrastructure:
+The repository includes reusable Google Cloud Run infrastructure:
 
 ```text
 infra/
