@@ -1,0 +1,8 @@
+{
+  "name": "nana-portfolio",
+  "runtime": "nodejs",
+  "runtime_version": "22",
+  "package_manager_version": "10.18.3",
+  "service_name": "nana-portfolio",
+  "health_path": "/"
+}

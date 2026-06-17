@@ -1,0 +1,168 @@
+name: Monorepo pipeline
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      app:
+        description: App name to deploy, or all
+        required: true
+        default: all
+        type: string
+
+concurrency:
+  group: pipeline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID || 'nana-monorepo' }}
+  GCP_REGION: ${{ vars.GCP_REGION || 'europe-west3' }}
+  ARTIFACT_REGISTRY_REPOSITORY: ${{ vars.ARTIFACT_REGISTRY_REPOSITORY || 'apps' }}
+
+jobs:
+  detect:
+    name: Detect affected apps
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.apps.outputs.matrix }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Build app matrix
+        id: apps
+        shell: pwsh
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          REQUESTED_APP: ${{ github.event_name == 'workflow_dispatch' && inputs.app || 'changed' }}
+        run: |
+          $matrix = & .github/scripts/detect-apps.ps1 `
+            -BaseSha $env:BASE_SHA `
+            -HeadSha $env:HEAD_SHA `
+            -App $env:REQUESTED_APP
+          "matrix=$matrix" >> $env:GITHUB_OUTPUT
+          "Affected apps: $matrix" >> $env:GITHUB_STEP_SUMMARY
+
+  validate:
+    name: Validate ${{ matrix.name }}
+    needs: detect
+    if: needs.detect.outputs.matrix != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include: ${{ fromJSON(needs.detect.outputs.matrix) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up pnpm
+        if: matrix.runtime == 'nodejs'
+        uses: pnpm/action-setup@v6
+        with:
+          version: ${{ matrix.package_manager_version }}
+
+      - name: Set up Node.js
+        if: matrix.runtime == 'nodejs'
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.runtime_version }}
+          cache: pnpm
+          cache-dependency-path: apps/${{ matrix.name }}/pnpm-lock.yaml
+
+      - name: Set up Go
+        if: matrix.runtime == 'go'
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.runtime_version }}
+          cache-dependency-path: apps/${{ matrix.name }}/go.sum
+
+      - name: Install dependencies
+        run: make install APP=${{ matrix.name }}
+
+      - name: Run app checks
+        run: make ci APP=${{ matrix.name }}
+
+  deploy:
+    name: Deploy ${{ matrix.name }}
+    needs:
+      - detect
+      - validate
+    if: >-
+      needs.detect.outputs.matrix != '[]' &&
+      github.ref == 'refs/heads/master' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include: ${{ fromJSON(needs.detect.outputs.matrix) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Configure Artifact Registry authentication
+        run: gcloud auth configure-docker "${GCP_REGION}-docker.pkg.dev" --quiet
+
+      - name: Build immutable image
+        run: make docker-build APP=${{ matrix.name }} IMAGE_TAG=${{ github.sha }}
+
+      - name: Push immutable image
+        run: make docker-push APP=${{ matrix.name }} IMAGE_TAG=${{ github.sha }}
+
+      - name: Deploy Cloud Run revision
+        env:
+          APP_NAME: ${{ matrix.name }}
+          SERVICE_NAME: ${{ matrix.service_name }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          image="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${APP_NAME}:${IMAGE_TAG}"
+          gcloud run services update "${SERVICE_NAME}" \
+            --image "${image}" \
+            --project "${GCP_PROJECT_ID}" \
+            --region "${GCP_REGION}" \
+            --quiet
+
+      - name: Smoke test deployed revision
+        shell: bash
+        env:
+          SERVICE_NAME: ${{ matrix.service_name }}
+          HEALTH_PATH: ${{ matrix.health_path }}
+        run: |
+          service_url="$(gcloud run services describe "${SERVICE_NAME}" \
+            --project "${GCP_PROJECT_ID}" \
+            --region "${GCP_REGION}" \
+            --format='value(status.url)')"
+          health_url="${service_url%/}${HEALTH_PATH}"
+          curl --fail --show-error --silent \
+            --retry 12 \
+            --retry-delay 5 \
+            --retry-all-errors \
+            "${health_url}" > /dev/null
+          echo "Deployed ${SERVICE_NAME}: ${service_url}" >> "${GITHUB_STEP_SUMMARY}"
