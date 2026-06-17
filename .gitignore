@@ -48,6 +48,8 @@ next-env.d.ts
 .terraform/
 *.tfstate
 *.tfstate.*
+tfplan
+*.tfplan
 crash.log
 
 # local cloud bootstrap config
