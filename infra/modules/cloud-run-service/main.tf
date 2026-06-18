@@ -10,6 +10,14 @@ resource "google_service_account" "runtime" {
   display_name = "${var.service_name} runtime"
 }
 
+resource "google_service_account_iam_member" "runtime_deployer" {
+  for_each = var.deployer_service_account_emails
+
+  service_account_id = google_service_account.runtime.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${each.value}"
+}
+
 resource "google_secret_manager_secret_iam_member" "runtime_secret_access" {
   for_each = local.secret_names
 
@@ -78,12 +86,16 @@ resource "google_cloud_run_v2_service" "this" {
   }
 
   depends_on = [
+    google_service_account_iam_member.runtime_deployer,
     google_secret_manager_secret_iam_member.runtime_secret_access,
   ]
 
   lifecycle {
     ignore_changes = [
+      client,
+      client_version,
       scaling,
+      template[0].containers[0].image,
     ]
   }
 }

@@ -3,6 +3,10 @@ region                       = "europe-west3"
 service_name                 = "nana-portfolio"
 artifact_registry_repository = "apps"
 runtime_service_account_id   = "nana-portfolio-runtime"
+deployer_service_account_emails = [
+  "terraform-deployer@nana-monorepo.iam.gserviceaccount.com",
+  "github-cloud-run-deployer@nana-monorepo.iam.gserviceaccount.com",
+]
 
 container_port                   = 3000
 cpu                              = "1"

@@ -14,6 +14,7 @@ module "cloud_run_service" {
   image                            = local.image
   container_port                   = var.container_port
   runtime_service_account_id       = var.runtime_service_account_id
+  deployer_service_account_emails  = var.deployer_service_account_emails
   env_vars                         = var.env_vars
   secret_env_vars                  = var.secret_env_vars
   cpu                              = var.cpu
