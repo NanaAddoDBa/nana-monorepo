@@ -381,6 +381,8 @@ The pull request pipeline should:
 
 Do not merge until validation succeeds.
 
+Branch protection requires the stable `Pipeline success` check. This aggregate check evaluates app and Terraform validation even though their individual job names and skip behavior vary by change set.
+
 ## 11. Verify the First Automatic Deployment
 
 After merge to `master`, the same pipeline should:
