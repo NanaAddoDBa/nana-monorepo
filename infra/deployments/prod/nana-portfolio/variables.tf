@@ -35,6 +35,12 @@ variable "runtime_service_account_id" {
   type        = string
 }
 
+variable "deployer_service_account_emails" {
+  description = "Service account emails allowed to deploy revisions as the runtime identity."
+  type        = set(string)
+  default     = []
+}
+
 variable "env_vars" {
   description = "Plain environment variables passed to the container."
   type        = map(string)

@@ -23,10 +23,16 @@ POWERSHELL ?= pwsh
 POWERSHELL_ARGS ?= -NoProfile
 endif
 
-.PHONY: gcp-bootstrap add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-validate-all tf-plan tf-apply
+.PHONY: gcp-bootstrap gcp-iam-prepare gcp-iam-cleanup add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-validate-all tf-plan tf-apply
 
 gcp-bootstrap:
 	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step $(STEP)
+
+gcp-iam-prepare:
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step iam-least-privilege
+
+gcp-iam-cleanup:
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step iam-cleanup -ConfirmIamCleanup
 
 add-secret:
 	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/scripts/add-secret-version.ps1 -ProjectId $(GCP_PROJECT_ID) -App $(APP) -SecretName "$(SECRET)" -SecretId "$(SECRET_ID)" -SecretValue "$(VALUE)" -SecretFile "$(SECRET_FILE)"

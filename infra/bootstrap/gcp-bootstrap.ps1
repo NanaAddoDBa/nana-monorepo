@@ -6,10 +6,13 @@ param(
     "state-bucket",
     "artifact-registry",
     "service-accounts",
+    "iam-least-privilege",
+    "iam-cleanup",
     "workload-identity",
     "print-github-secrets"
   )]
-  [string]$Step = "all"
+  [string]$Step = "all",
+  [switch]$ConfirmIamCleanup
 )
 
 $ErrorActionPreference = "Stop"
@@ -189,6 +192,93 @@ function Add-ProjectIamBinding {
     --quiet
 }
 
+function Test-ProjectIamBinding {
+  param(
+    [string]$Member,
+    [string]$Role
+  )
+
+  $result = (& $script:Gcloud projects get-iam-policy $script:ProjectId `
+      --flatten "bindings[].members" `
+      --filter "bindings.role=$Role AND bindings.members=$Member" `
+      --format "value(bindings.role)").Trim()
+
+  return ![string]::IsNullOrWhiteSpace($result)
+}
+
+function Remove-ProjectIamBinding {
+  param(
+    [string]$Member,
+    [string]$Role
+  )
+
+  if (!(Test-ProjectIamBinding -Member $Member -Role $Role)) {
+    Write-Host "Project IAM binding already absent: $Role for $Member"
+    return
+  }
+
+  Write-Host "Removing project IAM binding: $Role from $Member"
+  Invoke-Gcloud projects remove-iam-policy-binding $script:ProjectId `
+    --member $Member `
+    --role $Role `
+    --quiet
+}
+
+function Ensure-TerraformCustomRole {
+  $permissions = @(
+    "resourcemanager.projects.get",
+    "secretmanager.secrets.get",
+    "secretmanager.secrets.getIamPolicy",
+    "secretmanager.secrets.setIamPolicy"
+  ) -join ","
+
+  if (Test-GcloudResource iam roles describe $script:TerraformCustomRoleId --project $script:ProjectId) {
+    Write-Host "Updating Terraform custom role: $script:TerraformCustomRoleId"
+    Invoke-Gcloud iam roles update $script:TerraformCustomRoleId `
+      --project $script:ProjectId `
+      --title "Terraform Cloud Run manager" `
+      --description "Read project metadata and manage IAM on application secrets." `
+      --permissions $permissions `
+      --stage GA
+  } else {
+    Write-Host "Creating Terraform custom role: $script:TerraformCustomRoleId"
+    Invoke-Gcloud iam roles create $script:TerraformCustomRoleId `
+      --project $script:ProjectId `
+      --title "Terraform Cloud Run manager" `
+      --description "Read project metadata and manage IAM on application secrets." `
+      --permissions $permissions `
+      --stage GA
+  }
+}
+
+function Add-BucketIamBinding {
+  param(
+    [string]$Member,
+    [string]$Role
+  )
+
+  Write-Host "Granting $Role on gs://$script:StateBucket to $Member"
+  Invoke-Gcloud storage buckets add-iam-policy-binding "gs://$script:StateBucket" `
+    --member $Member `
+    --role $Role `
+    --quiet
+}
+
+function Add-ArtifactRepositoryIamBinding {
+  param(
+    [string]$Member,
+    [string]$Role
+  )
+
+  Write-Host "Granting $Role on Artifact Registry repository $script:ArtifactRepository to $Member"
+  Invoke-Gcloud artifacts repositories add-iam-policy-binding $script:ArtifactRepository `
+    --location $script:Region `
+    --project $script:ProjectId `
+    --member $Member `
+    --role $Role `
+    --quiet
+}
+
 function Ensure-ServiceAccounts {
   $terraformEmail = Ensure-ServiceAccount `
     -AccountId $script:TerraformServiceAccountId `
@@ -198,10 +288,66 @@ function Ensure-ServiceAccounts {
     -AccountId $script:DeployServiceAccountId `
     -DisplayName "GitHub Cloud Run deployer"
 
-  Add-ProjectIamBinding -Member "serviceAccount:$terraformEmail" -Role "roles/editor"
+  $terraformMember = "serviceAccount:$terraformEmail"
+  $deployMember = "serviceAccount:$deployEmail"
+  $terraformCustomRole = "projects/$script:ProjectId/roles/$script:TerraformCustomRoleId"
+
+  Ensure-TerraformCustomRole
+
+  Add-ProjectIamBinding -Member $terraformMember -Role "roles/run.admin"
+  Add-ProjectIamBinding -Member $terraformMember -Role "roles/iam.serviceAccountAdmin"
+  Add-ProjectIamBinding -Member $terraformMember -Role $terraformCustomRole
+  Add-BucketIamBinding -Member $terraformMember -Role "roles/storage.objectAdmin"
+  Add-ArtifactRepositoryIamBinding -Member $terraformMember -Role "roles/artifactregistry.reader"
+
   Add-ProjectIamBinding -Member "serviceAccount:$deployEmail" -Role "roles/run.developer"
-  Add-ProjectIamBinding -Member "serviceAccount:$deployEmail" -Role "roles/artifactregistry.writer"
-  Add-ProjectIamBinding -Member "serviceAccount:$deployEmail" -Role "roles/iam.serviceAccountUser"
+  Add-ArtifactRepositoryIamBinding -Member $deployMember -Role "roles/artifactregistry.writer"
+}
+
+function Assert-RuntimeServiceAccountBindings {
+  $runtimeAccounts = @(& $script:Gcloud iam service-accounts list `
+      --project $script:ProjectId `
+      --filter "email~-runtime@" `
+      --format "value(email)" | Where-Object { ![string]::IsNullOrWhiteSpace($_) })
+
+  if ($runtimeAccounts.Count -eq 0) {
+    throw "No runtime service accounts were found. Apply Terraform before IAM cleanup."
+  }
+
+  $requiredMembers = @(
+    "serviceAccount:$script:TerraformServiceAccountId@$script:ProjectId.iam.gserviceaccount.com",
+    "serviceAccount:$script:DeployServiceAccountId@$script:ProjectId.iam.gserviceaccount.com"
+  )
+
+  foreach ($runtimeAccount in $runtimeAccounts) {
+    foreach ($member in $requiredMembers) {
+      $binding = (& $script:Gcloud iam service-accounts get-iam-policy $runtimeAccount `
+          --project $script:ProjectId `
+          --flatten "bindings[].members" `
+          --filter "bindings.role=roles/iam.serviceAccountUser AND bindings.members=$member" `
+          --format "value(bindings.role)").Trim()
+
+      if ([string]::IsNullOrWhiteSpace($binding)) {
+        throw "$runtimeAccount is missing roles/iam.serviceAccountUser for $member. Apply Terraform before IAM cleanup."
+      }
+    }
+  }
+}
+
+function Remove-LegacyBroadIam {
+  if (!$ConfirmIamCleanup) {
+    throw "IAM cleanup requires -ConfirmIamCleanup after Terraform apply and deployment verification."
+  }
+
+  Ensure-ServiceAccounts
+  Assert-RuntimeServiceAccountBindings
+
+  $terraformMember = "serviceAccount:$script:TerraformServiceAccountId@$script:ProjectId.iam.gserviceaccount.com"
+  $deployMember = "serviceAccount:$script:DeployServiceAccountId@$script:ProjectId.iam.gserviceaccount.com"
+
+  Remove-ProjectIamBinding -Member $terraformMember -Role "roles/editor"
+  Remove-ProjectIamBinding -Member $deployMember -Role "roles/artifactregistry.writer"
+  Remove-ProjectIamBinding -Member $deployMember -Role "roles/iam.serviceAccountUser"
 }
 
 function Ensure-WorkloadIdentity {
@@ -278,6 +424,7 @@ $script:WifPoolId = Get-RequiredConfig -Config $config -Name "WIF_POOL_ID"
 $script:WifProviderId = Get-RequiredConfig -Config $config -Name "WIF_PROVIDER_ID"
 $script:TerraformServiceAccountId = Get-RequiredConfig -Config $config -Name "TERRAFORM_SERVICE_ACCOUNT_ID"
 $script:DeployServiceAccountId = Get-RequiredConfig -Config $config -Name "DEPLOY_SERVICE_ACCOUNT_ID"
+$script:TerraformCustomRoleId = Get-OptionalConfig -Config $config -Name "TERRAFORM_CUSTOM_ROLE_ID" -DefaultValue "terraformCloudRunManager"
 
 Invoke-Gcloud config set project $script:ProjectId
 
@@ -286,6 +433,8 @@ switch ($Step) {
   "state-bucket" { Ensure-StateBucket }
   "artifact-registry" { Ensure-ArtifactRegistry }
   "service-accounts" { Ensure-ServiceAccounts }
+  "iam-least-privilege" { Ensure-ServiceAccounts }
+  "iam-cleanup" { Remove-LegacyBroadIam }
   "workload-identity" { Ensure-WorkloadIdentity }
   "print-github-secrets" { Write-GithubSecrets }
   "all" {
