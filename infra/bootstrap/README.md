@@ -33,9 +33,30 @@ make gcp-bootstrap STEP=enable-apis
 make gcp-bootstrap STEP=state-bucket
 make gcp-bootstrap STEP=artifact-registry
 make gcp-bootstrap STEP=service-accounts
+make gcp-bootstrap STEP=iam-least-privilege
 make gcp-bootstrap STEP=workload-identity
 make gcp-bootstrap STEP=print-github-secrets
 ```
+
+## IAM Migration
+
+IAM hardening is intentionally split into preparation and cleanup.
+
+First, add the narrow project, state-bucket, and Artifact Registry permissions without removing existing access:
+
+```powershell
+make gcp-iam-prepare
+```
+
+Then apply the application Terraform so each runtime service account grants `roles/iam.serviceAccountUser` directly to the Terraform and GitHub deploy service accounts. Review and verify a normal deployment before cleanup.
+
+Finally, remove the legacy project-wide `roles/editor`, `roles/artifactregistry.writer`, and `roles/iam.serviceAccountUser` bindings:
+
+```powershell
+make gcp-iam-cleanup
+```
+
+Cleanup is guarded. It fails unless every discovered `*-runtime` service account has both required service-account bindings. The command is idempotent and can be rerun safely.
 
 If `make` is unavailable, call the script directly:
 

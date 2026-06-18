@@ -358,6 +358,15 @@ Before approving apply, verify:
 
 The current pipeline smoke test expects a publicly reachable health endpoint. A private Cloud Run service requires an authenticated smoke-test implementation before onboarding.
 
+Include both platform deploy identities in each app's Terraform configuration so project-wide impersonation is unnecessary:
+
+```hcl
+deployer_service_account_emails = [
+  "terraform-deployer@YOUR_PROJECT_ID.iam.gserviceaccount.com",
+  "github-cloud-run-deployer@YOUR_PROJECT_ID.iam.gserviceaccount.com",
+]
+```
+
 Test the returned service URL and health path before enabling automatic deployment.
 
 ## 10. Open the Onboarding Pull Request
