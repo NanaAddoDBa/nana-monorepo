@@ -1,5 +1,6 @@
 param(
   [string]$ConfigPath = "infra/bootstrap/gcp-bootstrap.env",
+  [string]$ArtifactCleanupPolicyPath = "infra/policies/artifact-registry-cleanup.json",
   [ValidateSet(
     "all",
     "enable-apis",
@@ -8,6 +9,7 @@ param(
     "service-accounts",
     "iam-least-privilege",
     "iam-cleanup",
+    "cost-controls",
     "workload-identity",
     "print-github-secrets"
   )]
@@ -121,10 +123,93 @@ function Enable-RequiredApis {
     run.googleapis.com `
     cloudbuild.googleapis.com `
     artifactregistry.googleapis.com `
+    billingbudgets.googleapis.com `
     secretmanager.googleapis.com `
     iamcredentials.googleapis.com `
     sts.googleapis.com `
     --project $script:ProjectId
+}
+
+function Get-BillingAccountId {
+  $billingAccountName = (& $script:Gcloud billing projects describe $script:ProjectId `
+      --format "value(billingAccountName)").Trim()
+
+  if ([string]::IsNullOrWhiteSpace($billingAccountName)) {
+    throw "Project $script:ProjectId does not have an active billing account."
+  }
+
+  return ($billingAccountName -split "/")[-1]
+}
+
+function Ensure-ArtifactCleanupPolicy {
+  if (!(Test-Path $ArtifactCleanupPolicyPath)) {
+    throw "Artifact cleanup policy file not found: $ArtifactCleanupPolicyPath"
+  }
+
+  Write-Host "Applying Artifact Registry cleanup policy to $script:ArtifactRepository"
+  Invoke-Gcloud artifacts repositories set-cleanup-policies $script:ArtifactRepository `
+    --location $script:Region `
+    --project $script:ProjectId `
+    --policy $ArtifactCleanupPolicyPath `
+    --no-dry-run `
+    --quiet
+}
+
+function Ensure-MonthlyBudget {
+  Write-Host "Enabling the Cloud Billing Budget API..."
+  Invoke-Gcloud services enable billingbudgets.googleapis.com --project $script:ProjectId
+
+  $billingAccountId = Get-BillingAccountId
+  $billingCurrency = (& $script:Gcloud billing accounts describe $billingAccountId `
+      --format "value(currencyCode)").Trim()
+
+  $budgetAmount = if ($script:MonthlyBudgetAmount -match "^\d+(\.\d{1,2})?$") {
+    "$script:MonthlyBudgetAmount$billingCurrency"
+  } else {
+    $script:MonthlyBudgetAmount
+  }
+
+  $displayName = "$script:ProjectId monthly budget"
+  $existingBudgetsJson = & $script:Gcloud billing budgets list `
+    --billing-account $billingAccountId `
+    --format json
+
+  if ($LASTEXITCODE -ne 0) {
+    throw "Unable to list budgets for billing account $billingAccountId."
+  }
+
+  $existingBudget = @(($existingBudgetsJson -join [Environment]::NewLine) | ConvertFrom-Json) |
+    Where-Object { $_.displayName -eq $displayName } |
+    Select-Object -First 1
+
+  if ($existingBudget) {
+    $budgetId = ($existingBudget.name -split "/")[-1]
+    Write-Host "Updating monthly budget: $displayName"
+    Invoke-Gcloud billing budgets update $budgetId `
+      --billing-account $billingAccountId `
+      --display-name $displayName `
+      --budget-amount $budgetAmount `
+      --filter-projects "projects/$script:ProjectId" `
+      --calendar-period month
+    return
+  }
+
+  Write-Host "Creating monthly budget: $displayName"
+  Invoke-Gcloud billing budgets create `
+    --billing-account $billingAccountId `
+    --display-name $displayName `
+    --budget-amount $budgetAmount `
+    --filter-projects "projects/$script:ProjectId" `
+    --calendar-period month `
+    --threshold-rule "percent=0.50" `
+    --threshold-rule "percent=0.90" `
+    --threshold-rule "percent=1.00" `
+    --threshold-rule "percent=1.00,basis=forecasted-spend"
+}
+
+function Ensure-CostControls {
+  Ensure-ArtifactCleanupPolicy
+  Ensure-MonthlyBudget
 }
 
 function Ensure-StateBucket {
@@ -425,6 +510,7 @@ $script:WifProviderId = Get-RequiredConfig -Config $config -Name "WIF_PROVIDER_I
 $script:TerraformServiceAccountId = Get-RequiredConfig -Config $config -Name "TERRAFORM_SERVICE_ACCOUNT_ID"
 $script:DeployServiceAccountId = Get-RequiredConfig -Config $config -Name "DEPLOY_SERVICE_ACCOUNT_ID"
 $script:TerraformCustomRoleId = Get-OptionalConfig -Config $config -Name "TERRAFORM_CUSTOM_ROLE_ID" -DefaultValue "terraformCloudRunManager"
+$script:MonthlyBudgetAmount = Get-OptionalConfig -Config $config -Name "MONTHLY_BUDGET_AMOUNT" -DefaultValue "5"
 
 Invoke-Gcloud config set project $script:ProjectId
 
@@ -435,12 +521,14 @@ switch ($Step) {
   "service-accounts" { Ensure-ServiceAccounts }
   "iam-least-privilege" { Ensure-ServiceAccounts }
   "iam-cleanup" { Remove-LegacyBroadIam }
+  "cost-controls" { Ensure-CostControls }
   "workload-identity" { Ensure-WorkloadIdentity }
   "print-github-secrets" { Write-GithubSecrets }
   "all" {
     Enable-RequiredApis
     Ensure-StateBucket
     Ensure-ArtifactRegistry
+    Ensure-CostControls
     Ensure-ServiceAccounts
     Ensure-WorkloadIdentity
     Write-GithubSecrets

@@ -14,7 +14,7 @@ memory                           = "512Mi"
 timeout_seconds                  = 60
 max_instance_request_concurrency = 80
 min_instance_count               = 0
-max_instance_count               = 3
+max_instance_count               = 1
 allow_public_access              = true
 deletion_protection              = false
 

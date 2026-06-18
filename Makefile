@@ -23,10 +23,13 @@ POWERSHELL ?= pwsh
 POWERSHELL_ARGS ?= -NoProfile
 endif
 
-.PHONY: gcp-bootstrap gcp-iam-prepare gcp-iam-cleanup add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-validate-all tf-plan tf-apply
+.PHONY: gcp-bootstrap gcp-cost-controls gcp-iam-prepare gcp-iam-cleanup add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-validate-all tf-plan tf-apply
 
 gcp-bootstrap:
 	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step $(STEP)
+
+gcp-cost-controls:
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step cost-controls
 
 gcp-iam-prepare:
 	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step iam-least-privilege

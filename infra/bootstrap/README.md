@@ -34,6 +34,7 @@ make gcp-bootstrap STEP=state-bucket
 make gcp-bootstrap STEP=artifact-registry
 make gcp-bootstrap STEP=service-accounts
 make gcp-bootstrap STEP=iam-least-privilege
+make gcp-bootstrap STEP=cost-controls
 make gcp-bootstrap STEP=workload-identity
 make gcp-bootstrap STEP=print-github-secrets
 ```
@@ -57,6 +58,20 @@ make gcp-iam-cleanup
 ```
 
 Cleanup is guarded. It fails unless every discovered `*-runtime` service account has both required service-account bindings. The command is idempotent and can be rerun safely.
+
+## Cost Controls
+
+Apply the repository cleanup policy and project-specific monthly budget:
+
+```powershell
+make gcp-cost-controls
+```
+
+The default budget is `5` in the billing account's currency. Override `MONTHLY_BUDGET_AMOUNT` in the ignored `gcp-bootstrap.env` file when a different amount is appropriate.
+
+Budget alerts are sent to the billing account's default IAM recipients at 50%, 90%, and 100% of actual spend, plus 100% of forecasted spend. A budget sends alerts; it does not cap or disable spending.
+
+The Artifact Registry policy deletes image versions older than 30 days while retaining at least the 3 most recent versions. Cleanup policies are evaluated asynchronously by Google Cloud.
 
 If `make` is unavailable, call the script directly:
 
