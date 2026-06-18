@@ -93,10 +93,26 @@ $script:Gcloud = Get-CommandSource `
 $terraform = Get-CommandSource -Name "terraform" -FallbackPath $null
 $image = Get-LatestImageDigest
 $imageOverridePath = Join-Path $TerraformDirectory "image.auto.tfvars"
+$serviceNameOutput = & $terraform "-chdir=$TerraformDirectory" "output" "-raw" "service_name"
+$serviceName = ($serviceNameOutput -join [Environment]::NewLine).Trim()
+
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($serviceName)) {
+  throw "Could not read service_name from Terraform state in $TerraformDirectory. Create the service before running deploy."
+}
 
 Set-Content -LiteralPath $imageOverridePath -Value "image = `"$image`"" -NoNewline
 
-Write-Host "Deploying image: $image"
+Write-Host "Deploying image to ${serviceName}: $image"
+Invoke-CommandChecked `
+  -Command $script:Gcloud `
+  -Arguments @(
+    "run", "services", "update", $serviceName,
+    "--image", $image,
+    "--project", $ProjectId,
+    "--region", $Region,
+    "--quiet"
+  )
+
 Invoke-CommandChecked `
   -Command $terraform `
   -Arguments @("-chdir=$TerraformDirectory", "plan", "-var-file=terraform.tfvars", "-out=$PlanFile")
