@@ -119,6 +119,33 @@ jobs:
       - name: Run app checks
         run: make ci APP=${{ matrix.name }}
 
+  pipeline-success:
+    name: Pipeline success
+    needs:
+      - detect
+      - terraform
+      - validate
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Verify required jobs
+        shell: bash
+        env:
+          DETECT_RESULT: ${{ needs.detect.result }}
+          TERRAFORM_RESULT: ${{ needs.terraform.result }}
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+        run: |
+          for result in "${DETECT_RESULT}" "${TERRAFORM_RESULT}" "${VALIDATE_RESULT}"; do
+            if [[ "${result}" != "success" && "${result}" != "skipped" ]]; then
+              echo "Required pipeline job finished with result: ${result}"
+              exit 1
+            fi
+          done
+
+          echo "All required pipeline jobs passed or were intentionally skipped."
+
   deploy:
     name: Deploy ${{ matrix.name }}
     needs:
