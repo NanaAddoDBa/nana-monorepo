@@ -15,19 +15,27 @@ SECRET_FILE ?=
 SECRETS_FILE ?=
 SECRET_NAMES ?= RESEND_API_KEY,TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID
 
-.PHONY: gcp-bootstrap add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-plan tf-apply
+ifeq ($(OS),Windows_NT)
+POWERSHELL ?= powershell
+POWERSHELL_ARGS ?= -NoProfile -ExecutionPolicy Bypass
+else
+POWERSHELL ?= pwsh
+POWERSHELL_ARGS ?= -NoProfile
+endif
+
+.PHONY: gcp-bootstrap add-secret add-secrets deploy service-url tf-init tf-fmt tf-validate tf-validate-all tf-plan tf-apply
 
 gcp-bootstrap:
-	powershell -NoProfile -ExecutionPolicy Bypass -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step $(STEP)
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/bootstrap/gcp-bootstrap.ps1 -ConfigPath $(BOOTSTRAP_CONFIG) -Step $(STEP)
 
 add-secret:
-	powershell -NoProfile -ExecutionPolicy Bypass -File infra/scripts/add-secret-version.ps1 -ProjectId $(GCP_PROJECT_ID) -App $(APP) -SecretName "$(SECRET)" -SecretId "$(SECRET_ID)" -SecretValue "$(VALUE)" -SecretFile "$(SECRET_FILE)"
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/scripts/add-secret-version.ps1 -ProjectId $(GCP_PROJECT_ID) -App $(APP) -SecretName "$(SECRET)" -SecretId "$(SECRET_ID)" -SecretValue "$(VALUE)" -SecretFile "$(SECRET_FILE)"
 
 add-secrets:
-	powershell -NoProfile -ExecutionPolicy Bypass -File infra/scripts/add-secret-version.ps1 -ProjectId $(GCP_PROJECT_ID) -App $(APP) -SecretsFile "$(SECRETS_FILE)" -SecretNames "$(SECRET_NAMES)"
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/scripts/add-secret-version.ps1 -ProjectId $(GCP_PROJECT_ID) -App $(APP) -SecretsFile "$(SECRETS_FILE)" -SecretNames "$(SECRET_NAMES)"
 
 deploy: build-cloud
-	powershell -NoProfile -ExecutionPolicy Bypass -File infra/scripts/deploy-cloud-run.ps1 -ProjectId $(GCP_PROJECT_ID) -Region $(GCP_REGION) -Repository $(ARTIFACT_REGISTRY_REPOSITORY) -App $(APP) -TerraformDirectory "$(TF_DIR)" -PlanFile "$(TF_PLAN)"
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/scripts/deploy-cloud-run.ps1 -ProjectId $(GCP_PROJECT_ID) -Region $(GCP_REGION) -Repository $(ARTIFACT_REGISTRY_REPOSITORY) -App $(APP) -TerraformDirectory "$(TF_DIR)" -PlanFile "$(TF_PLAN)"
 
 service-url:
 	terraform -chdir=$(TF_DIR) output -raw service_uri
@@ -41,6 +49,9 @@ tf-fmt:
 
 tf-validate:
 	terraform -chdir=$(TF_DIR) validate
+
+tf-validate-all:
+	$(POWERSHELL) $(POWERSHELL_ARGS) -File infra/scripts/validate-terraform.ps1
 
 tf-plan:
 	terraform -chdir=$(TF_DIR) plan -var-file=terraform.tfvars -out=$(TF_PLAN)

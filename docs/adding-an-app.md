@@ -376,7 +376,8 @@ The pull request pipeline should:
 1. Detect the new app.
 2. Install its configured runtime and dependencies.
 3. Run `make ci APP=<app-name>`.
-4. Skip deployment because the event is a pull request.
+4. Run Terraform formatting and validation because the deployment root changed.
+5. Skip deployment because the event is a pull request.
 
 Do not merge until validation succeeds.
 
@@ -414,6 +415,8 @@ Makefile
 ```
 
 Documentation-only changes do not run app jobs unless they accompany an app or shared-platform change.
+
+Terraform checks run only when `infra/**` or `.github/workflows/pipeline.yml` changes. They execute `terraform fmt -check`, initialize each deployment root with `-backend=false`, and run `terraform validate`. CI never runs Terraform plan or apply.
 
 ## Operational Commands
 

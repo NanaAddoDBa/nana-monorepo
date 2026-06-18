@@ -32,6 +32,7 @@ jobs:
       contents: read
     outputs:
       matrix: ${{ steps.apps.outputs.matrix }}
+      infra_changed: ${{ steps.apps.outputs.infra_changed }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
@@ -46,12 +47,34 @@ jobs:
           HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           REQUESTED_APP: ${{ github.event_name == 'workflow_dispatch' && inputs.app || 'changed' }}
         run: |
-          $matrix = & .github/scripts/detect-apps.ps1 `
+          $result = & .github/scripts/detect-apps.ps1 `
             -BaseSha $env:BASE_SHA `
             -HeadSha $env:HEAD_SHA `
-            -App $env:REQUESTED_APP
+            -App $env:REQUESTED_APP `
+            -IncludeMetadata | ConvertFrom-Json
+          $matrix = ConvertTo-Json -InputObject @($result.apps) -Compress -Depth 10
+          $infraChanged = $result.infra_changed.ToString().ToLowerInvariant()
           "matrix=$matrix" >> $env:GITHUB_OUTPUT
+          "infra_changed=$infraChanged" >> $env:GITHUB_OUTPUT
           "Affected apps: $matrix" >> $env:GITHUB_STEP_SUMMARY
+          "Infrastructure changed: $infraChanged" >> $env:GITHUB_STEP_SUMMARY
+
+  terraform:
+    name: Validate Terraform
+    needs: detect
+    if: needs.detect.outputs.infra_changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: Validate Terraform
+        run: make tf-validate-all
 
   validate:
     name: Validate ${{ matrix.name }}
