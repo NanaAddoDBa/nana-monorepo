@@ -62,6 +62,18 @@ variable "memory" {
   default     = "512Mi"
 }
 
+variable "cpu_idle" {
+  description = "Whether CPU is allocated only while processing requests. Keep enabled for request-based billing."
+  type        = bool
+  default     = true
+}
+
+variable "startup_cpu_boost" {
+  description = "Whether to temporarily boost CPU during container startup."
+  type        = bool
+  default     = false
+}
+
 variable "timeout_seconds" {
   description = "Request timeout in seconds."
   type        = number

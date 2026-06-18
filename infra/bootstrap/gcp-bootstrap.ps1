@@ -124,6 +124,7 @@ function Enable-RequiredApis {
     cloudbuild.googleapis.com `
     artifactregistry.googleapis.com `
     billingbudgets.googleapis.com `
+    monitoring.googleapis.com `
     secretmanager.googleapis.com `
     iamcredentials.googleapis.com `
     sts.googleapis.com `
@@ -311,6 +312,21 @@ function Remove-ProjectIamBinding {
 
 function Ensure-TerraformCustomRole {
   $permissions = @(
+    "monitoring.alertPolicies.create",
+    "monitoring.alertPolicies.delete",
+    "monitoring.alertPolicies.get",
+    "monitoring.alertPolicies.list",
+    "monitoring.alertPolicies.update",
+    "monitoring.notificationChannels.create",
+    "monitoring.notificationChannels.delete",
+    "monitoring.notificationChannels.get",
+    "monitoring.notificationChannels.list",
+    "monitoring.notificationChannels.update",
+    "monitoring.uptimeCheckConfigs.create",
+    "monitoring.uptimeCheckConfigs.delete",
+    "monitoring.uptimeCheckConfigs.get",
+    "monitoring.uptimeCheckConfigs.list",
+    "monitoring.uptimeCheckConfigs.update",
     "resourcemanager.projects.get",
     "secretmanager.secrets.get",
     "secretmanager.secrets.getIamPolicy",
@@ -322,17 +338,19 @@ function Ensure-TerraformCustomRole {
     Invoke-Gcloud iam roles update $script:TerraformCustomRoleId `
       --project $script:ProjectId `
       --title "Terraform Cloud Run manager" `
-      --description "Read project metadata and manage IAM on application secrets." `
+      --description "Manage Cloud Run monitoring and IAM on application secrets." `
       --permissions $permissions `
-      --stage GA
+      --stage GA `
+      --quiet
   } else {
     Write-Host "Creating Terraform custom role: $script:TerraformCustomRoleId"
     Invoke-Gcloud iam roles create $script:TerraformCustomRoleId `
       --project $script:ProjectId `
       --title "Terraform Cloud Run manager" `
-      --description "Read project metadata and manage IAM on application secrets." `
+      --description "Manage Cloud Run monitoring and IAM on application secrets." `
       --permissions $permissions `
-      --stage GA
+      --stage GA `
+      --quiet
   }
 }
 

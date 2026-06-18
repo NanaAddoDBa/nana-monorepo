@@ -247,9 +247,14 @@ artifact_registry_repository = "apps"
 runtime_service_account_id   = "example-api-runtime"
 
 container_port      = 8080
+cpu_idle            = true
+startup_cpu_boost   = false
 min_instance_count  = 0
 max_instance_count  = 3
 allow_public_access = true
+
+health_path                   = "/api/health"
+monitoring_notification_email = "operations@example.com"
 
 env_vars = {
   APP_ENV = "production"
@@ -353,7 +358,9 @@ Before approving apply, verify:
 - The state prefix belongs only to the new app.
 - The image path points to the new app.
 - `min_instance_count` is `0` unless warm instances are intentional.
+- `cpu_idle` is `true` for request-based billing unless the service requires background CPU.
 - Maximum instances, CPU, memory, timeout, concurrency, and public access are deliberate.
+- The health endpoint returns HTTP 200 and the expected health response before monitoring is applied.
 - Every referenced secret exists.
 
 The current pipeline smoke test expects a publicly reachable health endpoint. A private Cloud Run service requires an authenticated smoke-test implementation before onboarding.

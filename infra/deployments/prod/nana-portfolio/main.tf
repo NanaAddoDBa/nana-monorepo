@@ -19,6 +19,8 @@ module "cloud_run_service" {
   secret_env_vars                  = var.secret_env_vars
   cpu                              = var.cpu
   memory                           = var.memory
+  cpu_idle                         = var.cpu_idle
+  startup_cpu_boost                = var.startup_cpu_boost
   timeout_seconds                  = var.timeout_seconds
   max_instance_request_concurrency = var.max_instance_request_concurrency
   min_instance_count               = var.min_instance_count
@@ -30,4 +32,15 @@ module "cloud_run_service" {
   depends_on = [
     data.google_secret_manager_secret.runtime,
   ]
+}
+
+module "cloud_run_monitoring" {
+  source = "../../../modules/cloud-run-monitoring"
+
+  project_id         = var.project_id
+  service_name       = module.cloud_run_service.service_name
+  service_uri        = module.cloud_run_service.service_uri
+  health_path        = var.health_path
+  notification_email = var.monitoring_notification_email
+  labels             = var.labels
 }
