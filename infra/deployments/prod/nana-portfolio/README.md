@@ -15,6 +15,8 @@ make tf-apply APP=nana-portfolio
 make service-url APP=nana-portfolio
 ```
 
+The deployment also configures a five-minute uptime check for `/api/health`, an uptime alert, a rate-limited log-based error alert, and an enabled email notification channel.
+
 ## Runtime Secrets
 
 Create the Secret Manager values before applying Terraform:

@@ -73,6 +73,8 @@ Budget alerts are sent to the billing account's default IAM recipients at 50%, 9
 
 The Artifact Registry policy deletes image versions older than 30 days while retaining at least the 3 most recent versions. Cleanup policies are evaluated asynchronously by Google Cloud.
 
+Application Terraform can also create low-volume Cloud Monitoring uptime checks, alert policies, and email notification channels. The bootstrap custom role grants only the monitoring CRUD permissions required for those resources.
+
 If `make` is unavailable, call the script directly:
 
 ```powershell

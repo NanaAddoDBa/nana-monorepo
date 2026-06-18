@@ -11,12 +11,16 @@ deployer_service_account_emails = [
 container_port                   = 3000
 cpu                              = "1"
 memory                           = "512Mi"
+cpu_idle                         = true
+startup_cpu_boost                = false
 timeout_seconds                  = 60
 max_instance_request_concurrency = 80
 min_instance_count               = 0
 max_instance_count               = 1
 allow_public_access              = true
 deletion_protection              = false
+health_path                      = "/api/health"
+monitoring_notification_email    = "nanaaddoldoe@gmail.com"
 
 env_vars = {
   NODE_ENV                = "production"

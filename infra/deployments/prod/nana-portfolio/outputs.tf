@@ -17,3 +17,13 @@ output "runtime_service_account_email" {
   description = "Runtime service account email."
   value       = module.cloud_run_service.runtime_service_account_email
 }
+
+output "uptime_check_id" {
+  description = "Cloud Monitoring uptime check identifier."
+  value       = module.cloud_run_monitoring.uptime_check_id
+}
+
+output "monitoring_notification_channel" {
+  description = "Cloud Monitoring notification channel resource name."
+  value       = module.cloud_run_monitoring.notification_channel_name
+}

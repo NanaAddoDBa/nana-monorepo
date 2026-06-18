@@ -68,6 +68,18 @@ variable "memory" {
   default     = "512Mi"
 }
 
+variable "cpu_idle" {
+  description = "Whether CPU is allocated only while processing requests. Keep enabled for request-based billing."
+  type        = bool
+  default     = true
+}
+
+variable "startup_cpu_boost" {
+  description = "Whether to temporarily boost CPU during container startup."
+  type        = bool
+  default     = false
+}
+
 variable "timeout_seconds" {
   description = "Request timeout in seconds."
   type        = number
@@ -102,6 +114,19 @@ variable "deletion_protection" {
   description = "Whether Terraform should prevent deleting the Cloud Run service."
   type        = bool
   default     = false
+}
+
+variable "health_path" {
+  description = "Public health endpoint monitored by Cloud Monitoring."
+  type        = string
+  default     = "/api/health"
+}
+
+variable "monitoring_notification_email" {
+  description = "Optional email address for uptime and error alerts."
+  type        = string
+  default     = null
+  nullable    = true
 }
 
 variable "labels" {
