@@ -1,4 +1,4 @@
-import { Clock, Mail, MapPin, Phone } from "lucide-react"
+import { Clock, Mail, MapPin, MessageCircle } from "lucide-react"
 
 import type { ContactData } from "@/types/contactSectionTypes"
 
@@ -15,10 +15,10 @@ export const contactData = {
       href: "mailto:nanaaddoldoe@gmail.com",
     },
     phone: {
-      label: "Phone",
-      value: "+49 176 74909252",
-      icon: Phone,
-      href: "tel:+491767490925",
+      label: "WhatsApp",
+      value: "Message me on WhatsApp",
+      icon: MessageCircle,
+      href: "https://wa.me/qr/RN2DYGDFOJJ3K1",
     },
     location: {
       label: "Location",

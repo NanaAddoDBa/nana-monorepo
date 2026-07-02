@@ -35,15 +35,15 @@ function resolveGooglePdfUrl(url: string) {
 
 const availableCvDocuments: CvDocument[] = []
 
-if (process.env.NEXT_PUBLIC_CV_EN_URL) {
-  availableCvDocuments.push({
-    id: "cv-en",
-    locale: "en",
-    label: "Software Engineer CV (EN)",
-    href: resolveGooglePdfUrl(process.env.NEXT_PUBLIC_CV_EN_URL),
-    updatedAt: process.env.NEXT_PUBLIC_CV_EN_UPDATED,
-  })
-}
+availableCvDocuments.push({
+  id: "cv-en",
+  locale: "en",
+  label: "Software Engineer CV (EN)",
+  href: process.env.NEXT_PUBLIC_CV_EN_URL
+    ? resolveGooglePdfUrl(process.env.NEXT_PUBLIC_CV_EN_URL)
+    : "/documents/nana-addo-cv-software-engineer-en.pdf",
+  updatedAt: process.env.NEXT_PUBLIC_CV_EN_UPDATED,
+})
 
 availableCvDocuments.push({
   id: "cv-de",
@@ -51,7 +51,7 @@ availableCvDocuments.push({
   label: "Software Engineer CV (DE)",
   href: process.env.NEXT_PUBLIC_CV_DE_URL
     ? resolveGooglePdfUrl(process.env.NEXT_PUBLIC_CV_DE_URL)
-    : "/documents/nana-addo-cv-de.pdf",
+    : "/documents/nana-addo-cv-softwareentwickler-de.pdf",
   updatedAt: process.env.NEXT_PUBLIC_CV_DE_UPDATED,
 })
 
