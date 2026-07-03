@@ -4,6 +4,9 @@ import { sendContactEmail } from "@/lib/email/sendContactEmail"
 import { sendTelegramMessage } from "@/lib/telegram/sendTelegramMessage"
 import { contactFormSchema } from "@/lib/validations/contactFormSchema"
 
+const contactSubmissionFailureMessage =
+  "Something went wrong. Please try again later."
+
 export async function POST(request: Request) {
   try {
     const json = await request.json()
@@ -37,13 +40,12 @@ export async function POST(request: Request) {
       { status: 200 }
     )
   } catch (error) {
+    console.error("Contact form submission failed.", error)
+
     return Response.json(
       {
         success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unable to process contact form submission.",
+        message: contactSubmissionFailureMessage,
       },
       { status: 500 }
     )
