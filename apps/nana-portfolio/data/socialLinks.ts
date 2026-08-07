@@ -1,19 +1,32 @@
-import { Mail, Briefcase, Play, AtSign, FolderGit2 } from "lucide-react"
+import {
+  Mail,
+  Briefcase,
+  Play,
+  AtSign,
+  FolderGit2,
+  MessageCircle,
+} from "lucide-react"
 
 import type { SocialLink } from "@/types/socialLinkTypes"
 export const socialLinks: SocialLink[] = [
   {
     name: "GitHub",
-    href: "https://github.com/Nana-Addo-d",
+    href: "https://github.com/NanaAddoDBa",
     icon: FolderGit2,
     ariaLabel:
       "Visit my GitHub profile to explore my projects and contributions.",
   },
   {
     name: "LinkedIn",
-    href: "https://linkedin.com/in/nana-addo-bampoe-addo",
+    href: "https://www.linkedin.com/in/nana-addo-bampoe-addo-2697b6326/",
     icon: Briefcase,
     ariaLabel: "Connect with me on LinkedIn for professional networking.",
+  },
+  {
+    name: "WhatsApp",
+    href: "https://wa.me/qr/RN2DYGDFOJJ3K1",
+    icon: MessageCircle,
+    ariaLabel: "Message me on WhatsApp to get in touch directly.",
   },
   {
     name: "Twitter",

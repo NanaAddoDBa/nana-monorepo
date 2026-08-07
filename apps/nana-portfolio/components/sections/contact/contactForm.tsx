@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { contactData } from "@/data/contactData"
 import {
+  contactFormFieldLimits,
   contactFormSchema,
   type ContactFormValues,
   preferredContactMethodValues,
@@ -139,6 +140,7 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
             id="contact-name"
             placeholder={contactData.formFields.name.placeholder}
             autoComplete="name"
+            maxLength={contactFormFieldLimits.name.max}
             aria-invalid={form.formState.errors.name ? "true" : "false"}
             {...form.register("name")}
           />
@@ -164,6 +166,11 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
                 : contactData.formFields.contactValue.phonePlaceholder
             }
             autoComplete={isEmailMethod ? "email" : "tel"}
+            maxLength={
+              isEmailMethod
+                ? contactFormFieldLimits.email.max
+                : contactFormFieldLimits.phone.max
+            }
             aria-invalid={form.formState.errors.contactValue ? "true" : "false"}
             {...form.register("contactValue")}
           />
@@ -182,6 +189,7 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
         <Input
           id="contact-subject"
           placeholder={contactData.formFields.subject.placeholder}
+          maxLength={contactFormFieldLimits.subject.max}
           aria-invalid={form.formState.errors.subject ? "true" : "false"}
           {...form.register("subject")}
         />
@@ -200,6 +208,7 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
           id="contact-message"
           placeholder={contactData.formFields.message.placeholder}
           className="min-h-40"
+          maxLength={contactFormFieldLimits.message.max}
           aria-invalid={form.formState.errors.message ? "true" : "false"}
           {...form.register("message")}
         />
