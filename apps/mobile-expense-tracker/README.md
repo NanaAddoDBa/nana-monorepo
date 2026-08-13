@@ -433,13 +433,13 @@ Possible next improvements:
 
 ## Repository
 
-Remote repository:
+Monorepo location:
 
 ```text
-https://github.com/NanaAddoDBa/Mobile-expence-tracker.git
+https://github.com/NanaAddoDBa/nana-monorepo/tree/master/apps/mobile-expense-tracker
 ```
 
-Note: the repository name currently uses `expence`. Keep it if intentional, or rename it later if you want the spelling to be `expense`.
+The former standalone repository used the `Mobile-expence-tracker` spelling. The monorepo app path uses the corrected `mobile-expense-tracker` name.
 
 ## License
 
