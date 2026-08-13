@@ -8,8 +8,9 @@ This repository is Nana Addo's personal monorepo. It will house all personal pro
 apps/
 |-- mobile-expense-tracker/
 |   `-- Makefile
-`-- nana-portfolio/
-    `-- Makefile
+|-- nana-portfolio/
+|   `-- Makefile
+`-- threadsofgold/             # Git submodule
 ```
 
 ### `apps/nana-portfolio`
@@ -33,6 +34,18 @@ Its source history was preserved when it moved into this monorepo. App-specific 
 ```text
 apps/mobile-expense-tracker/README.md
 ```
+
+### `apps/threadsofgold`
+
+The Threads of Gold ecommerce platform is maintained in its own repository and linked here as a Git submodule. This keeps its application history and release lifecycle independent while making it discoverable from Nana Monorepo.
+
+Clone the monorepo with submodules, or initialize it after cloning:
+
+```bash
+git submodule update --init --recursive
+```
+
+The canonical repository is [NanaAddoDBa/threadsofgold](https://github.com/NanaAddoDBa/threadsofgold).
 
 ## Planned Infrastructure
 

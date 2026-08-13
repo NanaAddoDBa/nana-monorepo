@@ -1,0 +1,3 @@
+[submodule "apps/threadsofgold"]
+	path = apps/threadsofgold
+	url = https://github.com/NanaAddoDBa/threadsofgold.git
