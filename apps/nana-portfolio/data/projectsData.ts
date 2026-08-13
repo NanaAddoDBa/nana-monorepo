@@ -71,7 +71,7 @@ export const projectsData = {
       links: [
         {
           label: "Repository",
-          href: "https://github.com/NanaAddoDBa/Mobile-expence-tracker",
+          href: "https://github.com/NanaAddoDBa/nana-monorepo/tree/master/apps/mobile-expense-tracker",
         },
       ],
     },

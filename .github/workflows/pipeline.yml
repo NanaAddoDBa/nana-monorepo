@@ -32,6 +32,7 @@ jobs:
       contents: read
     outputs:
       matrix: ${{ steps.apps.outputs.matrix }}
+      deploy_matrix: ${{ steps.apps.outputs.deploy_matrix }}
       infra_changed: ${{ steps.apps.outputs.infra_changed }}
     steps:
       - name: Check out repository
@@ -53,10 +54,13 @@ jobs:
             -App $env:REQUESTED_APP `
             -IncludeMetadata | ConvertFrom-Json
           $matrix = ConvertTo-Json -InputObject @($result.apps) -Compress -Depth 10
+          $deployMatrix = ConvertTo-Json -InputObject @($result.deploy_apps) -Compress -Depth 10
           $infraChanged = $result.infra_changed.ToString().ToLowerInvariant()
           "matrix=$matrix" >> $env:GITHUB_OUTPUT
+          "deploy_matrix=$deployMatrix" >> $env:GITHUB_OUTPUT
           "infra_changed=$infraChanged" >> $env:GITHUB_OUTPUT
           "Affected apps: $matrix" >> $env:GITHUB_STEP_SUMMARY
+          "Deployable apps: $deployMatrix" >> $env:GITHUB_STEP_SUMMARY
           "Infrastructure changed: $infraChanged" >> $env:GITHUB_STEP_SUMMARY
 
   terraform:
@@ -93,7 +97,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Set up pnpm
-        if: matrix.runtime == 'nodejs'
+        if: matrix.runtime == 'nodejs' && matrix.package_manager == 'pnpm'
         uses: pnpm/action-setup@v6
         with:
           version: ${{ matrix.package_manager_version }}
@@ -103,8 +107,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.runtime_version }}
-          cache: pnpm
-          cache-dependency-path: apps/${{ matrix.name }}/pnpm-lock.yaml
+          cache: ${{ matrix.package_manager }}
+          cache-dependency-path: apps/${{ matrix.name }}/${{ matrix.lockfile }}
 
       - name: Set up Go
         if: matrix.runtime == 'go'
@@ -152,7 +156,7 @@ jobs:
       - detect
       - validate
     if: >-
-      needs.detect.outputs.matrix != '[]' &&
+      needs.detect.outputs.deploy_matrix != '[]' &&
       github.ref == 'refs/heads/master' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
@@ -163,7 +167,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        include: ${{ fromJSON(needs.detect.outputs.matrix) }}
+        include: ${{ fromJSON(needs.detect.outputs.deploy_matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v6

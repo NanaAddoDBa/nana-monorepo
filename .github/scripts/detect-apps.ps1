@@ -21,10 +21,14 @@ foreach ($configFile in $configFiles) {
   $config = Get-Content -Raw $configFile.FullName | ConvertFrom-Json
   $directoryName = Split-Path $configFile.DirectoryName -Leaf
 
-  foreach ($requiredField in @("name", "runtime", "runtime_version", "service_name", "health_path")) {
+  foreach ($requiredField in @("name", "runtime", "runtime_version")) {
     if ([string]::IsNullOrWhiteSpace($config.$requiredField)) {
       throw "$($configFile.FullName) is missing required field: $requiredField"
     }
+  }
+
+  if ($config.PSObject.Properties.Name -notcontains "deploy_enabled" -or $config.deploy_enabled -isnot [bool]) {
+    throw "$($configFile.FullName) deploy_enabled must be true or false."
   }
 
   if ($config.name -ne $directoryName) {
@@ -35,24 +39,42 @@ foreach ($configFile in $configFiles) {
     throw "$($configFile.FullName) name must be a lowercase app identifier."
   }
 
-  if ($config.service_name -notmatch "^[a-z][a-z0-9-]{0,62}$") {
-    throw "$($configFile.FullName) service_name must be a valid Cloud Run service name."
-  }
-
   if ($config.runtime_version -notmatch "^[0-9]+(?:\.[0-9]+){0,2}$") {
     throw "$($configFile.FullName) runtime_version must be numeric."
   }
 
-  if ($config.runtime -eq "nodejs" -and $config.package_manager_version -notmatch "^[0-9]+\.[0-9]+\.[0-9]+$") {
-    throw "$($configFile.FullName) package_manager_version must be an exact semantic version for Node.js apps."
+  if ($config.runtime -eq "nodejs") {
+    if ($config.package_manager -notin @("npm", "pnpm")) {
+      throw "$($configFile.FullName) package_manager must be npm or pnpm for Node.js apps."
+    }
+
+    if ([string]::IsNullOrWhiteSpace($config.lockfile)) {
+      throw "$($configFile.FullName) is missing required field: lockfile"
+    }
+
+    if ($config.package_manager -eq "pnpm" -and $config.package_manager_version -notmatch "^[0-9]+\.[0-9]+\.[0-9]+$") {
+      throw "$($configFile.FullName) package_manager_version must be an exact semantic version for pnpm apps."
+    }
   }
 
   if ($config.runtime -notin $allowedRuntimes) {
     throw "$($configFile.FullName) runtime must be one of: $($allowedRuntimes -join ', ')"
   }
 
-  if ($config.health_path -notmatch "^/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*$") {
-    throw "$($configFile.FullName) health_path must be a valid absolute URL path."
+  if ($config.deploy_enabled) {
+    foreach ($requiredField in @("service_name", "health_path")) {
+      if ([string]::IsNullOrWhiteSpace($config.$requiredField)) {
+        throw "$($configFile.FullName) is missing required deployment field: $requiredField"
+      }
+    }
+
+    if ($config.service_name -notmatch "^[a-z][a-z0-9-]{0,62}$") {
+      throw "$($configFile.FullName) service_name must be a valid Cloud Run service name."
+    }
+
+    if ($config.health_path -notmatch "^/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*$") {
+      throw "$($configFile.FullName) health_path must be a valid absolute URL path."
+    }
   }
 
   if (!(Test-Path "apps/$($config.name)/Makefile")) {
@@ -116,6 +138,7 @@ if ($App -eq "all") {
 if ($IncludeMetadata) {
   $result = [PSCustomObject]@{
     apps          = @($selectedConfigs)
+    deploy_apps   = @($selectedConfigs | Where-Object { $_.deploy_enabled })
     infra_changed = $infraChanged
   }
 

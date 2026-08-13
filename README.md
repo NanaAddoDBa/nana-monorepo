@@ -6,6 +6,8 @@ This repository is Nana Addo's personal monorepo. It will house all personal pro
 
 ```text
 apps/
+|-- mobile-expense-tracker/
+|   `-- Makefile
 `-- nana-portfolio/
     `-- Makefile
 ```
@@ -20,6 +22,16 @@ App-specific documentation lives in:
 
 ```text
 apps/nana-portfolio/README.md
+```
+
+### `apps/mobile-expense-tracker`
+
+A mobile-first expense tracker and budget manager built with Vite, React, TypeScript, Tailwind CSS, and Vitest. The app currently uses mock services and local persistence while keeping explicit boundaries for a future backend and external integrations.
+
+Its source history was preserved when it moved into this monorepo. App-specific documentation lives in:
+
+```text
+apps/mobile-expense-tracker/README.md
 ```
 
 ## Planned Infrastructure
@@ -44,7 +56,7 @@ libs/
 
 ## Local App Workflow
 
-Run the current app from the repository root:
+Run the portfolio from the repository root:
 
 ```bash
 pnpm install
@@ -64,6 +76,7 @@ The root `Makefile` delegates to the selected app Makefile, and the app Makefile
 
 ```bash
 make build APP=nana-portfolio
+make ci APP=mobile-expense-tracker
 ```
 
 On Windows, `pnpm` scripts are the primary local workflow unless `make` is installed.
@@ -76,17 +89,17 @@ GitHub Actions uses one central workflow:
 .github/workflows/pipeline.yml
 ```
 
-Pull requests validate only affected apps. Merges to `master` validate, build, and deploy affected apps with immutable commit-SHA image tags. Shared library or infrastructure changes validate and deploy every registered app.
+Pull requests validate only affected apps. Merges to `master` validate affected apps and deploy only those with deployment enabled, using immutable commit-SHA image tags. Shared library or infrastructure changes validate every registered app and deploy each deployment-enabled app.
 
-Each deployable app registers its pipeline contract in `apps/<app>/pipeline.json` and implements the shared Make targets:
+Each app registers its validation contract in `apps/<app>/pipeline.json`. Apps with `deploy_enabled: true` additionally implement the Docker targets:
 
 ```text
 install
 ci
-docker-build
-docker-push
+docker-build  # deployable apps
+docker-push   # deployable apps
 ```
 
-This keeps workflow logic constant as the monorepo grows. Node.js and Go runtimes are supported by the central pipeline.
+This keeps workflow logic constant as the monorepo grows. Node.js apps may use npm or pnpm, and Go runtimes are also supported by the central pipeline.
 
 The complete onboarding procedure for a new app is documented in [Adding and Deploying an App](docs/adding-an-app.md).

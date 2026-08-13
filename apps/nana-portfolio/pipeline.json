@@ -2,7 +2,10 @@
   "name": "nana-portfolio",
   "runtime": "nodejs",
   "runtime_version": "22",
+  "package_manager": "pnpm",
   "package_manager_version": "10.18.3",
+  "lockfile": "pnpm-lock.yaml",
+  "deploy_enabled": true,
   "service_name": "nana-portfolio",
   "health_path": "/api/health"
 }

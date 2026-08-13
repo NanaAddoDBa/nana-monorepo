@@ -18,6 +18,8 @@ Pull requests run `install` and `ci` for affected apps. A merge to `master` buil
 
 Terraform creates the service and its runtime identity. Terraform apply is manual and never runs in GitHub Actions.
 
+Validation-only applications still provide `apps/<app-name>/Makefile` and `apps/<app-name>/pipeline.json`, but set `deploy_enabled` to `false`. They do not require Docker or Terraform contracts until deployment is enabled.
+
 ## Prerequisites
 
 Complete these repository-level steps once, not once per app:
@@ -169,7 +171,10 @@ Add `apps/<app-name>/pipeline.json`.
   "name": "example-web",
   "runtime": "nodejs",
   "runtime_version": "22",
+  "package_manager": "pnpm",
   "package_manager_version": "10.18.3",
+  "lockfile": "pnpm-lock.yaml",
+  "deploy_enabled": true,
   "service_name": "example-web",
   "health_path": "/"
 }
@@ -182,6 +187,7 @@ Add `apps/<app-name>/pipeline.json`.
   "name": "example-api",
   "runtime": "go",
   "runtime_version": "1.24",
+  "deploy_enabled": true,
   "service_name": "example-api",
   "health_path": "/healthz"
 }
@@ -194,7 +200,10 @@ Field meanings:
 | `name`                    | App directory and Artifact Registry image name.          |
 | `runtime`                 | `nodejs` or `go`.                                        |
 | `runtime_version`         | Version installed by GitHub Actions.                     |
-| `package_manager_version` | Exact pnpm version; required for Node.js apps.           |
+| `package_manager`         | `npm` or `pnpm` for Node.js apps.                         |
+| `package_manager_version` | Exact pnpm version; required for pnpm apps.              |
+| `lockfile`                | Lockfile used by the Node.js dependency cache.            |
+| `deploy_enabled`          | Whether merges deploy the app to Cloud Run.               |
 | `service_name`            | Existing Cloud Run service updated after merge.          |
 | `health_path`             | Public endpoint used for the post-deployment smoke test. |
 
