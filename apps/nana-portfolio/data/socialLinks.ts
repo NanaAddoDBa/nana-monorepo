@@ -8,6 +8,8 @@ import {
 } from "lucide-react"
 
 import type { SocialLink } from "@/types/socialLinkTypes"
+import { whatsAppContacts } from "@/data/whatsAppData"
+
 export const socialLinks: SocialLink[] = [
   {
     name: "GitHub",
@@ -22,12 +24,12 @@ export const socialLinks: SocialLink[] = [
     icon: Briefcase,
     ariaLabel: "Connect with me on LinkedIn for professional networking.",
   },
-  {
-    name: "WhatsApp",
-    href: "https://wa.me/qr/RN2DYGDFOJJ3K1",
+  ...whatsAppContacts.map((contact) => ({
+    name: `WhatsApp · ${contact.region}`,
+    href: contact.href,
     icon: MessageCircle,
-    ariaLabel: "Message me on WhatsApp to get in touch directly.",
-  },
+    ariaLabel: contact.ariaLabel,
+  })),
   {
     name: "Twitter",
     href: "https://x.com/andybampoe",

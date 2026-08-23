@@ -1,32 +1,36 @@
 import { Clock, Mail, MapPin, MessageCircle } from "lucide-react"
 
 import type { ContactData } from "@/types/contactSectionTypes"
+import { whatsAppContacts } from "@/data/whatsAppData"
 
 export const contactData = {
   title: "Let's Connect",
   subtitle: "Get in touch for opportunities or collaborations",
   targetedCvNote:
     "Need a role-specific CV? Request a targeted version for frontend, full-stack, test, QA, or automation-focused roles.",
-  contactInfo: {
-    email: {
+  contactInfo: [
+    {
       label: "Email",
       value: "nanaaddoldoe@gmail.com",
       icon: Mail,
       href: "mailto:nanaaddoldoe@gmail.com",
+      ariaLabel: "Email Nana Addo directly.",
     },
-    phone: {
-      label: "WhatsApp",
-      value: "Message me on WhatsApp",
+    ...whatsAppContacts.map((contact) => ({
+      label: `WhatsApp · ${contact.region}`,
+      value: contact.phoneNumber,
       icon: MessageCircle,
-      href: "https://wa.me/qr/RN2DYGDFOJJ3K1",
-    },
-    location: {
+      href: contact.href,
+      ariaLabel: contact.ariaLabel,
+    })),
+    {
       label: "Location",
       value: "Dr. Hans Kapfinger Strasse 13, Passau",
       icon: MapPin,
       href: "https://maps.google.com/?q=Dr. Hans Kapfinger Strasse 13, Passau",
+      ariaLabel: "View Nana Addo's location in Passau on Google Maps.",
     },
-  },
+  ],
   availability: {
     timezone: "CET (UTC+1)",
     hours: "9:00 AM - 6:00 PM",
