@@ -68,20 +68,16 @@ function mapRepositoryToProject(repo: GithubRepository): ProjectItem {
     organization: repo.owner.login,
     summary:
       repo.description ??
-      `A GitHub repository from ${repo.owner.login}, automatically synced into this portfolio.`,
-    techStack: techStack.length ? techStack : ["GitHub Repository"],
-    category: repo.language ?? "GitHub Repository",
+      `An open-source project maintained by ${repo.owner.login}.`,
+    techStack: techStack.length ? techStack : ["Open Source"],
+    category: repo.language ?? "Open-Source Project",
     featured: true,
     owner: repo.owner.login,
     source: "github",
     stars: repo.stargazers_count,
     forks: repo.forks_count,
     updatedAt: repo.pushed_at ?? repo.updated_at,
-    outcomes: [
-      `Last updated ${formatDate(repo.pushed_at ?? repo.updated_at)}`,
-      `${repo.stargazers_count} stars`,
-      `${repo.forks_count} forks`,
-    ],
+    outcomes: [`Last updated ${formatDate(repo.pushed_at ?? repo.updated_at)}`],
     links: [
       {
         label: "Repository",

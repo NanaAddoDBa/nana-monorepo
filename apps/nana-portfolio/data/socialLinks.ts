@@ -1,4 +1,4 @@
-import { Mail, Briefcase, Play, AtSign, FolderGit2 } from "lucide-react"
+import { Briefcase, Play, AtSign, FolderGit2 } from "lucide-react"
 
 import type { SocialLink } from "@/types/socialLinkTypes"
 
@@ -17,10 +17,10 @@ export const socialLinks: SocialLink[] = [
     ariaLabel: "Connect with me on LinkedIn for professional networking.",
   },
   {
-    name: "Twitter",
+    name: "X",
     href: "https://x.com/andybampoe",
     icon: AtSign,
-    ariaLabel: "Follow me on Twitter for updates and insights.",
+    ariaLabel: "Follow me on X for updates and insights.",
   },
   {
     name: "YouTube",
@@ -28,11 +28,5 @@ export const socialLinks: SocialLink[] = [
     icon: Play,
     ariaLabel:
       "Subscribe to my YouTube channel for educational and technical content.",
-  },
-  {
-    name: "Email",
-    href: "mailto:nanaaddoldoe@gmail.com",
-    icon: Mail,
-    ariaLabel: "Send me an email to get in touch directly.",
   },
 ]

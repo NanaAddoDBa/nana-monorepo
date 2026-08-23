@@ -5,11 +5,11 @@ export const heroSlidesData = [
     id: "intro",
     variant: "image",
     density: "default",
-    eyebrow: "welcome to my personal website",
-    title: "Hello, I'm Nana Addo Dankwa Bampoe Addo",
+    eyebrow: "Software Engineer Portfolio",
+    title: "Hello, I'm Nana Addo",
     highlightLine: "Software Engineer",
     description:
-      "I build reliable web applications, automation-focused workflows, and maintainable software systems using modern frontend tools, testing practices, databases, and AI-assisted engineering.",
+      "I design and build reliable web products with React, Next.js, TypeScript, testing, and automation.",
     primaryAction: {
       type: "link",
       label: "View Projects",
@@ -24,7 +24,7 @@ export const heroSlidesData = [
     },
     image: {
       src: "/images/profile/nana-portrait.png",
-      alt: "Portrait of Nana Addo Dankwa Bampoe Addo",
+      alt: "Portrait of Nana Addo",
     },
     supportingPoints: [
       "React, Next.js & TypeScript",
@@ -40,7 +40,7 @@ export const heroSlidesData = [
     title: "Software Engineering",
     highlightLine: "Frontend Depth, Full-Stack Awareness",
     description:
-      "I bring 4+ years of front-end engineering experience with practical exposure to testing, database-backed workflows, API integration, LLM tools, agentic coding workflows, and automation.",
+      "My front-end foundation is complemented by API integration, database-backed workflows, testing, and practical full-stack delivery.",
     primaryAction: {
       type: "link",
       label: "About Me",
@@ -62,7 +62,7 @@ export const heroSlidesData = [
     title: "Applied Engineering Work",
     highlightLine: "Delivery, Reliability, Automation",
     description:
-      "My work spans product-focused web development, internal tooling, automated workflows, and systems built to improve reliability, efficiency, and user outcomes.",
+      "Selected projects demonstrate measurable improvements to product reliability, operational workflows, and user experience.",
     primaryAction: {
       type: "link",
       label: "Explore Projects",

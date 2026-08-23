@@ -25,9 +25,9 @@ export const contactData = {
     })),
     {
       label: "Location",
-      value: "Dr. Hans Kapfinger Strasse 13, Passau",
+      value: "Passau, Germany",
       icon: MapPin,
-      href: "https://maps.google.com/?q=Dr. Hans Kapfinger Strasse 13, Passau",
+      href: "https://maps.google.com/?q=Passau, Germany",
       ariaLabel: "View Nana Addo's location in Passau on Google Maps.",
     },
   ],
