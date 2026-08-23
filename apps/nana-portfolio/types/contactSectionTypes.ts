@@ -5,6 +5,7 @@ export type ContactMethod = {
   value: string
   icon: LucideIcon
   href: string
+  ariaLabel: string
 }
 
 export type Availability = {
@@ -40,11 +41,7 @@ export type ContactData = {
   title: string
   subtitle: string
   targetedCvNote: string
-  contactInfo: {
-    email: ContactMethod
-    phone: ContactMethod
-    location: ContactMethod
-  }
+  contactInfo: ContactMethod[]
   availability: Availability
   formFields: {
     name: FormField

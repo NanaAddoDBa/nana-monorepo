@@ -7,7 +7,7 @@ import { contactData } from "@/data/contactData"
 import { socialLinks } from "@/data/socialLinks"
 import { ContactForm } from "./contactForm"
 
-const contactMethods = Object.values(contactData.contactInfo)
+const contactMethods = contactData.contactInfo
 
 export function ContactSection() {
   return (
@@ -49,6 +49,7 @@ export function ContactSection() {
                           ? "noreferrer"
                           : undefined
                       }
+                      aria-label={method.ariaLabel}
                       className="block"
                     >
                       <Card className="border-border/60 bg-card/40 shadow-none transition-colors hover:border-primary/40">
