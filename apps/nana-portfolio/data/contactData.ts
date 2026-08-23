@@ -17,7 +17,7 @@ export const contactData = {
       ariaLabel: "Email Nana Addo directly.",
     },
     ...whatsAppContacts.map((contact) => ({
-      label: `WhatsApp · ${contact.region}`,
+      label: `WhatsApp · ${contact.region} (${contact.designation})`,
       value: contact.phoneNumber,
       icon: MessageCircle,
       href: contact.href,

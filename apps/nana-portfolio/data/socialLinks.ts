@@ -1,14 +1,6 @@
-import {
-  Mail,
-  Briefcase,
-  Play,
-  AtSign,
-  FolderGit2,
-  MessageCircle,
-} from "lucide-react"
+import { Mail, Briefcase, Play, AtSign, FolderGit2 } from "lucide-react"
 
 import type { SocialLink } from "@/types/socialLinkTypes"
-import { whatsAppContacts } from "@/data/whatsAppData"
 
 export const socialLinks: SocialLink[] = [
   {
@@ -24,12 +16,6 @@ export const socialLinks: SocialLink[] = [
     icon: Briefcase,
     ariaLabel: "Connect with me on LinkedIn for professional networking.",
   },
-  ...whatsAppContacts.map((contact) => ({
-    name: `WhatsApp · ${contact.region}`,
-    href: contact.href,
-    icon: MessageCircle,
-    ariaLabel: contact.ariaLabel,
-  })),
   {
     name: "Twitter",
     href: "https://x.com/andybampoe",
