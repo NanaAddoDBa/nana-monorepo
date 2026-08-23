@@ -3,7 +3,7 @@ import type { ProjectsData } from "@/types/projectsSectionTypes"
 export const projectsData = {
   heading: "Projects",
   intro:
-    "A selection of software engineering work focused on frontend development, API-connected workflows, automation, testing, database-backed systems, and practical delivery.",
+    "Selected product, platform, and automation work with an emphasis on reliability, usability, and maintainable delivery.",
   items: [
     {
       id: "regulatory-compliance-platform",
@@ -63,10 +63,10 @@ export const projectsData = {
       source: "github",
       owner: "NanaAddoDBa",
       outcomes: [
-        "Organized expense data into a simple mobile workflow",
-        "Improved visibility into spending records",
-        "Focused on reliable data entry and retrieval flows",
-        "Focused on usability and clear interaction flow",
+        "Created a focused workflow for recording and organizing expenses",
+        "Made spending records easier to review",
+        "Designed reliable data-entry and retrieval flows",
+        "Prioritized clear mobile interactions",
       ],
       links: [
         {
@@ -80,7 +80,7 @@ export const projectsData = {
       title: "Nana Monorepo",
       organization: "Personal Project",
       summary:
-        "Created a personal monorepo that will eventually house all of my personal projects, with each project kept as its own app, package, or sub-project inside the repository.",
+        "Built a multi-application repository with shared development workflows, continuous integration, container packaging, and cloud deployment foundations.",
       techStack: [
         "Next.js",
         "React",
@@ -98,10 +98,10 @@ export const projectsData = {
       owner: "NanaAddoDBa",
       updatedAt: "2026-06-17",
       outcomes: [
-        "Housed the nana-portfolio website project under apps/nana-portfolio",
-        "Prepared the repository to eventually house all personal projects as dedicated sub-projects",
-        "Added shared app commands, CI foundations, Docker packaging, and Cloud Run infrastructure",
-        "Kept sub-projects eligible for individual portfolio cards rather than treating the monorepo as one large project only",
+        "Organized the portfolio and mobile expense tracker as independent applications",
+        "Standardized app commands and CI workflows across the repository",
+        "Added Docker packaging and Cloud Run infrastructure",
+        "Preserved independent project and deployment boundaries",
       ],
       links: [
         {
@@ -115,7 +115,7 @@ export const projectsData = {
       title: "Portfolio Website",
       organization: "Personal Project",
       summary:
-        "Designed and developed nana-portfolio, the portfolio website project app housed inside Nana Monorepo, to showcase software engineering skills, GitHub projects, technical experience, CV links, and recruiter contact paths.",
+        "Built a recruiter-facing portfolio that presents engineering experience, selected projects, technical capabilities, CVs, and direct contact options.",
       techStack: [
         "Next.js",
         "React",

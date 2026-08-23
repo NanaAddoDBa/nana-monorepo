@@ -20,6 +20,11 @@ function getProjectSourceLabel(project: ProjectItem) {
 
 export function ProjectCard({ project }: Readonly<ProjectCardProps>) {
   const titleId = `${project.id}-title`
+  const sourceLabel = getProjectSourceLabel(project)
+  const showSourceLabel =
+    sourceLabel !== project.category && sourceLabel !== project.organization
+  const hasStars = (project.stars ?? 0) > 0
+  const hasForks = (project.forks ?? 0) > 0
 
   return (
     <article id={project.id} aria-labelledby={titleId} className="scroll-mt-24">
@@ -37,21 +42,26 @@ export function ProjectCard({ project }: Readonly<ProjectCardProps>) {
                 </p>
               ) : null}
 
-              <p className="text-xs font-semibold tracking-[0.16em] text-primary uppercase">
-                {getProjectSourceLabel(project)}
-              </p>
+              {showSourceLabel ? (
+                <p className="text-xs font-semibold tracking-[0.16em] text-primary uppercase">
+                  {sourceLabel}
+                </p>
+              ) : null}
 
-              {project.source === "github" &&
-              (project.stars !== undefined || project.forks !== undefined) ? (
+              {project.source === "github" && (hasStars || hasForks) ? (
                 <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1">
-                    <Star className="h-3.5 w-3.5" />
-                    {project.stars ?? 0}
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <GitFork className="h-3.5 w-3.5" />
-                    {project.forks ?? 0}
-                  </span>
+                  {hasStars ? (
+                    <span className="inline-flex items-center gap-1">
+                      <Star className="h-3.5 w-3.5" />
+                      {project.stars}
+                    </span>
+                  ) : null}
+                  {hasForks ? (
+                    <span className="inline-flex items-center gap-1">
+                      <GitFork className="h-3.5 w-3.5" />
+                      {project.forks}
+                    </span>
+                  ) : null}
                 </div>
               ) : null}
             </div>

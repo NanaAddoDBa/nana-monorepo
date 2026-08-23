@@ -75,7 +75,7 @@ export function ContactSection() {
 
               <div className="space-y-4">
                 <p className="text-xs font-semibold tracking-[0.24em] text-primary uppercase">
-                  Digital Archives
+                  Online Profiles
                 </p>
 
                 <div className="flex flex-wrap gap-x-5 gap-y-3">
