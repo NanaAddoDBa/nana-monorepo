@@ -9,17 +9,21 @@ function createWhatsAppHref(phoneNumber: string) {
 
 export const whatsAppContacts = [
   {
-    id: "ghana",
-    region: "Ghana",
-    phoneNumber: "+233 24 775 7690",
-    href: createWhatsAppHref("+233247757690"),
-    ariaLabel: "Message Nana Addo on WhatsApp using the Ghana phone number.",
-  },
-  {
     id: "germany",
     region: "Germany",
+    designation: "Primary",
     phoneNumber: "+49 176 7490 9252",
     href: createWhatsAppHref("+4917674909252"),
-    ariaLabel: "Message Nana Addo on WhatsApp using the Germany phone number.",
+    ariaLabel:
+      "Message Nana Addo on WhatsApp using the primary Germany phone number.",
+  },
+  {
+    id: "ghana",
+    region: "Ghana",
+    designation: "Alternative",
+    phoneNumber: "+233 24 775 7690",
+    href: createWhatsAppHref("+233247757690"),
+    ariaLabel:
+      "Message Nana Addo on WhatsApp using the alternative Ghana phone number.",
   },
 ] as const
