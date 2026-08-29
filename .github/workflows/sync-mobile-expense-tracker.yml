@@ -1,0 +1,169 @@
+name: Sync mobile expense tracker
+
+on:
+  repository_dispatch:
+    types:
+      - mobile-expense-tracker-updated
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-mobile-expense-tracker
+  cancel-in-progress: false
+
+env:
+  SOURCE_REPOSITORY: NanaAddoDBa/Mobile-expence-tracker
+  SOURCE_BRANCH: main
+  TARGET_DIRECTORY: apps/mobile-expense-tracker
+  SYNC_BRANCH: sync/mobile-expense-tracker
+  SYNC_AUTHOR_NAME: NanaAddoDBA
+  SYNC_AUTHOR_EMAIL: nanaaddoldoe@gmail.com
+
+jobs:
+  sync:
+    name: Sync standalone source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the monorepo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: master
+          token: ${{ secrets.MONOREPO_SYNC_TOKEN }}
+
+      - name: Apply new source commits
+        id: sync
+        shell: bash
+        env:
+          REQUESTED_SOURCE_SHA: ${{ github.event.client_payload.source_sha }}
+        run: |
+          set -euo pipefail
+
+          source_directory="${RUNNER_TEMP}/mobile-expense-source"
+          git clone \
+            --branch "${SOURCE_BRANCH}" \
+            --single-branch \
+            "https://github.com/${SOURCE_REPOSITORY}.git" \
+            "${source_directory}"
+
+          source_tip="$(git -C "${source_directory}" rev-parse HEAD)"
+          last_synced="$(tr -d '[:space:]' < "${TARGET_DIRECTORY}/.source-revision")"
+
+          if [[ -n "${REQUESTED_SOURCE_SHA:-}" ]] && ! git -C "${source_directory}" merge-base --is-ancestor "${REQUESTED_SOURCE_SHA}" "${source_tip}"; then
+            echo "Requested source revision ${REQUESTED_SOURCE_SHA} is not on ${SOURCE_BRANCH}."
+            exit 1
+          fi
+
+          if ! git -C "${source_directory}" merge-base --is-ancestor "${last_synced}" "${source_tip}"; then
+            echo "Recorded source revision ${last_synced} is not an ancestor of ${source_tip}."
+            exit 1
+          fi
+
+          if [[ "${last_synced}" == "${source_tip}" ]]; then
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+            echo "The monorepo already contains source revision ${source_tip}."
+            exit 0
+          fi
+
+          git fetch origin \
+            "+refs/heads/${SYNC_BRANCH}:refs/remotes/origin/${SYNC_BRANCH}" || true
+          git checkout -B "${SYNC_BRANCH}" origin/master
+          git config user.name "${SYNC_AUTHOR_NAME}"
+          git config user.email "${SYNC_AUTHOR_EMAIL}"
+
+          mapfile -t source_commits < <(
+            git -C "${source_directory}" rev-list \
+              --reverse \
+              --first-parent \
+              "${last_synced}..${source_tip}"
+          )
+
+          for source_commit in "${source_commits[@]}"; do
+            snapshot_directory="$(mktemp -d "${RUNNER_TEMP}/mobile-expense-snapshot-XXXXXX")"
+            git -C "${source_directory}" archive "${source_commit}" | tar -x -C "${snapshot_directory}"
+
+            rsync -a --delete \
+              --exclude='.source-revision' \
+              --exclude='Makefile' \
+              --exclude='pipeline.json' \
+              "${snapshot_directory}/" \
+              "${TARGET_DIRECTORY}/"
+
+            printf '%s\n' "${source_commit}" > "${TARGET_DIRECTORY}/.source-revision"
+            git add -- "${TARGET_DIRECTORY}"
+
+            subject="$(git -C "${source_directory}" show -s --format=%s "${source_commit}")"
+            if [[ "${subject}" == Merge\ pull\ request* ]]; then
+              replacement_subject="$(
+                git -C "${source_directory}" show -s --format=%b "${source_commit}" |
+                  sed '/^[[:space:]]*$/d' |
+                  head -n 1
+              )"
+              subject="${replacement_subject:-chore: apply source changes}"
+            fi
+
+            if grep -Eiq '\[bot\]' <<< "${subject}"; then
+              subject="chore: apply mobile expense tracker source update"
+            fi
+
+            author_date="$(git -C "${source_directory}" show -s --format=%aI "${source_commit}")"
+            GIT_AUTHOR_DATE="${author_date}" \
+              git commit \
+                --author="${SYNC_AUTHOR_NAME} <${SYNC_AUTHOR_EMAIL}>" \
+                -m "${subject}"
+          done
+
+          git push --force-with-lease origin "${SYNC_BRANCH}"
+          echo "changed=true" >> "${GITHUB_OUTPUT}"
+          echo "source_tip=${source_tip}" >> "${GITHUB_OUTPUT}"
+
+      - name: Open or update the sync pull request
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.MONOREPO_SYNC_TOKEN }}
+          SOURCE_TIP: ${{ steps.sync.outputs.source_tip }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pull_request_url="$(
+            gh pr list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --head "${SYNC_BRANCH}" \
+              --state open \
+              --json url \
+              --jq '.[0].url // empty'
+          )"
+
+          body_file="$(mktemp)"
+          cat > "${body_file}" <<EOF
+          ## Summary
+
+          Synchronizes \`${TARGET_DIRECTORY}\` with the standalone source repository through revision \`${SOURCE_TIP}\`.
+
+          Each source commit is applied separately. Monorepo-specific pipeline files remain managed by this repository.
+
+          ## Validation
+
+          The monorepo pipeline validates the synchronized frontend and backend before automatic merge.
+          EOF
+
+          if [[ -z "${pull_request_url}" ]]; then
+            pull_request_url="$(
+              gh pr create \
+                --repo "${GITHUB_REPOSITORY}" \
+                --base master \
+                --head "${SYNC_BRANCH}" \
+                --title "Sync mobile expense tracker from standalone repository" \
+                --body-file "${body_file}"
+            )"
+          else
+            gh pr edit "${pull_request_url}" --body-file "${body_file}"
+          fi
+
+          gh pr merge "${pull_request_url}" --auto --merge

@@ -34,6 +34,8 @@ Its source history was preserved when it moved into this monorepo. App-specific 
 apps/mobile-expense-tracker/README.md
 ```
 
+The standalone [`Mobile-expence-tracker`](https://github.com/NanaAddoDBa/Mobile-expence-tracker) repository is the source of truth for this app. Pushes to its `main` branch trigger a synchronization pull request that is merged after the monorepo pipeline passes. An hourly scheduled check recovers any missed trigger. The monorepo keeps its own `Makefile`, `pipeline.json`, and `.source-revision` integration files.
+
 ## Planned Infrastructure
 
 The repository includes reusable Google Cloud Run infrastructure:
