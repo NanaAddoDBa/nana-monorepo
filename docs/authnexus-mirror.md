@@ -49,10 +49,11 @@ issues, pull requests, logs, or `.env` files.
 
 ## Failure and recovery
 
-The workflow fails rather than marking a source revision as mirrored when its credential is absent,
-the requested SHA is not green, the SHA is no longer on source `main`, or the recorded revision is
-invalid. The `.source-revision` file changes only in the pull request created from a verified
-snapshot.
+When its credential is absent, the workflow explicitly reports that mirroring is disabled and does
+not attempt a sync or mark a source revision as complete. Once enabled, it fails rather than
+marking a source revision as mirrored when the requested SHA is not green, the SHA is no longer on
+source `main`, or the recorded revision is invalid. The `.source-revision` file changes only in
+the pull request created from a verified snapshot.
 
 For recovery, correct the credential or source validation issue, then either wait for the scheduled
 run or manually start **Sync AuthNexus mirror** with the exact full green SHA. Review the generated

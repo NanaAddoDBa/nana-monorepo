@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Verify the dedicated target credential
+        id: credential
         env:
           AUTHNEXUS_MONOREPO_SYNC_TOKEN: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
         shell: bash
@@ -43,11 +44,15 @@ jobs:
           set -euo pipefail
 
           if [[ -z "${AUTHNEXUS_MONOREPO_SYNC_TOKEN}" ]]; then
-            echo "::error::AUTHNEXUS_MONOREPO_SYNC_TOKEN is required for AuthNexus mirror updates."
-            exit 1
+            echo "enabled=false" >> "${GITHUB_OUTPUT}"
+            echo "::notice::AuthNexus mirroring is disabled until AUTHNEXUS_MONOREPO_SYNC_TOKEN is configured. No source revision was synchronized."
+            exit 0
           fi
 
+          echo "enabled=true" >> "${GITHUB_OUTPUT}"
+
       - name: Check out the monorepo
+        if: steps.credential.outputs.enabled == 'true'
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -55,6 +60,7 @@ jobs:
           token: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
 
       - name: Resolve and mirror the source revision
+        if: steps.credential.outputs.enabled == 'true'
         id: sync
         env:
           GH_TOKEN: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
@@ -191,7 +197,7 @@ jobs:
           echo "source_sha=${source_sha}" >> "${GITHUB_OUTPUT}"
 
       - name: Open or update the sync pull request
-        if: steps.sync.outputs.changed == 'true'
+        if: steps.credential.outputs.enabled == 'true' && steps.sync.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
           SOURCE_SHA: ${{ steps.sync.outputs.source_sha }}
