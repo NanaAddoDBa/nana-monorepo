@@ -6,6 +6,8 @@ This repository is Nana Addo's personal monorepo. It will house all personal pro
 
 ```text
 apps/
+|-- authnexus/
+|   `-- .source-revision
 |-- mobile-expense-tracker/
 |   `-- Makefile
 `-- nana-portfolio/
@@ -35,6 +37,19 @@ apps/mobile-expense-tracker/README.md
 ```
 
 The standalone [`Mobile-expence-tracker`](https://github.com/NanaAddoDBa/Mobile-expence-tracker) repository is the source of truth for this app. Pushes to its `main` branch trigger a synchronization pull request that is merged after the monorepo pipeline passes. An hourly scheduled check recovers any missed trigger. The monorepo keeps its own `Makefile`, `pipeline.json`, and `.source-revision` integration files.
+
+### `apps/authnexus`
+
+AuthNexus is a reusable, production-capable identity and authentication platform. The standalone
+[`authnexus`](https://github.com/NanaAddoDBa/authnexus) repository is its only source of truth.
+`apps/authnexus` is a downstream ordinary-files mirror of an exact green source revision recorded
+in `.source-revision`; do not develop AuthNexus from this directory.
+
+The mirror excludes the source repository's `.github` automation and never synchronizes changes
+back to the source. AuthNexus is intentionally not registered in the current Node.js/Go deployment
+registry during Phase A, so its standalone CI remains the authoritative validation gate. See
+[AuthNexus Downstream Mirror](docs/authnexus-mirror.md) for the update, credential, recovery, and
+pipeline-boundary rules.
 
 ## Planned Infrastructure
 
@@ -93,7 +108,7 @@ GitHub Actions uses one central workflow:
 
 Pull requests validate only affected apps. Merges to `master` validate affected apps and deploy only those with deployment enabled, using immutable commit-SHA image tags. Shared library or infrastructure changes validate every registered app and deploy each deployment-enabled app.
 
-Each app registers its validation contract in `apps/<app>/pipeline.json`. Apps with `deploy_enabled: true` additionally implement the Docker targets:
+Each pipeline-integrated app registers its validation contract in `apps/<app>/pipeline.json`. Apps with `deploy_enabled: true` additionally implement the Docker targets:
 
 ```text
 install
@@ -103,5 +118,9 @@ docker-push   # deployable apps
 ```
 
 This keeps workflow logic constant as the monorepo grows. Node.js apps may use npm or pnpm, and Go runtimes are also supported by the central pipeline.
+
+The AuthNexus mirror is not a registered deployment app in Phase A because its mixed Next.js and
+ASP.NET Core runtime has no accepted monorepo deployment contract yet. Its standalone repository
+validates that product independently.
 
 The complete onboarding procedure for a new app is documented in [Adding and Deploying an App](docs/adding-an-app.md).

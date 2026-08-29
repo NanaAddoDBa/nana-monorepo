@@ -1,0 +1,225 @@
+name: Sync AuthNexus mirror
+
+on:
+  repository_dispatch:
+    types:
+      - authnexus-updated
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact standalone AuthNexus source revision to mirror after validation.
+        required: false
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-authnexus
+  cancel-in-progress: false
+
+env:
+  SOURCE_REPOSITORY: NanaAddoDBa/authnexus
+  SOURCE_BRANCH: main
+  TARGET_DIRECTORY: apps/authnexus
+  SYNC_BRANCH: sync/authnexus
+  SYNC_AUTHOR_NAME: NanaAddoDBA
+  SYNC_AUTHOR_EMAIL: nanaaddoldoe@gmail.com
+
+jobs:
+  sync:
+    name: Sync exact validated source revision
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify the dedicated target credential
+        env:
+          AUTHNEXUS_MONOREPO_SYNC_TOKEN: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${AUTHNEXUS_MONOREPO_SYNC_TOKEN}" ]]; then
+            echo "::error::AUTHNEXUS_MONOREPO_SYNC_TOKEN is required for AuthNexus mirror updates."
+            exit 1
+          fi
+
+      - name: Check out the monorepo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: master
+          token: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
+
+      - name: Resolve and mirror the source revision
+        id: sync
+        env:
+          GH_TOKEN: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
+          REQUESTED_SOURCE_SHA: ${{ github.event.client_payload.source_sha || inputs.source_sha || '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          is_commit_sha() {
+            [[ "$1" =~ ^[0-9a-f]{40}$ ]]
+          }
+
+          successful_validation_exists() {
+            local candidate_sha="$1"
+            local run_id
+            local passing_jobs
+
+            run_id="$(
+              gh api \
+                "repos/${SOURCE_REPOSITORY}/actions/workflows/validate.yml/runs?branch=${SOURCE_BRANCH}&event=push&status=completed&per_page=100" \
+                --jq ".workflow_runs | map(select(.head_sha == \"${candidate_sha}\" and .conclusion == \"success\")) | .[0].id // empty"
+            )"
+
+            if [[ -z "${run_id}" ]]; then
+              return 1
+            fi
+
+            passing_jobs="$(
+              gh api "repos/${SOURCE_REPOSITORY}/actions/runs/${run_id}/jobs?per_page=100" \
+                --jq '[.jobs[] | select((.name == "Frontend" or .name == "Backend") and .conclusion == "success")] | length'
+            )"
+
+            [[ "${passing_jobs}" == "2" ]]
+          }
+
+          latest_green_sha() {
+            local candidate_sha
+
+            while IFS= read -r candidate_sha; do
+              if successful_validation_exists "${candidate_sha}"; then
+                printf '%s\n' "${candidate_sha}"
+                return 0
+              fi
+            done < <(
+              gh api --paginate \
+                "repos/${SOURCE_REPOSITORY}/actions/workflows/validate.yml/runs?branch=${SOURCE_BRANCH}&event=push&status=completed&per_page=100" \
+                --jq '.workflow_runs[] | select(.conclusion == "success") | .head_sha'
+            )
+
+            return 1
+          }
+
+          if [[ -n "${REQUESTED_SOURCE_SHA}" ]]; then
+            if ! is_commit_sha "${REQUESTED_SOURCE_SHA}"; then
+              echo "Requested source revision is not a full commit SHA."
+              exit 1
+            fi
+
+            if ! successful_validation_exists "${REQUESTED_SOURCE_SHA}"; then
+              echo "Requested source revision ${REQUESTED_SOURCE_SHA} does not have a successful standalone validation run."
+              exit 1
+            fi
+
+            source_sha="${REQUESTED_SOURCE_SHA}"
+          else
+            source_sha="$(latest_green_sha)" || {
+              echo "No successful standalone AuthNexus validation run is available on ${SOURCE_BRANCH}."
+              exit 1
+            }
+          fi
+
+          source_directory="$(mktemp -d "${RUNNER_TEMP}/authnexus-source-XXXXXX")"
+          snapshot_directory="$(mktemp -d "${RUNNER_TEMP}/authnexus-snapshot-XXXXXX")"
+          cleanup() {
+            rm -rf "${source_directory}" "${snapshot_directory}"
+          }
+          trap cleanup EXIT
+
+          git clone \
+            --branch "${SOURCE_BRANCH}" \
+            --single-branch \
+            "https://github.com/${SOURCE_REPOSITORY}.git" \
+            "${source_directory}"
+
+          source_tip="$(git -C "${source_directory}" rev-parse HEAD)"
+          git -C "${source_directory}" cat-file -e "${source_sha}^{commit}"
+
+          if ! git -C "${source_directory}" merge-base --is-ancestor "${source_sha}" "${source_tip}"; then
+            echo "Validated source revision ${source_sha} is not reachable from ${SOURCE_BRANCH}."
+            exit 1
+          fi
+
+          last_synced="$(tr -d '[:space:]' < "${TARGET_DIRECTORY}/.source-revision")"
+          if ! is_commit_sha "${last_synced}"; then
+            echo "The recorded AuthNexus source revision is invalid: ${last_synced}"
+            exit 1
+          fi
+
+          if [[ "${last_synced}" == "${source_sha}" ]]; then
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+            echo "source_sha=${source_sha}" >> "${GITHUB_OUTPUT}"
+            echo "The monorepo already mirrors validated AuthNexus revision ${source_sha}."
+            exit 0
+          fi
+
+          git fetch origin \
+            "+refs/heads/${SYNC_BRANCH}:refs/remotes/origin/${SYNC_BRANCH}" || true
+          git checkout -B "${SYNC_BRANCH}" origin/master
+
+          git -C "${source_directory}" archive "${source_sha}" | tar -x -C "${snapshot_directory}"
+          rsync -a --delete \
+            --exclude='.github/' \
+            --exclude='.source-revision' \
+            "${snapshot_directory}/" \
+            "${TARGET_DIRECTORY}/"
+          printf '%s\n' "${source_sha}" > "${TARGET_DIRECTORY}/.source-revision"
+
+          git add -A -- "${TARGET_DIRECTORY}"
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+            echo "source_sha=${source_sha}" >> "${GITHUB_OUTPUT}"
+            echo "No mirrored AuthNexus files changed for ${source_sha}."
+            exit 0
+          fi
+
+          git config user.name "${SYNC_AUTHOR_NAME}"
+          git config user.email "${SYNC_AUTHOR_EMAIL}"
+          git commit \
+            -m "sync(authnexus): update mirrored project" \
+            -m "Source revision: ${source_sha}"
+          git push --force-with-lease origin "${SYNC_BRANCH}"
+
+          echo "changed=true" >> "${GITHUB_OUTPUT}"
+          echo "source_sha=${source_sha}" >> "${GITHUB_OUTPUT}"
+
+      - name: Open or update the sync pull request
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
+          SOURCE_SHA: ${{ steps.sync.outputs.source_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pull_request_url="$(
+            gh pr list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --head "${SYNC_BRANCH}" \
+              --state open \
+              --json url \
+              --jq '.[0].url // empty'
+          )"
+          body="$(printf '## Summary\n\nSynchronizes `%s` with the exact standalone AuthNexus source revision `%s`.\n\nThe source repository owns product development and standalone CI. This downstream mirror excludes the source `.github` directory and never writes back to the source.\n\n## Validation\n\nThe requested source revision was independently confirmed as green in the standalone AuthNexus validation workflow. The monorepo pipeline must pass before merge.\n' "${TARGET_DIRECTORY}" "${SOURCE_SHA}")"
+
+          if [[ -z "${pull_request_url}" ]]; then
+            pull_request_url="$(
+              gh pr create \
+                --repo "${GITHUB_REPOSITORY}" \
+                --base master \
+                --head "${SYNC_BRANCH}" \
+                --title "Sync AuthNexus from standalone repository" \
+                --body "${body}"
+            )"
+          else
+            gh pr edit "${pull_request_url}" --body "${body}"
+          fi
+
+          gh pr merge "${pull_request_url}" --auto --merge
