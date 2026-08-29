@@ -274,6 +274,35 @@ npm run dev
 
 Open the local URL shown in the terminal.
 
+## Backend API and Database Scaffold
+
+The `server/` folder contains an independent NestJS TypeScript API scaffold and a PostgreSQL-ready Prisma schema for future Backend V1 work. See `server/README.md` for database setup and Prisma commands.
+
+Install backend dependencies:
+
+```bash
+npm --prefix server install
+```
+
+Run the backend API:
+
+```bash
+npm run dev:api
+```
+
+Backend checks:
+
+```bash
+npm run db:format
+npm run db:validate
+npm run db:generate
+npm run build:api
+npm run test:api
+npm run test:e2e:api
+```
+
+The backend currently exposes only basic app and health endpoints. Its schema and Prisma service are infrastructure only; it does not yet include auth, business CRUD APIs, live database workflows, Open Banking, OCR, or payments.
+
 ## Available Scripts
 
 ```bash
@@ -384,18 +413,17 @@ docs/visual-qa-checklist.md
 
 Use these before publishing major changes.
 
-## Production Planning Docs
+## Backend Roadmap and Technical Specs
 
-Planning docs for turning the mock frontend into a real backend-backed application are available in:
+Technical docs for turning the mock frontend into a backend-backed application are available in:
 
 ```text
-docs/backend-v1-technical-spec.md
-docs/product-boundary.md
-docs/data-model.md
+docs/backend-v1-spec.md
+docs/backend-api-contract.md
+docs/backend-data-model.md
 docs/privacy-and-consent.md
-docs/open-banking-sync-strategy.md
-docs/security-baseline.md
 docs/currency-strategy.md
+docs/security-baseline.md
 ```
 
 The recommended next implementation milestone is Backend V1: real authentication, PostgreSQL persistence, user-owned expenses, budgets, goals, settings, export/delete behavior, and audit logs.
@@ -433,13 +461,13 @@ Possible next improvements:
 
 ## Repository
 
-Monorepo location:
+Remote repository:
 
 ```text
-https://github.com/NanaAddoDBa/nana-monorepo/tree/master/apps/mobile-expense-tracker
+https://github.com/NanaAddoDBa/Mobile-expence-tracker.git
 ```
 
-The former standalone repository used the `Mobile-expence-tracker` spelling. The monorepo app path uses the corrected `mobile-expense-tracker` name.
+Note: the repository name currently uses `expence`. Keep it if intentional, or rename it later if you want the spelling to be `expense`.
 
 ## License
 
