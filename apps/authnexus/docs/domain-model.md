@@ -132,6 +132,89 @@ and achieved assurance, and risk result. Those remain deferred until their share
 method, policy, evidence, and risk contracts exist; D.3 does not freeze them as weak strings.
 Optional `UserId` is creation context only—there is no lookup, binding, or rebinding behavior.
 
+## D.4 Session
+
+`Session` belongs to `AuthNexus.Modules.Sessions`. Its `SessionId` lives in the shared Domain
+assembly because the audit boundary needs to reference a session without depending on the
+Sessions module. The entity stores only an already-derived `SessionSecretHash`; it never accepts a
+raw browser secret.
+
+The D.4 record contains session, user, application, and optional tenant identity; authentication
+and creation timestamps; last-seen, idle-expiry, and absolute-expiry timestamps; verifier-rotation
+time and count; current state; global/state-change timestamps; and mutually exclusive revocation
+or expiry terminal data. Optional tenant context is an explicit AuthNexus extension to the plan's
+abbreviated session list so later authorization cannot lose the scope already resolved by the
+application profile and transaction.
+
+Creation enforces `AuthenticatedAt <= CreatedAt < IdleExpiresAt <= AbsoluteExpiresAt` and starts in
+`Active`. The usable interval is `CreatedAt <= observedAt < min(IdleExpiresAt,
+AbsoluteExpiresAt)`. `CanBeUsedAt` applies that rule without waiting for or performing an `Expired`
+state mutation.
+
+| Operation | Required state/time | Result |
+| --- | --- | --- |
+| `RecordActivity` | Active and before effective expiry | Advances last-seen time and a non-shortening idle deadline capped by absolute expiry. |
+| `RotateSecretHash` | Active and before effective expiry | Replaces a distinct stored verifier and increments the rotation count in place. |
+| `Revoke` | Active | `Revoked`, preserving the first timestamp and machine reason. |
+| `Revoke` | Revoked | Idempotent no-op. |
+| `Expire` | Active and at/after effective expiry | `Expired`. |
+
+Revocation may record a reason even after an active record's deadlines have elapsed because it can
+only remove access; activity and rotation still fail at the deadline. `Revoked` is never later
+overwritten by `Expired`. All operation times are UTC-normalized and globally nondecreasing, and
+rejection cannot partially alter lifecycle state.
+
+The full plan's assurance, authentication-method, MFA, reauthentication, device, user-agent, and
+network fields remain deferred until their evidence, policy, and privacy contracts exist. Secret
+generation/hash derivation, cookies, middleware, lookup, logout orchestration, persistence, and
+endpoints remain Phase E/G work rather than D.4 behavior.
+
+## D.5 SecurityEvent
+
+`SecurityEvent` belongs to `AuthNexus.Modules.Audit` and is immutable after construction. It stores
+its Audit-owned event ID, UTC timestamp, one of 37 fixed machine event types, one of six declared
+results, optional actor/target/application/tenant/session context, required correlation identity,
+optional bounded network and user-agent summaries, and immutable bounded metadata.
+
+Tenant context is an explicit AuthNexus extension to the plan's abbreviated event list. It carries
+the scope already established by the application profile, transaction, and session; it neither
+resolves nor authorizes a tenant.
+
+The type codes reproduce Plan 1's catalogue from `registration_requested` through
+`provider_unavailable`. The plan names a `Result` field but no vocabulary, so D.5 explicitly adopts
+`Succeeded`, `Failed`, `Denied`, `Throttled`, `Cancelled`, and `Informational`. It deliberately
+defines no type/result compatibility matrix before the producers exist.
+
+Metadata is copied, read-only, limited to 32 canonical keys and 512 characters per value, and
+rejects control/Unicode separator/format characters, duplicates, and separator-aware sensitive
+keys. This is not the Phase I redaction pipeline: safe-looking keys can still carry unsafe values,
+so future trusted builders and serialized-output tests remain mandatory.
+
+“Append-only” in D.5 means the in-memory event has no mutation surface. No event is persisted,
+queried, emitted, retained, or transactionally coupled to a D.1-D.4 state change yet.
+
+## D.6 NotificationOutboxMessage
+
+`NotificationOutboxMessage` belongs to `AuthNexus.Modules.Notifications`. It records notification
+work accepted for later delivery, not a provider request already sent. The record carries its own
+message identity, required correlation identity, optional target user/application/tenant context,
+a machine notification type, one of three channels, a redacted destination value, an
+already-protected payload, and UTC creation/availability/lifecycle times.
+
+Creation starts in `Pending` with zero attempts and `NextAttemptAt = AvailableAt`. An attempt is
+due at or after that timestamp. `RecordDelivered`, `ScheduleRetry`, and `FailPermanently` are each
+legal from `Pending` and `RetryScheduled`: six accepted state/action pairs. The same actions are
+forbidden from `Delivered` and `PermanentlyFailed`: six rejected pairs. A retry must be scheduled
+strictly after its failed attempt; accepted outcomes increment the attempt count exactly once and
+keep terminal timestamps mutually exclusive.
+
+The clear destination has no public `Value` getter. A future provider adapter must call the
+explicit `RevealForDelivery()` method; display and ordinary JSON serialization remain redacted.
+The payload makes defensive byte copies and exposes only explicit copy-for-delivery access. These
+are in-memory disclosure boundaries, not a claim of encryption or safe persistence. Destination
+protection, atomic outbox writes, worker claims, retry policy, templates, providers, receipts, and
+replay remain Phase E/J work.
+
 ## V0.1 vocabulary
 
 The V0.1 domain ledger is:
@@ -141,16 +224,16 @@ The V0.1 domain ledger is:
 | `ApplicationProfile` | Resolve the calling application's redirect and policy context. | D.1 foundation |
 | `UserAccount` | Internal identity root independent of login method. | D.2 foundation |
 | `AuthenticationTransaction` | One server-owned state machine for an interactive attempt. | D.3 foundation |
-| `Session` | Durable record behind an opaque browser cookie. | No |
-| `SecurityEvent` | Append-only security-relevant activity. | No |
-| `NotificationOutbox` | Commit notification work with the state change that produced it. | No |
+| `Session` | Durable record behind an opaque browser cookie. | D.4 foundation |
+| `SecurityEvent` | Append-only security-relevant activity. | D.5 foundation |
+| `NotificationOutboxMessage` | Record notification work that must later commit with its originating state change. | D.6 foundation |
 
 Password credentials arrive in V0.2; OTP challenges and delivery records in V0.3; external
 identities in V0.4; passkeys in V0.5; TOTP and recovery codes in V0.6. Those models should not be
 pre-created in V0.1 without the behavior and tests that define them.
 
 There are no repositories, EF Core mappings, migrations, seeds, administrative commands, or HTTP
-representations. Those omissions are deliberate: D.1 through D.3 define valid in-memory state
+representations. Those omissions are deliberate: D.1 through D.6 define valid in-memory state
 only.
 
 ## Constraints carried into implementation
