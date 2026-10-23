@@ -26,7 +26,7 @@ automation boundary. The only AuthNexus-specific monorepo workflow is
 3. The target workflow verifies that same SHA against the successful standalone workflow before
    creating a `sync/authnexus` pull request.
 4. The workflow archives that one source revision, excludes source `.github/`, updates
-   `.source-revision`, and asks the protected `master` branch to merge the pull request.
+   `.source-revision`, and opens a pull request against `main` for review and merging.
 5. The target never dispatches or pushes changes back to `NanaAddoDBa/authnexus`.
 
 An hourly schedule finds the latest valid green source revision if a dispatch was missed. A manual

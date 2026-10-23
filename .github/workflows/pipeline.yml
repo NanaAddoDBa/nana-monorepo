@@ -3,10 +3,10 @@ name: Monorepo pipeline
 on:
   pull_request:
     branches:
-      - master
+      - main
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
     inputs:
       app:
@@ -157,7 +157,7 @@ jobs:
       - validate
     if: >-
       needs.detect.outputs.deploy_matrix != '[]' &&
-      github.ref == 'refs/heads/master' &&
+      github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:

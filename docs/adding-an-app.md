@@ -14,7 +14,7 @@ infra/deployments/prod/<app-name>/ Terraform root for the Cloud Run service
 
 The central workflow at `.github/workflows/pipeline.yml` discovers changed apps automatically. Do not add an app-specific workflow file.
 
-Pull requests run `install` and `ci` for affected apps. A merge to `master` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path.
+Pull requests run `install` and `ci` for affected apps. A merge to `main` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path.
 
 Terraform creates the service and its runtime identity. Terraform apply is manual and never runs in GitHub Actions.
 
@@ -25,7 +25,7 @@ Validation-only applications still provide `apps/<app-name>/Makefile` and `apps/
 Complete these repository-level steps once, not once per app:
 
 - The GCP project, billing, Artifact Registry repository, and Terraform state bucket exist.
-- GitHub Workload Identity Federation is configured for this repository and `master`.
+- GitHub Workload Identity Federation must trust this repository's `main` branch (update any previous `master`-only trust condition before deploying).
 - GitHub repository secrets `GCP_WORKLOAD_IDENTITY_PROVIDER` and `GCP_DEPLOY_SERVICE_ACCOUNT` exist.
 - Optional GitHub repository variables `GCP_PROJECT_ID`, `GCP_REGION`, and `ARTIFACT_REGISTRY_REPOSITORY` match the target platform. The pipeline has repository defaults when they are absent.
 - `gcloud`, Terraform, and Make are available for initial infrastructure setup.
@@ -410,7 +410,7 @@ Branch protection requires the stable `Pipeline success` check. This aggregate c
 
 ## 11. Verify the First Automatic Deployment
 
-After merge to `master`, the same pipeline should:
+After merge to `main`, the same pipeline should:
 
 1. Detect the changed app.
 2. Repeat validation.
@@ -447,7 +447,7 @@ Terraform checks run only when `infra/**` or `.github/workflows/pipeline.yml` ch
 
 ## Operational Commands
 
-Run one registered app manually from GitHub Actions by selecting the `Monorepo pipeline` workflow, choosing **Run workflow** on `master`, and entering its exact app name. Enter `all` to validate and deploy every registered app.
+Run one registered app manually from GitHub Actions by selecting the `Monorepo pipeline` workflow, choosing **Run workflow** on `main`, and entering its exact app name. Enter `all` to validate and deploy every registered app.
 
 Useful local commands:
 
