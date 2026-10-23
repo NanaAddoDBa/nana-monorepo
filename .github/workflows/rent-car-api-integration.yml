@@ -46,3 +46,24 @@ jobs:
           node-version: "22"
       - run: npm install --no-audit --no-fund
       - run: npm run ci
+      - name: Build deployable API image
+        working-directory: .
+        run: docker build -f apps/rent-car-api/Dockerfile -t aventra-api:ci .
+      - name: Smoke test container health endpoint
+        working-directory: .
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --rm --name aventra-api-ci --network host \
+            -e DATABASE_URL="$TEST_DATABASE_URL" \
+            -e ALLOW_SAMPLE_ENQUIRIES=false \
+            aventra-api:ci
+          trap 'docker rm -f aventra-api-ci >/dev/null 2>&1 || true' EXIT
+          for attempt in $(seq 1 15); do
+            if curl --fail --silent "http://127.0.0.1:8080/healthz" | grep -q '"ok"'; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs aventra-api-ci
+          exit 1
