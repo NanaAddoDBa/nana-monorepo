@@ -12,6 +12,6 @@ export default defineConfig(({ command }) => ({
   }],
   base: command === "build" ? (process.env.VITE_BASE_PATH || "/rent-car-react/") : "/",
   resolve: {
-    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)), "@rental": fileURLToPath(new URL("../../packages/rental-contracts/src/index.ts", import.meta.url)) },
   },
 }));
