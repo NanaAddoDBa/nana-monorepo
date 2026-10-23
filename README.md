@@ -54,7 +54,7 @@ pipeline-boundary rules.
 
 ### `apps/rent-car`
 
-Aventra is an independent React/Vite car-rental browse-and-inquire site, with an atomic feature architecture, reusable shadcn-style components, and a dedicated GitHub Pages pipeline. It intentionally uses illustrative inventory until an operator verifies vehicles, pricing, availability and legal policies. See `apps/rent-car/README.md` for setup and launch gates.
+Aventra is an independent React/Vite car-rental browse-and-inquire site, with an atomic feature architecture, reusable shadcn-style components, and a cross-repository GitHub Pages publishing pipeline targeting `NanaAddoDBa/rent-car-react` (public output only). It intentionally uses illustrative inventory until an operator verifies vehicles, pricing, availability and legal policies. See `apps/rent-car/README.md` for setup and launch gates.
 
 ## Planned Infrastructure
 
