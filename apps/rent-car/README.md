@@ -84,6 +84,10 @@ Before public use, provide verified vehicle inventory, rental prices and availab
 
 See [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).
 
+## Incoming link parameters
+
+The entry URL is normalized before the React router starts. Common marketing tags (UTM parameters and click IDs) are removed from both the normal URL query and HashRouter route query using the browser History API. The cleanup preserves `#/fleet` and other application routes, plus vehicle filters, pickup/return dates and unrelated query parameters. No navigation or extra network request is needed.
+
 ## Image licensing
 
 Example fleet images are served from Unsplash and are subject to the [Unsplash License](https://unsplash.com/license). Replace them with properly licensed photographs of actual vehicles before commercial operation. The site uses Lucide icons and locally maintained UI components.
