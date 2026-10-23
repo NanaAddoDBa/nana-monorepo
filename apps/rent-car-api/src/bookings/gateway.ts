@@ -29,7 +29,6 @@ export class StripePaymentGateway implements PaymentGateway {
     const query = serializeTrip(booking.trip).toString();
     const session = await this.client.checkout.sessions.create({
       mode: "payment",
-      payment_method_types: ["card"],
       customer_email: booking.customer.email,
       client_reference_id: booking.id,
       expires_at: Math.floor(Date.now() / 1000) + 31 * 60,
