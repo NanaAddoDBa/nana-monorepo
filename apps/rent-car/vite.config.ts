@@ -10,7 +10,7 @@ export default defineConfig(({ command }) => ({
       return process.env.VITE_PRODUCTION_READY === "true" ? html.replace("noindex, nofollow", "index, follow") : html;
     },
   }],
-  base: command === "build" ? (process.env.VITE_BASE_PATH || "/nana-monorepo/") : "/",
+  base: command === "build" ? (process.env.VITE_BASE_PATH || "/rent-car-react/") : "/",
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
