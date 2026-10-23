@@ -22,7 +22,11 @@ function receiptFromRow(row: { id: string; reference: string; status: "submitted
 }
 
 export class PostgresEnquiryRepository implements EnquiryRepository {
-  constructor(private readonly pool: Pool) {}
+  private readonly pool: Pool;
+
+  constructor(pool: Pool) {
+    this.pool = pool;
+  }
 
   async store(input: StoreRequest): Promise<StoreResult> {
     const client = await this.pool.connect();
