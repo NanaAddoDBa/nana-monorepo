@@ -102,13 +102,13 @@ test("available vehicle → one-page checkout → Stripe → verified pickup pas
   try {
     await expect(page.getByRole("heading",{name:"Ready for pickup."})).toBeVisible({timeout:20000});
   } catch (error) {
-    console.error("Pickup receipt diagnostic", JSON.stringify({
+    const diagnostic = JSON.stringify({
       url: page.url(),
       lookups,
       headings: await page.locator("h1").allTextContents(),
       content: (await page.locator("main").innerText().catch(() => "(no main element)")).slice(0, 1400),
-    }));
-    throw error;
+    });
+    throw new Error("Pickup receipt diagnostic: " + diagnostic + " | " + String(error));
   }
   await expect(page.getByText("AV-2030-PAID001")).toBeVisible();
   await expect(page.getByRole("link",{name:/Get directions/})).toHaveAttribute("href",/google.com\/maps/);
