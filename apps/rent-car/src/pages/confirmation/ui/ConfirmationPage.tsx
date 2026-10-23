@@ -46,7 +46,7 @@ export function ConfirmationPage() {
           }}><ClipboardCopy size={15} /> Copy reference</Button>
         </div>
         <div className="space-y-3 text-sm">
-          <p><strong>Vehicle:</strong> {state.vehicleName}</p>
+          <p><strong>Vehicle:</strong> {state?.vehicleName || "Selected vehicle"}</p>
           <p><strong>Base estimate:</strong> {priceLabel(receipt.quote.baseAmountCents / 100)}</p>
           <p><strong>Notification:</strong> Queued for delivery</p>
           <p className="text-muted-foreground">{receipt.nextSteps}</p>
