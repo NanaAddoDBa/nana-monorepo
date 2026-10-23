@@ -20,7 +20,7 @@ test("base rental price is deterministic", () => {
   assert.equal(estimatedBaseTotal(-10, "2026-10-24", "2026-10-27"), 0);
 });
 test("dateOffset returns an ISO date", () => {
-  assert.match(dateOffset(1, new Date(2026, 9, 23)), /^\\d{4}-\\d{2}-\\d{2}$/);
+  assert.match(dateOffset(1, new Date(2026, 9, 23)), /^\d{4}-\d{2}-\d{2}$/);
   assert.equal(dateOffset(1, new Date(2026, 11, 31)), "2027-01-01");
 });
 test("catalog filters combine city, category and price without mutating input", () => {
