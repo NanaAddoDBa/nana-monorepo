@@ -6,9 +6,10 @@ import { Button } from "@/shared/ui/button";
 interface Props {
   trip: RentalTrip;
   editHref?: string;
+  editState?: unknown;
 }
 
-export function TripSummary({ trip, editHref }: Props) {
+export function TripSummary({ trip, editHref, editState }: Props) {
   const pickup = locationById(trip.pickupLocationId)?.name || trip.pickupLocationId;
   const dropoff = locationById(trip.returnLocationId)?.name || trip.returnLocationId;
   const issues = validateTrip(trip);
@@ -23,7 +24,7 @@ export function TripSummary({ trip, editHref }: Props) {
           {trip.pickupDate} {trip.pickupTime} – {trip.returnDate} {trip.returnTime}
         </span>
       </div>
-      {editHref && <Button variant="outline" size="sm" asChild><Link to={editHref}>Edit trip</Link></Button>}
+      {editHref && <Button variant="outline" size="sm" asChild><Link to={editHref} state={editState}>Edit trip</Link></Button>}
       {issues.length > 0 && <p role="alert" className="w-full text-xs text-destructive">{issues[0]}</p>}
     </section>
   );
