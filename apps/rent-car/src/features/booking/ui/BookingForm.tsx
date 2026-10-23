@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { makeDefaultTrip, serializeTrip, validateTrip, type RentalTrip } from "@rental";
+import { makeDefaultTrip, serializeTrip, validateTrip, locationIdForName, quoteForVehicle, type RentalTrip } from "@rental";
 
 import type { Car } from "@/entities/car/model/cars";
 import { customerFromUnknown, emptyCustomer, validCustomer, type CustomerDetails } from "@/features/booking/model/customer";
@@ -23,6 +23,9 @@ export function BookingForm({ car, initialTrip }: Props) {
   const initialContact = customerFromUnknown((location.state as { customer?: unknown } | null)?.customer);
   const [customer, setCustomer] = useState<CustomerDetails>(initialContact || emptyCustomer);
   const issues = validateTrip(trip);
+  try { quoteForVehicle(car.id, trip); } catch (error) {
+    if (!issues.length) issues.push(error instanceof Error ? error.message : "Choose a valid trip.");
+  }
 
   function set(field: keyof CustomerDetails, value: string | boolean) {
     setCustomer((current) => ({ ...current, [field]: value }));
@@ -46,7 +49,8 @@ export function BookingForm({ car, initialTrip }: Props) {
         </p>
         <fieldset>
           <legend className="mb-5 text-sm font-bold uppercase tracking-widest text-primary">Trip details</legend>
-          <TripFields value={trip} onChange={setTrip} idPrefix="book" />
+          <TripFields value={trip} onChange={setTrip} idPrefix="book"
+            allowedPickupLocations={car.locations.map((name) => locationIdForName(name)).filter((id): id is string => Boolean(id))} />
           {issues.length > 0 && <p role="alert" className="mt-4 text-sm text-destructive">{issues[0]}</p>}
         </fieldset>
 

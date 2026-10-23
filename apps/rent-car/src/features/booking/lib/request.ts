@@ -7,6 +7,8 @@ export interface BookingRequest {
   returnCity?: string;
   pickupTime?: string;
   returnTime?: string;
+  billableDays?: number;
+  baseAmountCents?: number;
   pickupDate: string;
   returnDate: string;
   customerName: string;
@@ -24,12 +26,12 @@ export function bookingRequestText(details: BookingRequest): string {
     "Vehicle: " + details.carName,
     "Pickup: " + details.pickupCity + (details.returnCity ? " / Return: " + details.returnCity : ""),
     "Dates: " + details.pickupDate + (details.pickupTime ? " " + details.pickupTime : "") + " to " + details.returnDate + (details.returnTime ? " " + details.returnTime : ""),
-    "Rental days: " + days,
-    "Indicative base total: EUR " + estimatedBaseTotal(
+    "Rental days: " + (details.billableDays ?? days),
+    "Indicative base total: EUR " + (details.baseAmountCents !== undefined ? (details.baseAmountCents / 100).toFixed(2) : estimatedBaseTotal(
       details.dailyRate,
       details.pickupDate,
       details.returnDate,
-    ),
+    )),
     "",
     "Name: " + details.customerName,
     "Email: " + details.customerEmail,

@@ -9,13 +9,14 @@ interface TripFieldsProps {
   value: RentalTrip;
   onChange: (next: RentalTrip) => void;
   idPrefix: string;
+  allowedPickupLocations?: string[];
 }
 
-export function TripFields({ value, onChange, idPrefix }: TripFieldsProps) {
+export function TripFields({ value, onChange, idPrefix, allowedPickupLocations }: TripFieldsProps) {
   function set(field: keyof RentalTrip, next: string) {
     onChange({ ...value, [field]: next });
   }
-  const places = rentalLocations.map((place) => (
+  const places = rentalLocations.filter((place) => !allowedPickupLocations || allowedPickupLocations.includes(place.id)).map((place) => (
     <option key={place.id} value={place.id}>{place.name}</option>
   ));
   return (

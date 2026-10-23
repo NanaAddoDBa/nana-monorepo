@@ -51,6 +51,7 @@ export function ReviewPage() {
     pickupDate: trip.pickupDate, pickupTime: trip.pickupTime,
     returnDate: trip.returnDate, returnTime: trip.returnTime,
     customerName: customer.name, customerEmail: customer.email, phone: customer.phone, message: customer.message,
+    billableDays: quote.billableDays, baseAmountCents: quote.baseAmountCents,
   });
 
   async function submit() {
@@ -123,6 +124,7 @@ export function ReviewPage() {
                     pickupDate: trip.pickupDate, pickupTime: trip.pickupTime,
                     returnDate: trip.returnDate, returnTime: trip.returnTime,
                     customerName: customer.name, customerEmail: customer.email, phone: customer.phone, message: customer.message,
+                    billableDays: quote.billableDays, baseAmountCents: quote.baseAmountCents,
                   });
                   window.location.href = url;
                   setNotice("Your email app should open. Send the email yourself to contact the operator.");
