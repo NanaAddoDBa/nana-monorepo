@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 
 import type { Car } from "@/entities/car/model/cars";
-import { priceLabel } from "@/shared/config/site";
+import { priceLabel, site } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
 import { Card } from "@/shared/ui/card";
 import { Separator } from "@/shared/ui/separator";
@@ -19,7 +19,7 @@ export function RentalRequestPanel({
   bookingQuery,
   quote,
 }: RentalRequestPanelProps) {
-  const detailsUrl = "/book/" + car.id + (bookingQuery ? "?" + bookingQuery : "");
+  const detailsUrl = "/checkout/" + car.id + (bookingQuery ? "?" + bookingQuery : "");
 
   return (
     <aside className="lg:sticky lg:top-6 lg:self-start">
@@ -57,11 +57,13 @@ export function RentalRequestPanel({
 
         <Button className="mt-7 w-full" asChild>
           <Link to={detailsUrl}>
-            Request this car <ArrowRight size={18} />
+            {site.usePaidBookings ? "Select car" : "Continue to checkout"} <ArrowRight size={18} />
           </Link>
         </Button>
         <p className="mt-4 text-center text-xs leading-5 text-muted-foreground">
-          No payment is collected and no reservation is confirmed here.
+          {site.usePaidBookings
+            ? "A confirmed booking and pickup pass are issued only after verified payment."
+            : "This is an example fleet. Final availability and pricing are not confirmed."}
         </p>
       </Card>
     </aside>

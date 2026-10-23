@@ -45,6 +45,7 @@ function AppLayout() {
           <Route path="/fleet/:id" element={<CarDetailsPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/book/:id" element={<BookingPage />} />
+          <Route path="/checkout/:id" element={<BookingPage />} />
           <Route path="/review/:id" element={<ReviewPage />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/about" element={<StaticPage kind="about" />} />
