@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import Fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
+import rawBody from "fastify-raw-body";
+import { registerBookingRoutes, type BookingRoutesOptions } from "./bookings/routes.ts";
 import { rentalLocations, quoteForVehicle } from "../../../packages/rental-contracts/src/index.ts";
 import { enquirySchema, quoteSchema } from "./contracts.ts";
 import type { EnquiryRepository, StoreRequest } from "./enquiries/repository.ts";
@@ -11,6 +13,7 @@ export interface ApiOptions {
   allowedOrigins?: string[];
   allowSampleEnquiries?: boolean;
   clock?: () => number;
+  bookings?: BookingRoutesOptions;
 }
 
 export async function buildApp(options: ApiOptions): Promise<FastifyInstance> {
@@ -71,6 +74,11 @@ export async function buildApp(options: ApiOptions): Promise<FastifyInstance> {
     });
     return reply.code(result.kind === "created" ? 201 : 200).send({ receipt: result.receipt });
   });
+
+  if (options.bookings) {
+    await app.register(rawBody, { global: false, encoding: false, runFirst: true });
+    registerBookingRoutes(app, options.bookings);
+  }
 
   app.setErrorHandler((error, _request, reply) => {
     if (error instanceof Error && "statusCode" in error && typeof error.statusCode === "number" && error.statusCode < 500) {

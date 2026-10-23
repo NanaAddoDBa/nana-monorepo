@@ -1,8 +1,10 @@
-import { locationById, serializeTrip, tripFromParams, type RentalTrip } from "@rental";
-import { SearchForm } from "@/widgets/search-form/ui/SearchForm";
-import { TripSummary } from "@/widgets/trip-summary/ui/TripSummary";
+import { locationById, serializeTrip, tripFromParams, validateTrip, type CheckoutQuote, type RentalTrip } from "@rental";
+import { useEffect, useState } from "react";
+import { fetchAvailableCars } from "@/features/checkout/lib/bookingsApi";
+import { site } from "@/shared/config/site";
+import { FleetTripBar } from "@/pages/fleet/ui/FleetTripBar";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, SlidersHorizontal, X } from "lucide-react";
 
 import { cars } from "@/entities/car/model/cars";
 import { filterCars } from "@/features/catalog/lib/filters";
@@ -27,6 +29,35 @@ export function FleetPage() {
   const value = (key: FilterKey) => params.get(key) || "";
   const trip: RentalTrip | null = tripFromParams(params);
   const selectedCity = trip ? locationById(trip.pickupLocationId)?.name || "" : value("city");
+  const [quotes, setQuotes] = useState<CheckoutQuote[]>([]);
+  const [availabilityState, setAvailabilityState] = useState<"idle"|"loading"|"ready"|"error">("idle");
+  const [availabilityError, setAvailabilityError] = useState("");
+  const [retry, setRetry] = useState(0);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const tripKey = trip ? serializeTrip(trip).toString() : "";
+  useEffect(() => {
+    if (!site.usePaidBookings || !tripKey) return;
+    const selected = tripFromParams(new URLSearchParams(tripKey));
+    if (!selected || validateTrip(selected).length) {
+      setAvailabilityState("error");
+      setAvailabilityError("Choose a valid pickup and return date and time.");
+      return;
+    }
+    const abort = new AbortController();
+    setAvailabilityState("loading");
+    setAvailabilityError("");
+    fetchAvailableCars(selected, abort.signal).then((available) => {
+      if (abort.signal.aborted) return;
+      setQuotes(available);
+      setAvailabilityState("ready");
+    }).catch((error: unknown) => {
+      if (abort.signal.aborted) return;
+      setAvailabilityState("error");
+      setAvailabilityError(error instanceof Error ? error.message : "Availability could not be checked.");
+    });
+    return () => abort.abort();
+  }, [tripKey, retry]);
 
   function updateFilter(key: FilterKey, nextValue: string) {
     setParams((current) => {
@@ -45,6 +76,11 @@ export function FleetPage() {
     sort: value("sort") || "featured",
     maxPrice: priceLimit(value("maxPrice")),
   });
+
+  const quoteById = new Map(quotes.map((quote) => [quote.vehicleId, quote]));
+  const visible = site.usePaidBookings
+    ? availabilityState === "ready" ? filtered.filter((car) => quoteById.has(car.id)) : []
+    : filtered;
 
   function resetFilters() {
     setParams((current) => {
@@ -76,27 +112,31 @@ export function FleetPage() {
               </p>
             </div>
             <p className="text-sm text-muted-foreground">
-              {filtered.length} of {cars.length} vehicles
+              {site.usePaidBookings && availabilityState === "ready" ?
+                visible.length + " verified car(s) available" : filtered.length + " vehicles to explore"}
             </p>
           </div>
         </div>
       </div>
 
       <div className="page-container mt-8 space-y-3">
-        {trip && <TripSummary trip={trip} />}
-        <SearchForm />
+        <FleetTripBar trip={trip} />
       </div>
       <div className="page-container grid gap-10 py-12 lg:grid-cols-[260px_1fr]">
-        <CatalogFilterPanel
-          value={value}
-          onChange={updateFilter}
-          onReset={resetFilters}
-        />
+        <div>
+          <Button className="mb-4 lg:hidden" variant="outline" onClick={() => setFiltersOpen(!filtersOpen)}
+            aria-controls="fleet-filter-panel" aria-expanded={filtersOpen}>
+            <SlidersHorizontal size={17} /> {filtersOpen ? "Hide filters" : "Filters"}
+          </Button>
+          <div id="fleet-filter-panel" className={filtersOpen ? "" : "hidden lg:block"}>
+            <CatalogFilterPanel value={value} onChange={updateFilter} onReset={resetFilters} />
+          </div>
+        </div>
 
         <section aria-label="Car catalogue" className="min-w-0">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <p className="text-sm font-medium">
-              {filtered.length} cars found
+              {visible.length} cars found
               {selectedCity && (
                 <span className="text-muted-foreground">
                   {" "}in {selectedCity}
@@ -122,10 +162,23 @@ export function FleetPage() {
             </div>
           </div>
 
-          {filtered.length > 0 ? (
+          {site.usePaidBookings && availabilityState === "loading" ? (
+            <p role="status" className="rounded-2xl border border-border bg-card p-8 text-center">
+              Checking verified availability and final pricing…
+            </p>
+          ) : site.usePaidBookings && availabilityState === "error" ? (
+            <div role="alert" className="rounded-2xl border border-border bg-card p-8">
+              <h2 className="text-lg font-semibold">Availability check unavailable</h2>
+              <p className="mt-2 text-muted-foreground">{availabilityError}</p>
+              <Button className="mt-4" onClick={() => setRetry(value => value + 1)}>Try again</Button>
+            </div>
+          ) : site.usePaidBookings && !trip ? (
+            <p className="rounded-2xl border border-border bg-card p-8">Choose your pickup location and dates to see verified available vehicles.</p>
+          ) : visible.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
-              {filtered.map((car) => (
-                <CarCard car={car} key={car.id} trip={trip} />
+              {visible.map((car) => (
+                <CarCard car={car} key={car.id} trip={trip}
+                  verifiedQuote={site.usePaidBookings ? quoteById.get(car.id) : null} />
               ))}
             </div>
           ) : (
@@ -134,7 +187,7 @@ export function FleetPage() {
                 <X size={26} />
               </span>
               <h2 className="text-2xl font-bold">
-                No cars match those filters
+                {site.usePaidBookings ? "No verified cars are available for this trip" : "No cars match those filters"}
               </h2>
               <p className="mt-3 max-w-xs text-muted-foreground">
                 Try another location, rate, or vehicle type.
@@ -146,8 +199,9 @@ export function FleetPage() {
           )}
 
           <p className="mt-8 text-xs leading-6 text-muted-foreground">
-            Vehicle details, rates, and locations are examples.
-            Availability and final pricing require confirmation.
+            {site.usePaidBookings
+              ? "Available cars and complete mandatory-fee totals are verified by the rental service. A separate refundable deposit may be required at pickup."
+              : "These vehicles and prices are illustrative. Browsing does not confirm availability or reserve a car."}
           </p>
         </section>
       </div>

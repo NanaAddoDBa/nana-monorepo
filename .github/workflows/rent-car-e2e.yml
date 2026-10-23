@@ -21,12 +21,17 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [enquiry, paid]
     defaults:
       run:
         working-directory: apps/rent-car
     env:
       VITE_ENQUIRY_API_URL: https://api.aventra.test
-      VITE_ENABLE_LIVE_ENQUIRIES: "true"
+      VITE_ENABLE_LIVE_ENQUIRIES: ${{ matrix.mode == 'enquiry' && 'true' || 'false' }}
+      VITE_ENABLE_PAID_BOOKINGS: ${{ matrix.mode == 'paid' && 'true' || 'false' }}
       VITE_PRODUCTION_READY: "false"
     steps:
       - uses: actions/checkout@v6
