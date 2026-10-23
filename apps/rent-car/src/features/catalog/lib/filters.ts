@@ -1,4 +1,4 @@
-import type { Car } from "../../../entities/car/model/cars";
+import type { Car } from "@/entities/car/model/cars";
 
 export interface CatalogFilters {
   search: string;
