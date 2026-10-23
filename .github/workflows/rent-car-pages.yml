@@ -1,0 +1,48 @@
+name: Aventra / GitHub Pages
+
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - "apps/rent-car/**"
+      - ".github/workflows/rent-car-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: aventra-github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and publish Aventra
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        working-directory: apps/rent-car
+        run: npm install --no-audit --no-fund
+      - name: Typecheck, unit tests and build
+        working-directory: apps/rent-car
+        env:
+          VITE_BASE_PATH: /nana-monorepo/
+          VITE_BOOKING_EMAIL: ${{ vars.AVENTRA_BOOKING_EMAIL }}
+          VITE_CONTACT_PHONE: ${{ vars.AVENTRA_CONTACT_PHONE }}
+          VITE_PRODUCTION_READY: ${{ vars.AVENTRA_PRODUCTION_READY || 'false' }}
+        run: npm run check
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/rent-car/dist
+      - id: deployment
+        uses: actions/deploy-pages@v5

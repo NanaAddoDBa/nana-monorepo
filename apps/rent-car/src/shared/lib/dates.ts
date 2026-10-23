@@ -1,7 +1,7 @@
 const ONE_DAY = 86_400_000;
 
 export function parseISODate(value: string): number | null {
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
   const [year, month, day] = value.split("-").map(Number);
   const timestamp = Date.UTC(year, month - 1, day);
   if (new Date(timestamp).toISOString().slice(0, 10) !== value) return null;

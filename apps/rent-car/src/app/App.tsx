@@ -15,15 +15,15 @@ import { NotFoundPage } from "@/pages/not-found/ui/NotFoundPage";
 // HashRouter preserves deep links on GitHub Pages without a server-side SPA rewrite.
 function ScrollManager() {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [pathname]);
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "auto" }); }, [pathname]);
   return null;
 }
 export function App() {
   return <ThemeProvider><FavoritesProvider><HashRouter>
-    <a href="#main-content" className="sr-only z-50 bg-card p-3 focus:not-sr-only focus:absolute focus:left-4 focus:top-3">Skip to content</a>
+    <button type="button" onClick={() => document.getElementById("main-content")?.focus()} className="sr-only z-50 bg-card p-3 focus:not-sr-only focus:absolute focus:left-4 focus:top-3">Skip to content</button>
     <ScrollManager />
     <SiteHeader />
-    <div id="main-content">
+    <div id="main-content" tabIndex={-1}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/fleet" element={<FleetPage />} />
