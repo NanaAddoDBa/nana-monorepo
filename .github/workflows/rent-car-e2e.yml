@@ -1,0 +1,38 @@
+name: Aventra / Browser journey
+
+on:
+  pull_request:
+    branches: ["master"]
+    paths:
+      - "apps/rent-car/**"
+      - "packages/rental-contracts/**"
+      - ".github/workflows/rent-car-e2e.yml"
+  push:
+    branches: ["master"]
+    paths:
+      - "apps/rent-car/**"
+      - "packages/rental-contracts/**"
+      - ".github/workflows/rent-car-e2e.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/rent-car
+    env:
+      VITE_ENQUIRY_API_URL: https://api.aventra.test
+      VITE_ENABLE_LIVE_ENQUIRIES: "true"
+      VITE_PRODUCTION_READY: "false"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
