@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #f7f7f2;
+  --foreground: #182421;
+  --card: #ffffff;
+  --card-foreground: #182421;
+  --primary: #176b58;
+  --primary-foreground: #ffffff;
+  --secondary: #e8eee9;
+  --secondary-foreground: #1d5548;
+  --muted: #eff0eb;
+  --muted-foreground: #65726c;
+  --border: #e0e4df;
+  --input: #d7ded8;
+  --ring: #176b58;
+  --destructive: #b53838;
+}
+.dark {
+  --background: #101815;
+  --foreground: #edf4ef;
+  --card: #1b2923;
+  --card-foreground: #edf4ef;
+  --primary: #8cdbb8;
+  --primary-foreground: #122b20;
+  --secondary: #293d33;
+  --secondary-foreground: #def4e6;
+  --muted: #23332b;
+  --muted-foreground: #afc0b5;
+  --border: #31443a;
+  --input: #476052;
+  --ring: #8cdbb8;
+  --destructive: #dd6969;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --font-sans: "Avenir Next", "Segoe UI", Arial, sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+button, input, select, textarea { font: inherit; }
+a { text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+::selection { background: #b8e8ce; color: #123a2d; }
+.page-container { width: min(100% - 40px, 1250px); margin-inline: auto; }
+.section-spacing { padding-block: clamp(70px, 9vw, 128px); }
+.display-serif { font-family: Georgia, "Times New Roman", serif; letter-spacing: -.055em; font-weight: 500; }
+.hero-visual { background: radial-gradient(circle at 72% 20%, #ecf3d6 0%, #becbc0 47%, #91aba0 100%); border-radius: 43% 43% 26px 26px / 38% 38% 26px 26px; }
+.hero-visual::before { content: ""; position: absolute; inset: 12% 9% 13%; border: 1px solid rgb(255 255 255 / 28%); border-radius: 45% 45% 24px 24px / 40% 40% 24px 24px; pointer-events: none; }
+.hero-image { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
+.vehicle-photo { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease; }
+.group:hover .vehicle-photo { transform: scale(1.045); }
+.mesh-accent { background-image: radial-gradient(#176b5830 1px, transparent 1px); background-size: 22px 22px; }
+.scrollbar-hidden::-webkit-scrollbar { display: none; }
+@media(max-width:640px) { .page-container { width: min(100% - 28px, 1250px); } }
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } *,*::before,*::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
