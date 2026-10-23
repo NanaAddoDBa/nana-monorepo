@@ -7,6 +7,7 @@ export const site = {
   currency: "EUR",
   enquiryApiUrl: (import.meta.env.VITE_ENQUIRY_API_URL || "").trim(),
   useEnquiryApi: import.meta.env.VITE_ENABLE_LIVE_ENQUIRIES === "true" && Boolean((import.meta.env.VITE_ENQUIRY_API_URL || "").trim()),
+  usePaidBookings: import.meta.env.VITE_ENABLE_PAID_BOOKINGS === "true" && Boolean((import.meta.env.VITE_ENQUIRY_API_URL || "").trim()),
 } as const;
 
 export function priceLabel(value: number): string {
