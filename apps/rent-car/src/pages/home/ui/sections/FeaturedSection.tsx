@@ -19,7 +19,7 @@ export function FeaturedSection() {
             Explore the fleet
           </p>
           <h2 className="display-serif text-[clamp(2.9rem,5.5vw,5rem)] leading-[1.05]">
-            Popular <em>choices.</em>
+            Featured <em>vehicles.</em>
           </h2>
           <p className="mt-4 max-w-lg text-muted-foreground">
             Compare specifications and indicative rates across our example fleet.
