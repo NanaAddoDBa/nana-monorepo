@@ -81,7 +81,8 @@ test("available vehicle → one-page checkout → Stripe → verified pickup pas
     await route.fulfill({status:200,contentType:"application/json",
       headers:{"access-control-allow-origin":"*"},
       body:JSON.stringify({booking:{
-        // React StrictMode can initiate an extra mount-time receipt fetch in development.\n        status:lookups <= 2 ? "pending_payment" : "confirmed",
+        // React StrictMode can initiate an extra mount-time receipt fetch in development.
+        status:lookups <= 2 ? "pending_payment" : "confirmed",
         reference:"AV-2030-PAID001",
         vehicleName:"Mid-size SUV",
         trip:{pickupLocationId:"munich",returnLocationId:"munich",
@@ -99,17 +100,7 @@ test("available vehicle → one-page checkout → Stripe → verified pickup pas
   // The intermediate payment-pending screen may be transient under StrictMode.
   // Assert the receipt lookup and the verified terminal state instead.
   await expect.poll(() => lookups, { timeout: 10000 }).toBeGreaterThanOrEqual(1);
-  try {
-    await expect(page.getByRole("heading",{name:"Ready for pickup."})).toBeVisible({timeout:20000});
-  } catch (error) {
-    const diagnostic = JSON.stringify({
-      url: page.url(),
-      lookups,
-      headings: await page.locator("h1").allTextContents(),
-      content: (await page.locator("main").innerText().catch(() => "(no main element)")).slice(0, 1400),
-    });
-    throw new Error("Pickup receipt diagnostic: " + diagnostic + " | " + String(error));
-  }
+  await expect(page.getByRole("heading",{name:"Ready for pickup."})).toBeVisible({timeout:20000});
   await expect(page.getByText("AV-2030-PAID001")).toBeVisible();
   await expect(page.getByRole("link",{name:/Get directions/})).toHaveAttribute("href",/google.com\/maps/);
 });
