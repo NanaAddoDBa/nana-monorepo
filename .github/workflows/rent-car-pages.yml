@@ -2,7 +2,7 @@ name: Aventra / Publish rent-car-react
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
     paths:
       - "apps/rent-car/**"
       - ".github/workflows/rent-car-pages.yml"

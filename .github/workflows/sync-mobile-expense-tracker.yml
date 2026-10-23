@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          ref: master
+          ref: main
           token: ${{ secrets.MONOREPO_SYNC_TOKEN }}
 
       - name: Apply new source commits
@@ -72,7 +72,7 @@ jobs:
 
           git fetch origin \
             "+refs/heads/${SYNC_BRANCH}:refs/remotes/origin/${SYNC_BRANCH}" || true
-          git checkout -B "${SYNC_BRANCH}" origin/master
+          git checkout -B "${SYNC_BRANCH}" origin/main
           git config user.name "${SYNC_AUTHOR_NAME}"
           git config user.email "${SYNC_AUTHOR_EMAIL}"
 
@@ -157,7 +157,7 @@ jobs:
             pull_request_url="$(
               gh pr create \
                 --repo "${GITHUB_REPOSITORY}" \
-                --base master \
+                --base main \
                 --head "${SYNC_BRANCH}" \
                 --title "Sync mobile expense tracker from standalone repository" \
                 --body-file "${body_file}"

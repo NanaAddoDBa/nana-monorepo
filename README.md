@@ -120,7 +120,7 @@ GitHub Actions uses one central workflow:
 .github/workflows/pipeline.yml
 ```
 
-Pull requests validate only affected apps. Merges to `master` validate affected apps and deploy only those with deployment enabled, using immutable commit-SHA image tags. Shared library or infrastructure changes validate every registered app and deploy each deployment-enabled app.
+Pull requests validate only affected apps. Merges to `main` validate affected apps and deploy only those with deployment enabled, using immutable commit-SHA image tags. Shared library or infrastructure changes validate every registered app and deploy each deployment-enabled app.
 
 Each pipeline-integrated app registers its validation contract in `apps/<app>/pipeline.json`. Apps with `deploy_enabled: true` additionally implement the Docker targets:
 

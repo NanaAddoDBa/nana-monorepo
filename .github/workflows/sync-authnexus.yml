@@ -56,7 +56,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          ref: master
+          ref: main
           token: ${{ secrets.AUTHNEXUS_MONOREPO_SYNC_TOKEN }}
 
       - name: Resolve and mirror the source revision
@@ -168,7 +168,7 @@ jobs:
 
           git fetch origin \
             "+refs/heads/${SYNC_BRANCH}:refs/remotes/origin/${SYNC_BRANCH}" || true
-          git checkout -B "${SYNC_BRANCH}" origin/master
+          git checkout -B "${SYNC_BRANCH}" origin/main
 
           git -C "${source_directory}" archive "${source_sha}" | tar -x -C "${snapshot_directory}"
           rsync -a --delete \
@@ -219,7 +219,7 @@ jobs:
             pull_request_url="$(
               gh pr create \
                 --repo "${GITHUB_REPOSITORY}" \
-                --base master \
+                --base main \
                 --head "${SYNC_BRANCH}" \
                 --title "Sync AuthNexus from standalone repository" \
                 --body "${body}"
