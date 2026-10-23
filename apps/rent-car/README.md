@@ -51,24 +51,34 @@ The project includes compatible components.json, Vite alias @/, Tailwind v4 CSS 
 
 - VITE_BOOKING_EMAIL: operator mailbox used by the email request action
 - VITE_CONTACT_PHONE: public rental contact number
-- VITE_BASE_PATH: Vite production asset base (defaults to /nana-monorepo/)
+- VITE_BASE_PATH: Vite production asset base (defaults to /rent-car-react/)
 - VITE_PRODUCTION_READY: set to true *only after* legal and operating requirements are verified, to enable search indexing
 
 Everything prefixed with VITE_ is exposed in the public JavaScript bundle. Never place API keys or secrets in these settings.
 
 If VITE_BOOKING_EMAIL is unset, the request form offers a copyable draft instead of falsely claiming to send anything. When set, the browser opens the user's email client with a prepared message; **the visitor must press Send**. Mail delivery and availability are not checked by the site.
 
-## Deploy to GitHub Pages
+## Publish at https://nanaaddodba.github.io/rent-car-react/
 
-This app is under [NanaAddoDBa/nana-monorepo](https://github.com/NanaAddoDBa/nana-monorepo) in apps/rent-car. The repo-level workflow .github/workflows/rent-car-pages.yml builds the app and deploys its dist/ on merges to master.
+**The application source stays in the monorepo** at `apps/rent-car/`. Publishing uses a separate, public `NanaAddoDBa/rent-car-react` GitHub repository containing only the compiled static website on its `gh-pages` branch. GitHub Pages assigns a default project URL based on the name of the publishing repository.
 
-1. Review and merge the associated feature pull request.
-2. In repository Settings > Pages > Build and deployment, choose **GitHub Actions**.
-3. In Settings > Secrets and variables > Actions > Variables, set AVENTRA_BOOKING_EMAIL and AVENTRA_CONTACT_PHONE, as appropriate. Optionally AVENTRA_PRODUCTION_READY=true after launch sign-off.
-4. Trigger 'Aventra / GitHub Pages' if it has not yet run. Confirm the published URL in the workflow deployment result.
-5. Verify the deployed asset paths, navigation and email handoff on mobile and desktop.
+The `nana-monorepo` repository has other applications and its own potential Pages root. **Do not enable Pages on the monorepo merely to host Aventra.** The workflow `.github/workflows/rent-car-pages.yml` deploys to the dedicated output repository.
 
-The expected project Pages address, **once Pages is enabled and the workflow succeeds**, is https://nanaaddodba.github.io/nana-monorepo/ . This is not claimed to be live before verification.
+### One-time setup required on GitHub
+
+1. While signed in as `NanaAddoDBa`, [create a public repository](https://github.com/new) named **rent-car-react**. Initialize it with a README so it has a default branch. Do not fork the unlicensed upstream source.
+2. Create a **fine-grained GitHub personal access token** limited to this new `rent-car-react` repository, granting **Contents: Read and write** (plus the default Metadata access). Set an expiration and keep it secret. Do not paste tokens in chat, commits or public configuration.
+3. Open the **source** repository `NanaAddoDBa/nana-monorepo` → **Settings → Secrets and variables → Actions → Secrets**. Create the repository secret **RENT_CAR_PAGES_TOKEN** with your scoped token. The workflow safely skips publication until this secret is configured.
+4. Optionally set `AVENTRA_BOOKING_EMAIL`, `AVENTRA_CONTACT_PHONE` and `AVENTRA_PRODUCTION_READY` (default false) as **Actions repository variables** in `nana-monorepo`. These public values are embedded into the browser bundle.
+5. From the monorepo **Actions** tab, run **Aventra / Publish rent-car-react** using **Run workflow** on `master`. Alternatively merge a change under `apps/rent-car/`. This validates, builds with the Vite base `/rent-car-react/`, and publishes the generated site to the **gh-pages** branch of `NanaAddoDBa/rent-car-react`. The generated branch is force-updated; do not keep other content there.
+6. Once the publishing job succeeds and the destination branch exists, go to **NanaAddoDBa/rent-car-react → Settings → Pages**. Under **Build and deployment**, select **Deploy from a branch** → `gh-pages` → `/(root)` → **Save**. The Pages build runs in this destination repository.
+7. After the destination Pages deployment succeeds, open **https://nanaaddodba.github.io/rent-car-react/**. Check the landing page, CSS, images, navigation, `#/fleet` deep links, filtering, favorites and booking request form on mobile and desktop. A passing monorepo build does not prove that the site is online.
+
+The nested monorepo URL `https://nanaaddodba.github.io/nana-monorepo/rent-car-react/` is *not* the same address as your requested `https://nanaaddodba.github.io/rent-car-react/`. This setup intentionally uses the dedicated repository for the exact requested address.
+
+### Continuous deployment
+
+After the initial setup, pushes to `master` touching `apps/rent-car/` or the publishing workflow automatically update the `rent-car-react` site's `gh-pages` branch. Maintain application code only in `nana-monorepo`; the destination repository is generated output.
 
 ## Before public commercial launch
 
