@@ -1,3 +1,4 @@
+import type { RentalQuote } from "@rental";
 import { Link } from "react-router-dom";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 
@@ -10,11 +11,13 @@ import { Separator } from "@/shared/ui/separator";
 interface RentalRequestPanelProps {
   car: Car;
   bookingQuery: string;
+  quote?: RentalQuote | null;
 }
 
 export function RentalRequestPanel({
   car,
   bookingQuery,
+  quote,
 }: RentalRequestPanelProps) {
   const detailsUrl = "/book/" + car.id + (bookingQuery ? "?" + bookingQuery : "");
 
@@ -22,15 +25,14 @@ export function RentalRequestPanel({
     <aside className="lg:sticky lg:top-6 lg:self-start">
       <Card className="p-7">
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Indicative daily rate
+          {quote ? `Estimated base · ${quote.billableDays} day(s)` : "Indicative daily rate"}
         </p>
         <p className="mt-2 text-4xl font-bold">
-          {priceLabel(car.dailyRate)}
-          <span className="ml-2 text-sm font-normal text-muted-foreground">
-            / day
-          </span>
+          {priceLabel(quote ? quote.baseAmountCents / 100 : car.dailyRate)}
+          {!quote && <span className="ml-2 text-sm font-normal text-muted-foreground">/ day</span>}
         </p>
 
+        {quote?.requiresManualReview && <p className="mt-2 text-xs text-muted-foreground">One-way return fee not included; operator review required.</p>}
         <Separator className="my-6" />
         <div className="space-y-5 text-sm">
           <div className="flex items-start gap-3">

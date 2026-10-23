@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ArrowUpRight, Fuel, Heart, Settings2, Users } from "lucide-react";
 
 import type { Car } from "@/entities/car/model/cars";
-import { rentalDetailsQuery } from "@/features/booking/lib/trip";
+import { quoteForVehicle, type RentalQuote, type RentalTrip } from "@rental";
 import { useFavorites } from "@/features/favorites/model/FavoritesProvider";
 import { priceLabel } from "@/shared/config/site";
 import { Badge } from "@/shared/ui/badge";
@@ -11,13 +11,16 @@ import { Card } from "@/shared/ui/card";
 
 interface CarCardProps {
   car: Car;
+  trip?: RentalTrip | null;
 }
 
-export function CarCard({ car }: CarCardProps) {
+export function CarCard({ car, trip }: CarCardProps) {
   const { search } = useLocation();
   const { isFavorite, toggle } = useFavorites();
   const saved = isFavorite(car.id);
-  const detailsUrl = `/fleet/${car.id}${rentalDetailsQuery(search)}`;
+  const detailsUrl = `/fleet/${car.id}${search}`;
+  let quote: RentalQuote | null = null;
+  try { if (trip) quote = quoteForVehicle(car.id, trip); } catch { /* No valid trip-specific estimate. */ }
 
   return (
     <Card className="group overflow-hidden border-border/80 shadow-none transition-shadow hover:shadow-lg">
@@ -63,13 +66,16 @@ export function CarCard({ car }: CarCardProps) {
 
         <div className="flex items-end justify-between gap-4">
           <div>
-            <p className="text-xs text-muted-foreground">Indicative from</p>
-            <p className="mt-0.5 text-2xl font-bold">
-              {priceLabel(car.dailyRate)}
-              <span className="ml-1 text-xs font-normal text-muted-foreground">
-                / day
-              </span>
+            <p className="text-xs text-muted-foreground">
+              {quote ? `Base estimate · ${quote.billableDays} day(s)` : "Indicative from"}
             </p>
+            <p className="mt-0.5 text-2xl font-bold">
+              {priceLabel(quote ? quote.baseAmountCents / 100 : car.dailyRate)}
+              {!quote && <span className="ml-1 text-xs font-normal text-muted-foreground">/ day</span>}
+            </p>
+            {quote?.requiresManualReview && (
+              <p className="mt-1 text-xs text-muted-foreground">One-way fee not included</p>
+            )}
           </div>
           <Button size="sm" asChild>
             <Link to={detailsUrl}>

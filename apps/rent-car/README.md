@@ -9,8 +9,10 @@ Aventra is a car-rental browsing and enquiry website built with React, TypeScrip
 - Responsive fleet and vehicle detail pages
 - Filters for location, category, transmission, and daily rate
 - Saved vehicles stored in the visitor's browser
-- Pickup and return date validation with indicative price estimates
-- Enquiry text prepared for email, or copied when an operator email is not configured
+- Pickup and return locations, local dates and times, with time-zone-aware base estimates
+- Trip details and fleet filters preserved across results, details and review
+- Server-backed guest enquiries, idempotent retries and references when the API is enabled
+- Clearly identified email/copy fallback while online submission remains disabled
 - Light and dark themes
 - Reusable UI primitives in `src/shared/ui`
 
@@ -32,6 +34,7 @@ npm run typecheck
 npm run test
 npm run build
 npm run check
+# After installing Playwright Chromium browsers: npm run test:e2e
 ```
 
 Only public operator contact details belong in `.env.local`. Every `VITE_*` variable is embedded in the client bundle. Do not put credentials or private keys in these variables.
@@ -59,9 +62,11 @@ The shared UI follows the shadcn/ui source-owned component approach, with a `com
 | `VITE_BOOKING_EMAIL` | Public address used for prepared enquiry emails |
 | `VITE_CONTACT_PHONE` | Public operator phone number |
 | `VITE_BASE_PATH` | Vite asset base (defaults to `/rent-car-react/`) |
+| `VITE_ENQUIRY_API_URL` | HTTPS location of the independently deployed API |
+| `VITE_ENABLE_LIVE_ENQUIRIES` | Set to true only after API/operator sign-off; defaults to false |
 | `VITE_PRODUCTION_READY` | Enable indexing only after launch requirements are met |
 
-The enquiry form launches the visitor's mail application with a prepared message. The visitor must **send the message**. There is no server-side submission, reservation, or payment service.
+The guest enquiry journey now contains an editable trip form, a separate review screen and an API-issued receipt screen. **By default the site still uses a clearly labeled email/copy fallback** and does not claim any record was saved. When a verified enquiry API is configured, the server validates and persists the request, returns a unique reference and queues notifications. Even then, the receipt is not a confirmed vehicle reservation. Backend setup: [rent-car-api/README.md](../rent-car-api/README.md).
 
 ## Publishing
 

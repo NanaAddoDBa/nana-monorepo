@@ -1,3 +1,4 @@
+import { site } from "@/shared/config/site";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
@@ -11,8 +12,10 @@ export function PrivacyContent() {
       </h2>
       <p>
         Saved vehicles and theme preferences are stored in your browser.
-        This website prepares an enquiry draft locally; it does not submit
-        the form to a server or accept card payments.
+        {site.useEnquiryApi
+          ? "When online enquiries are enabled, your contact details and trip are submitted to the operator’s server and stored to process the request. Email notifications may be queued."
+          : "The website currently prepares the enquiry draft locally and does not submit it to a server."}
+        No card payments are processed.
       </p>
       <p>
         Car photographs are loaded from Unsplash, which receives

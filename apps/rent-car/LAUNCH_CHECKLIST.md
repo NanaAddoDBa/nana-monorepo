@@ -33,3 +33,19 @@
 - [ ] Administrative inventory and pricing controls
 
 The example catalogue is not a booking engine. A deployed website is not, by itself, a completed commercial release.
+
+## Milestone 1 — customer enquiry
+
+- [x] Search by pickup/return locations, dates and local times
+- [x] Preserve customer trip and filter context across navigation
+- [x] Show trip base estimates on vehicle cards, detail and review screens
+- [x] Complete a guest enquiry review before submission
+- [x] Server API validates and persists enquiries with idempotency keys
+- [x] Genuine server-issued enquiry reference and receipt screen
+- [x] Notification outbox and separately operated worker implementation
+- [x] Desktop/mobile Playwright tests and PostgreSQL integration tests
+- [ ] Verify real vehicle availability, policies, pricing and operator ownership
+- [ ] Provision a production PostgreSQL database and API service with secret management
+- [ ] Configure SMTP and run the notification worker on a dependable schedule
+- [ ] Complete staging E2E using a real database, real API URL and test email delivery
+- [ ] Enable live-enquiry frontend variables only after operational approval

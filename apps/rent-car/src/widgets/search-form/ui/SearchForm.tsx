@@ -1,100 +1,47 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, MapPin } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { makeDefaultTrip, serializeTrip, tripFromParams, validateTrip, type RentalTrip } from "@rental";
 
-import { changePickupDate, initialTripDates, validateTrip } from "@/features/booking/lib/trip";
-import { site } from "@/shared/config/site";
-import { dateOffset } from "@/shared/lib/dates";
+import { TripFields } from "@/features/rental-search/ui/TripFields";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
-import { Select } from "@/shared/ui/select";
 
 export function SearchForm() {
   const navigate = useNavigate();
-  const [city, setCity] = useState<string>(site.locations[0]);
-  const [dates, setDates] = useState(() => initialTripDates(null, null));
-  const valid = validateTrip(dates);
+  const location = useLocation();
+  const [trip, setTrip] = useState<RentalTrip>(
+    () => tripFromParams(new URLSearchParams(location.search)) || makeDefaultTrip(),
+  );
+  const issues = validateTrip(trip);
 
-  function search(event: FormEvent<HTMLFormElement>) {
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!valid) return;
+    if (issues.length) return;
 
-    const query = new URLSearchParams({
-      city,
-      pickup: dates.pickupDate,
-      return: dates.returnDate,
-    });
-
-    navigate(`/fleet?${query.toString()}`);
+    const existing = new URLSearchParams(location.search);
+    // Preserve customer filter settings, not stale trip/legacy values.
+    for (const key of ["city", "pickup", "return", "pickupLocation", "returnLocation",
+      "pickupDate", "pickupTime", "returnDate", "returnTime"]) existing.delete(key);
+    serializeTrip(trip).forEach((value, key) => existing.set(key, value));
+    navigate("/fleet?" + existing.toString());
   }
 
   return (
-    <form
-      onSubmit={search}
-      className="rounded-[26px] border border-border bg-card p-5 shadow-[0_18px_65px_rgba(20,40,33,.1)] lg:p-6"
-    >
-      <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[.14em] text-primary">
-        <span className="size-2 rounded-full bg-primary" />
-        Start your journey
-      </p>
-      <div className="grid gap-4 md:grid-cols-[1.25fr_1fr_1fr_auto] md:items-end">
-        <div>
-          <Label htmlFor="search-city">Pickup location</Label>
-          <div className="relative">
-            <MapPin
-              size={17}
-              className="pointer-events-none absolute left-3.5 top-4 text-muted-foreground"
-            />
-            <Select
-              id="search-city"
-              value={city}
-              onChange={(event) => setCity(event.target.value)}
-              className="pl-10"
-            >
-              {site.locations.map((name) => <option key={name}>{name}</option>)}
-            </Select>
-          </div>
-        </div>
-        <div>
-          <Label htmlFor="search-pickup">Pickup date</Label>
-          <Input
-            id="search-pickup"
-            type="date"
-            value={dates.pickupDate}
-            min={dateOffset(0)}
-            onChange={(event) => setDates((current) => changePickupDate(current, event.target.value))}
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="search-return">Return date</Label>
-          <Input
-            id="search-return"
-            type="date"
-            value={dates.returnDate}
-            min={dates.pickupDate || dateOffset(0)}
-            onChange={(event) => setDates((current) => ({
-              ...current,
-              returnDate: event.target.value,
-            }))}
-            required
-          />
-        </div>
-        <Button
-          size="lg"
-          type="submit"
-          disabled={!valid}
-          className="h-12 whitespace-nowrap"
-        >
-          Find a car <ArrowRight size={18} />
+    <form onSubmit={submit} className="rounded-[26px] border border-border bg-card p-5 shadow-[0_18px_65px_rgba(20,40,33,.1)] lg:p-6">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+        <h2 className="text-sm font-bold uppercase tracking-[.14em] text-primary">Plan your rental</h2>
+        <span className="text-xs text-muted-foreground">Locations, dates and local times</span>
+      </div>
+      <TripFields value={trip} onChange={setTrip} idPrefix="search" />
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
+        <p role={issues.length ? "alert" : undefined}
+          className={issues.length ? "text-sm text-destructive" : "text-sm text-muted-foreground"}>
+          {issues[0] || "Browse indicative prices; availability must be confirmed."}
+        </p>
+        <Button type="submit" disabled={issues.length > 0}>
+          Explore vehicles <ArrowRight size={18} />
         </Button>
       </div>
-      {!valid && (
-        <p role="alert" className="mt-3 text-xs text-destructive">
-          Choose a future pickup and a return date after pickup.
-        </p>
-      )}
     </form>
   );
 }

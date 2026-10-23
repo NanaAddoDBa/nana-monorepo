@@ -1,3 +1,5 @@
+import { quoteForVehicle, tripFromParams, type RentalQuote } from "@rental";
+import { TripSummary } from "@/widgets/trip-summary/ui/TripSummary";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Heart } from "lucide-react";
 
@@ -19,17 +21,16 @@ export function CarDetailsPage() {
   if (!car) return <NotFoundPage />;
 
   const saved = isFavorite(car.id);
-  const bookingQuery = new URLSearchParams({
-    city: params.get("city") || car.locations[0],
-    pickup: params.get("pickup") || "",
-    return: params.get("return") || "",
-  }).toString();
+  const trip = tripFromParams(params);
+  let quote: RentalQuote | null = null;
+  try { if (trip) quote = quoteForVehicle(car.id, trip); } catch { /* Enquiry requires a valid trip. */ }
+  const bookingQuery = params.toString();
   const related = cars.filter((item) => item.id !== car.id).slice(0, 3);
 
   return (
     <main className="page-container py-10 md:py-14">
       <Link
-        to="/fleet"
+        to={"/fleet" + (bookingQuery ? "?" + bookingQuery : "")}
         className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
       >
         <ArrowLeft size={16} /> Back to fleet
@@ -53,6 +54,7 @@ export function CarDetailsPage() {
         </Button>
       </div>
 
+      {trip && <div className="mb-8"><TripSummary trip={trip} editHref={"/fleet?" + bookingQuery} /></div>}
       <div className="grid gap-8 lg:grid-cols-[1.5fr_.75fr]">
         <div>
           <div
@@ -71,7 +73,7 @@ export function CarDetailsPage() {
           <VehicleSpecifications car={car} />
         </div>
 
-        <RentalRequestPanel car={car} bookingQuery={bookingQuery} />
+        <RentalRequestPanel car={car} bookingQuery={bookingQuery} quote={quote} />
       </div>
 
       <section className="py-20">
@@ -82,7 +84,7 @@ export function CarDetailsPage() {
           </Link>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
-          {related.map((item) => <CarCard key={item.id} car={item} />)}
+          {related.map((item) => <CarCard key={item.id} car={item} trip={trip} />)}
         </div>
       </section>
     </main>
