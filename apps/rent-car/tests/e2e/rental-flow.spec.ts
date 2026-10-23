@@ -9,7 +9,8 @@ test("search, vehicle details and back navigation preserve dates and filters", a
   const original = new URLSearchParams(page.url().split("?")[1] || "");
   expect(original.get("pickupLocation")).toBe("munich");
 
-  await page.getByRole("button", { name: "Filters" }).click().catch(() => {});
+  const mobileFilters = page.getByRole("button", { name: "Filters" });
+  if (await mobileFilters.isVisible()) await mobileFilters.click();
   await page.getByLabel("Vehicle type").selectOption("SUV");
   await page.getByRole("link", { name: /Details/ }).first().click();
   await expect(page).toHaveURL(/#\/fleet\//);
