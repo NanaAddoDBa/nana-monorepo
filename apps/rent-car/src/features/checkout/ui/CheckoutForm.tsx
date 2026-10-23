@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, ClipboardCopy, CreditCard, Mail, ShieldCheck } from "lucide-react";
 import {
   locationById, locationIdForName, makeDefaultTrip, quoteForVehicle,
-  validateTrip, type CheckoutQuote, type RentalTrip,
+  validateTrip, type CheckoutQuote, type RentalQuote, type RentalTrip,
 } from "@rental";
 
 import type { Car } from "@/entities/car/model/cars";
@@ -38,7 +38,7 @@ export function CheckoutForm({ car, initialTrip, cancelled = false }: {
   const attempt = useRef<{ fingerprint: string; key: string } | null>(null);
   const issues = validateTrip(trip);
 
-  let estimate = null;
+  let estimate: RentalQuote | null = null;
   try { estimate = quoteForVehicle(car.id,trip); } catch (problem) {
     if (!site.usePaidBookings && issues.length === 0) {
       issues.push(problem instanceof Error ? problem.message : "Choose a supported trip.");
