@@ -78,8 +78,11 @@ export interface BookingReceipt {
 }
 
 export class BookingError extends Error {
-  constructor(public readonly statusCode: number, message: string) {
+  readonly statusCode: number;
+
+  constructor(statusCode: number, message: string) {
     super(message);
+    this.statusCode = statusCode;
     this.name = "BookingError";
   }
 }

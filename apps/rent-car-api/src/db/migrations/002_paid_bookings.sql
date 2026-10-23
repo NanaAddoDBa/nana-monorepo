@@ -53,12 +53,22 @@ CREATE TABLE IF NOT EXISTS paid_rental_reservations (
 -- PostgreSQL enforces exclusive occupancy, even across simultaneous requests.
 -- Do not release pending Stripe holds by wall-clock alone: late settlement
 -- can happen. Expire after signed Stripe expiry events or reconciliation.
-ALTER TABLE paid_rental_reservations
-  ADD CONSTRAINT no_overlapping_active_rentals
-  EXCLUDE USING gist (
-    vehicle_id WITH =,
-    tstzrange(pickup_at, return_at, '[)') WITH &&
-  ) WHERE (status IN ('creating','pending_payment','confirmed','picked_up'));
+DO $migration$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'no_overlapping_active_rentals'
+      AND conrelid = 'paid_rental_reservations'::regclass
+  ) THEN
+    ALTER TABLE paid_rental_reservations
+      ADD CONSTRAINT no_overlapping_active_rentals
+      EXCLUDE USING gist (
+        vehicle_id WITH =,
+        tstzrange(pickup_at, return_at, '[)') WITH &&
+      ) WHERE (status IN ('creating','pending_payment','confirmed','picked_up'));
+  END IF;
+END
+$migration$;
 
 CREATE INDEX IF NOT EXISTS paid_reservations_status_idx
   ON paid_rental_reservations(status, session_expires_at);
