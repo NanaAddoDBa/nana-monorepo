@@ -1,3 +1,4 @@
+import { tripFromParams } from "@rental";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
@@ -15,7 +16,7 @@ export function BookingPage() {
   return (
     <main className="page-container py-10 md:py-16">
       <Link
-        to={"/fleet/" + car.id}
+        to={"/fleet/" + car.id + (params.toString() ? "?" + params.toString() : "")}
         className="mb-7 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
       >
         <ArrowLeft size={16} /> Back to vehicle
@@ -31,12 +32,7 @@ export function BookingPage() {
         The operator must confirm availability and terms.
       </p>
 
-      <BookingForm
-        car={car}
-        initialCity={params.get("city") || undefined}
-        initialPickup={params.get("pickup") || undefined}
-        initialReturn={params.get("return") || undefined}
-      />
+      <BookingForm car={car} initialTrip={tripFromParams(params)} />
     </main>
   );
 }
