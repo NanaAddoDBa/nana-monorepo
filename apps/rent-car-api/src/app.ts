@@ -73,7 +73,7 @@ export async function buildApp(options: ApiOptions): Promise<FastifyInstance> {
   });
 
   app.setErrorHandler((error, _request, reply) => {
-    if ("statusCode" in error && typeof error.statusCode === "number" && error.statusCode < 500) {
+    if (error instanceof Error && "statusCode" in error && typeof error.statusCode === "number" && error.statusCode < 500) {
       reply.code(error.statusCode).send({ error: error.message });
       return;
     }
