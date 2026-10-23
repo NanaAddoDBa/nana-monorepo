@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { addCalendarDays, isValidRentalPeriod } from "../src/shared/lib/dates.ts";
+import { addCalendarDays, dateOffset, isValidRentalPeriod } from "../src/shared/lib/dates.ts";
 import {
   changePickupDate,
   initialTripDates,
@@ -56,5 +56,7 @@ test("date validation excludes past and zero-day rentals", () => {
   assert.equal(isValidRentalPeriod("2026-10-22", "2026-10-26", "2026-10-23"), false);
   assert.equal(isValidRentalPeriod("2026-10-24", "2026-10-24", "2026-10-23"), false);
   assert.equal(isValidRentalPeriod("2026-10-24", "2026-10-25", "2026-10-23"), true);
-  assert.equal(validateTrip({ pickupDate: "2026-10-24", returnDate: "2026-10-25" }), isValidRentalPeriod("2026-10-24", "2026-10-25"));
+  const pickupDate = dateOffset(1);
+  const returnDate = dateOffset(2);
+  assert.equal(validateTrip({ pickupDate, returnDate }), true);
 });
