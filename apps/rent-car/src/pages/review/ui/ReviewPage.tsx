@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, ClipboardCopy, Mail } from "lucide-react";
-import { locationById, quoteForVehicle, tripFromParams, validateTrip, type RentalQuote } from "@rental";
+import { locationById, quoteForVehicle, tripFromParams, validateTrip } from "@rental";
 
 import { findCar } from "@/entities/car/model/cars";
 import { submitEnquiry } from "@/features/booking/lib/api";
@@ -42,6 +42,8 @@ export function ReviewPage() {
     );
   }
 
+  const selectedVehicleId = car.id;
+  const selectedVehicleName = car.name;
   const requestText = bookingRequestText({
     carName: car.name, dailyRate: car.dailyRate,
     pickupCity: locationById(trip.pickupLocationId)?.name || trip.pickupLocationId,
@@ -53,17 +55,17 @@ export function ReviewPage() {
 
   async function submit() {
     if (!trip || !customer || sending || !quote) return;
-    const fingerprint = JSON.stringify({ id: car.id, trip, customer });
+    const fingerprint = JSON.stringify({ id: selectedVehicleId, trip, customer });
     if (!attempt.current || attempt.current.fingerprint !== fingerprint) {
       attempt.current = { fingerprint, key: crypto.randomUUID() };
     }
     setSending(true);
     setError("");
     try {
-      const receipt = await submitEnquiry(car.id, trip, customer, attempt.current.key);
+      const receipt = await submitEnquiry(selectedVehicleId, trip, customer, attempt.current.key);
       navigate("/confirmation", {
         replace: true,
-        state: { receipt, vehicleName: car.name, trip },
+        state: { receipt, vehicleName: selectedVehicleName, trip },
       });
     } catch (e) {
       setError(e instanceof Error ? e.message : "The enquiry could not be submitted. Please retry.");
@@ -91,7 +93,7 @@ export function ReviewPage() {
       <p className="my-7 max-w-2xl leading-7 text-muted-foreground">
         Check the trip and contact information before submitting. This is a request for availability, not a confirmed booking.
       </p>
-      <div className="mb-8"><TripSummary trip={trip} editHref={returnUrl} /></div>
+      <div className="mb-8"><TripSummary trip={trip} editHref={returnUrl} editState={{ customer }} /></div>
       <div className="grid gap-8 lg:grid-cols-[1.25fr_.75fr]">
         <section className="rounded-3xl border border-border bg-card p-6 md:p-9" aria-label="Review customer information">
           <h2 className="text-2xl font-semibold">Contact and delivery</h2>
