@@ -3,6 +3,7 @@ import {
   dateOffset,
   isValidRentalPeriod,
   rentalDays,
+  parseISODate,
 } from "../../../shared/lib/dates.ts";
 
 export interface TripDates {
@@ -17,7 +18,7 @@ export function initialTripDates(
   dropoff: string | null | undefined,
   today = dateOffset(0),
 ): TripDates {
-  const validPickup = pickup && pickup >= today && dateOffsetFrom(pickup)
+  const validPickup = pickup && parseISODate(pickup) !== null && pickup >= today
     ? pickup
     : addCalendarDays(today, 1);
 
@@ -27,10 +28,6 @@ export function initialTripDates(
       ? dropoff
       : addCalendarDays(validPickup, 3),
   };
-}
-
-function dateOffsetFrom(value: string): boolean {
-  return addCalendarDays(value, 0) !== "";
 }
 
 export function changePickupDate(current: TripDates, pickupDate: string): TripDates {
