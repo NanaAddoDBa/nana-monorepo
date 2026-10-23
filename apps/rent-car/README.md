@@ -1,6 +1,6 @@
 # Aventra — rental site
 
-A modern, self-contained React + Vite + TypeScript car rental **browse-and-inquire** site. Developed independently as an adaptation of the product experience showcased by [dt4real/rent-car-react](https://github.com/dt4real/rent-car-react).
+Aventra is a modern React, TypeScript, and Vite car-rental website for exploring vehicles, comparing indicative rates, saving favorites, and preparing rental inquiries.
 
 **Important:** This repository currently contains an *illustrative fleet and prices*, not a connected booking engine. No live availability, reservations, payment processing, or insurance coverage is implied. Do not present it as a live rental operator until the checklist below is completed.
 
@@ -66,7 +66,7 @@ The `nana-monorepo` repository has other applications and its own potential Page
 
 ### One-time setup required on GitHub
 
-1. While signed in as `NanaAddoDBa`, [create a public repository](https://github.com/new) named **rent-car-react**. Initialize it with a README so it has a default branch. Do not fork the unlicensed upstream source.
+1. While signed in as `NanaAddoDBa`, [create a public repository](https://github.com/new) named **rent-car-react**. Initialize it with a README so it has a default branch.
 2. Create a **fine-grained GitHub personal access token** limited to this new `rent-car-react` repository, granting **Contents: Read and write** (plus the default Metadata access). Set an expiration and keep it secret. Do not paste tokens in chat, commits or public configuration.
 3. Open the **source** repository `NanaAddoDBa/nana-monorepo` → **Settings → Secrets and variables → Actions → Secrets**. Create the repository secret **RENT_CAR_PAGES_TOKEN** with your scoped token. The workflow safely skips publication until this secret is configured.
 4. Optionally set `AVENTRA_BOOKING_EMAIL`, `AVENTRA_CONTACT_PHONE` and `AVENTRA_PRODUCTION_READY` (default false) as **Actions repository variables** in `nana-monorepo`. These public values are embedded into the browser bundle.
@@ -92,9 +92,9 @@ After the initial setup, pushes to `master` touching `apps/rent-car/` or the pub
 
 See LAUNCH_CHECKLIST.md for a release gate.
 
-## Attribution
+## Assets and third-party services
 
-Independent code and product design, inspired by the public demonstration https://github.com/dt4real/rent-car-react . That source repository did not expose an explicit LICENSE file at the time of inspection, so its source code and image files were **not** copied here. Representative images are linked from Unsplash under the Unsplash License (https://unsplash.com/license) and should be replaced with approved inventory photographs for commercial use. shadcn/ui is a component design approach; this project owns its component implementations.
+The sample fleet uses illustrative photographs served from Unsplash under the [Unsplash License](https://unsplash.com/license). Replace these with licensed photographs of actual inventory before commercial launch. The interface uses locally maintained, reusable components following the shadcn/ui design approach.
 
 ## Security
 
