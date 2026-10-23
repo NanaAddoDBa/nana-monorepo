@@ -10,9 +10,9 @@
 
 ## Hosting
 
-- [ ] Configure `RENT_CAR_PAGES_TOKEN` in the source monorepo Actions secrets
-- [ ] Publish the static build to the destination `gh-pages` branch
-- [ ] Set destination Pages source to `gh-pages` / `/(root)`
+- [x] Configure `RENT_CAR_PAGES_TOKEN` in the source monorepo Actions secrets
+- [x] Publish the static build to the destination `gh-pages` branch
+- [x] Complete destination GitHub Pages build and deployment
 - [ ] Verify https://nanaaddodba.github.io/rent-car-react/ on desktop and mobile
 
 ## Operator and legal readiness

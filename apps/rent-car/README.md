@@ -69,14 +69,14 @@ Source remains in `NanaAddoDBa/nana-monorepo`; the compiled static site is publi
 
 The deployment workflow is [Aventra / Publish rent-car-react](https://github.com/NanaAddoDBa/nana-monorepo/actions/workflows/rent-car-pages.yml). It runs when rental source changes are merged to `master`, or manually through **Run workflow**.
 
-The destination repository already exists. To authorize deployment:
+The destination repository exists and its GitHub Pages deployment workflow has succeeded. To configure or rotate publishing credentials:
 
 1. Create a fine-grained personal access token restricted to `NanaAddoDBa/rent-car-react`, with repository **Contents: Read and write**.
 2. Add that token as the `RENT_CAR_PAGES_TOKEN` **Actions repository secret in `nana-monorepo`**, not in the publishing repository.
 3. Run the publishing workflow on the `master` branch. Confirm that the `gh-pages` branch was populated.
 4. In `rent-car-react → Settings → Pages`, select **Deploy from a branch**, `gh-pages`, `/(root)`. Review the Pages deployment and verify [the target site](https://nanaaddodba.github.io/rent-car-react/).
 
-A green application build does not mean Pages has published the website. Keep the `gh-pages` branch as a generated deployment target; edit the app in the monorepo.
+A green application build alone does not prove that Pages has published the website. Confirm the destination repository's Pages job separately. Keep the `gh-pages` branch as a generated deployment target; edit the app in the monorepo.
 
 ## Commercial release requirements
 
