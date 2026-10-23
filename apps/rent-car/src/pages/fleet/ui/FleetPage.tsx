@@ -1,3 +1,6 @@
+import { locationById, serializeTrip, tripFromParams, type RentalTrip } from "@rental";
+import { SearchForm } from "@/widgets/search-form/ui/SearchForm";
+import { TripSummary } from "@/widgets/trip-summary/ui/TripSummary";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 
@@ -22,6 +25,8 @@ function priceLimit(value: string): number | null {
 export function FleetPage() {
   const [params, setParams] = useSearchParams();
   const value = (key: FilterKey) => params.get(key) || "";
+  const trip: RentalTrip | null = tripFromParams(params);
+  const selectedCity = trip ? locationById(trip.pickupLocationId)?.name || "" : value("city");
 
   function updateFilter(key: FilterKey, nextValue: string) {
     setParams((current) => {
@@ -36,19 +41,15 @@ export function FleetPage() {
     search: value("search"),
     category: value("category"),
     transmission: value("transmission"),
-    city: value("city"),
+    city: selectedCity,
     sort: value("sort") || "featured",
     maxPrice: priceLimit(value("maxPrice")),
   });
 
   function resetFilters() {
     setParams((current) => {
-      const preserved = new URLSearchParams();
-      for (const key of ["pickup", "return"]) {
-        const date = current.get(key);
-        if (date) preserved.set(key, date);
-      }
-      return preserved;
+      const selectedTrip = tripFromParams(current);
+      return selectedTrip ? serializeTrip(selectedTrip) : new URLSearchParams();
     }, { replace: true });
   }
 
@@ -81,6 +82,10 @@ export function FleetPage() {
         </div>
       </div>
 
+      <div className="page-container mt-8 space-y-3">
+        {trip && <TripSummary trip={trip} />}
+        <SearchForm />
+      </div>
       <div className="page-container grid gap-10 py-12 lg:grid-cols-[260px_1fr]">
         <CatalogFilterPanel
           value={value}
@@ -92,9 +97,9 @@ export function FleetPage() {
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <p className="text-sm font-medium">
               {filtered.length} cars found
-              {value("city") && (
+              {selectedCity && (
                 <span className="text-muted-foreground">
-                  {" "}in {value("city")}
+                  {" "}in {selectedCity}
                 </span>
               )}
             </p>
@@ -120,7 +125,7 @@ export function FleetPage() {
           {filtered.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
               {filtered.map((car) => (
-                <CarCard car={car} key={car.id} />
+                <CarCard car={car} key={car.id} trip={trip} />
               ))}
             </div>
           ) : (
