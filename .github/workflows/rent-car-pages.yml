@@ -1,4 +1,4 @@
-name: Aventra / GitHub Pages
+name: Aventra / Publish rent-car-react
 
 on:
   push:
@@ -8,22 +8,19 @@ on:
       - ".github/workflows/rent-car-pages.yml"
   workflow_dispatch:
 
+# GitHub's default token only needs read access to the source monorepo.
+# The scoped secret publishes to a separate, public repository.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: aventra-github-pages
+  group: aventra-rent-car-react
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Build and publish Aventra
+  publish:
+    name: Build and publish generated website
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -32,17 +29,54 @@ jobs:
       - name: Install dependencies
         working-directory: apps/rent-car
         run: npm install --no-audit --no-fund
-      - name: Typecheck, unit tests and build
+      - name: Typecheck, test and build for the target project URL
         working-directory: apps/rent-car
         env:
-          VITE_BASE_PATH: /nana-monorepo/
+          VITE_BASE_PATH: /rent-car-react/
           VITE_BOOKING_EMAIL: ${{ vars.AVENTRA_BOOKING_EMAIL }}
           VITE_CONTACT_PHONE: ${{ vars.AVENTRA_CONTACT_PHONE }}
           VITE_PRODUCTION_READY: ${{ vars.AVENTRA_PRODUCTION_READY || 'false' }}
         run: npm run check
-      - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: apps/rent-car/dist
-      - id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Check whether cross-repository publishing is configured
+        id: readiness
+        env:
+          DEPLOY_TOKEN: ${{ secrets.RENT_CAR_PAGES_TOKEN }}
+        shell: bash
+        run: |
+          if [ -n "$DEPLOY_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Publishing not configured::Create the public NanaAddoDBa/rent-car-react repository and set the RENT_CAR_PAGES_TOKEN secret in nana-monorepo."
+            echo "Built and tested successfully. Publishing was skipped because RENT_CAR_PAGES_TOKEN is missing." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Verify destination repository exists and is accessible
+        if: steps.readiness.outputs.enabled == 'true'
+        shell: bash
+        env:
+          DEPLOY_TOKEN: ${{ secrets.RENT_CAR_PAGES_TOKEN }}
+        run: |
+          if ! curl --fail --silent --show-error \
+              --header "Authorization: Bearer $DEPLOY_TOKEN" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/NanaAddoDBa/rent-car-react" > /dev/null; then
+            echo "::error::Create NanaAddoDBa/rent-car-react and grant RENT_CAR_PAGES_TOKEN Contents: read/write access to it."
+            exit 1
+          fi
+      - name: Publish dist to gh-pages in rent-car-react
+        if: steps.readiness.outputs.enabled == 'true'
+        shell: bash
+        working-directory: apps/rent-car/dist
+        env:
+          DEPLOY_TOKEN: ${{ secrets.RENT_CAR_PAGES_TOKEN }}
+        run: |
+          set -euo pipefail
+          touch .nojekyll
+          git init -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "deploy: Aventra build from nana-monorepo ${GITHUB_SHA}"
+          git push --force "https://x-access-token:${DEPLOY_TOKEN}@github.com/NanaAddoDBa/rent-car-react.git" HEAD:gh-pages
+          echo "Published generated files to NanaAddoDBa/rent-car-react branch gh-pages." >> "$GITHUB_STEP_SUMMARY"
+          echo "Target site after destination Pages is enabled: https://nanaaddodba.github.io/rent-car-react/" >> "$GITHUB_STEP_SUMMARY"
