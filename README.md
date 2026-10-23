@@ -51,6 +51,11 @@ registry during Phase A, so its standalone CI remains the authoritative validati
 [AuthNexus Downstream Mirror](docs/authnexus-mirror.md) for the update, credential, recovery, and
 pipeline-boundary rules.
 
+
+### `apps/rent-car`
+
+Aventra is an independent React/Vite car-rental browse-and-inquire site, with an atomic feature architecture, reusable shadcn-style components, and a dedicated GitHub Pages pipeline. It intentionally uses illustrative inventory until an operator verifies vehicles, pricing, availability and legal policies. See `apps/rent-car/README.md` for setup and launch gates.
+
 ## Planned Infrastructure
 
 The repository includes reusable Google Cloud Run infrastructure:
