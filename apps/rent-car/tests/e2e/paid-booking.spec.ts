@@ -81,14 +81,14 @@ test("available vehicle → one-page checkout → Stripe → verified pickup pas
     await route.fulfill({status:200,contentType:"application/json",
       headers:{"access-control-allow-origin":"*"},
       body:JSON.stringify({booking:{
-        status:lookups===1 ? "pending_payment" : "confirmed",
+        // React StrictMode can initiate an extra mount-time receipt fetch in development.\n        status:lookups <= 2 ? "pending_payment" : "confirmed",
         reference:"AV-2030-PAID001",
         vehicleName:"Mid-size SUV",
         trip:{pickupLocationId:"munich",returnLocationId:"munich",
           pickupDate:"2030-11-04",pickupTime:"10:00",
           returnDate:"2030-11-07",returnTime:"10:00"},
         quote:verifiedQuote({}),
-        ...(lookups===1 ? {} : {pickup:{
+        ...(lookups <= 2 ? {} : {pickup:{
           reference:"AV-2030-PAID001",address:"Verified Example Street 12, Munich",
           instructions:"Show your licence at the service desk",
           documents:["Valid driving licence","Accepted photo ID"],
