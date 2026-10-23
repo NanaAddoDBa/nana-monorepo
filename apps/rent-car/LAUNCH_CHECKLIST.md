@@ -5,8 +5,11 @@
 - [x] Booking inquiry form with date validation and price estimate
 - [x] Clear distinction between a prepared email and a confirmed booking
 - [x] GitHub Pages workflow and CI definitions
-- [ ] Validate npm install, typecheck, tests and build in GitHub Actions
-- [ ] Enable GitHub Pages and confirm the published URL
+- [x] Validate npm install, typecheck, tests and build in GitHub Actions (confirmed on the original merged revision)
+- [ ] Create public NanaAddoDBa/rent-car-react publishing repository and scoped token (Contents: Read/write)
+- [ ] Store RENT_CAR_PAGES_TOKEN in NanaAddoDBa/nana-monorepo Actions repository secrets
+- [ ] Publish generated gh-pages branch using the monorepo workflow
+- [ ] Enable GitHub Pages from gh-pages/(root) in the destination repository, then confirm https://nanaaddodba.github.io/rent-car-react/
 - [ ] Replace illustrative vehicles, prices, features, cities and images with real data
 - [ ] Set and test public operator email and telephone contact
 - [ ] Obtain real inventory availability or define a manual confirmation SLA
