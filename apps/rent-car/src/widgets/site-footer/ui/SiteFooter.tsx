@@ -30,7 +30,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-white/15">
-        <div className="page-container flex flex-wrap justify-between gap-3 py-6 text-xs text-white/50"><p>© {new Date().getFullYear()} Aventra concept. Independent adaptation.</p><p>Built to move better.</p></div>
+        <div className="page-container flex flex-wrap justify-between gap-3 py-6 text-xs text-white/50"><p>© {new Date().getFullYear()} Aventra. All rights reserved.</p><p>Built to move better.</p></div>
       </div>
     </footer>
   );
