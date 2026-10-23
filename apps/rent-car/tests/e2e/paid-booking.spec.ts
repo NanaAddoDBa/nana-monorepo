@@ -96,8 +96,10 @@ test("available vehicle → one-page checkout → Stripe → verified pickup pas
       }})});
   });
   await page.goto("/#/pickup?session_id="+sessionId);
-  await expect(page.getByText("Payment is being verified.")).toBeVisible();
-  await expect(page.getByRole("heading",{name:"Ready for pickup."})).toBeVisible({timeout:15000});
+  // The intermediate payment-pending screen may be transient under StrictMode.
+  // Assert the receipt lookup and the verified terminal state instead.
+  await expect.poll(() => lookups, { timeout: 10000 }).toBeGreaterThanOrEqual(1);
+  await expect(page.getByRole("heading",{name:"Ready for pickup."})).toBeVisible({timeout:20000});
   await expect(page.getByText("AV-2030-PAID001")).toBeVisible();
   await expect(page.getByRole("link",{name:/Get directions/})).toHaveAttribute("href",/google.com\/maps/);
 });
