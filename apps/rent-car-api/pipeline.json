@@ -1,0 +1,8 @@
+{
+  "name": "rent-car-api",
+  "runtime": "nodejs",
+  "runtime_version": "22",
+  "package_manager": "npm",
+  "lockfile": "package.json",
+  "deploy_enabled": false
+}
