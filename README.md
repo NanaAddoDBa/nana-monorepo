@@ -10,8 +10,11 @@ apps/
 |   `-- .source-revision
 |-- mobile-expense-tracker/
 |   `-- Makefile
-`-- nana-portfolio/
-    `-- Makefile
+|-- nana-portfolio/
+|   `-- Makefile
+|-- rent-car/
+|   `-- README.md
+`-- threadsofgold/             # Git submodule
 ```
 
 ### `apps/nana-portfolio`
@@ -55,6 +58,12 @@ pipeline-boundary rules.
 ### `apps/rent-car`
 
 Aventra is an independent React/Vite car-rental browse-and-inquire site, with an atomic feature architecture, reusable shadcn-style components, and a cross-repository GitHub Pages publishing pipeline targeting `NanaAddoDBa/rent-car-react` (public output only). It intentionally uses illustrative inventory until an operator verifies vehicles, pricing, availability and legal policies. See `apps/rent-car/README.md` for setup and launch gates.
+
+### `apps/threadsofgold`
+
+The Threads of Gold ecommerce platform is maintained in [its own repository](https://github.com/NanaAddoDBa/threadsofgold) and linked here as a Git submodule. Its history and releases remain independent.
+
+After cloning, initialize the submodule with `git submodule update --init --recursive`.
 
 ## Planned Infrastructure
 
