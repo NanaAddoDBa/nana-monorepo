@@ -5,6 +5,8 @@ export const site = {
   phone: (import.meta.env.VITE_CONTACT_PHONE || "").trim(),
   locations: ["Munich", "Berlin", "Hamburg", "Frankfurt"],
   currency: "EUR",
+  enquiryApiUrl: (import.meta.env.VITE_ENQUIRY_API_URL || "").trim(),
+  useEnquiryApi: import.meta.env.VITE_ENABLE_LIVE_ENQUIRIES === "true" && Boolean((import.meta.env.VITE_ENQUIRY_API_URL || "").trim()),
 } as const;
 
 export function priceLabel(value: number): string {

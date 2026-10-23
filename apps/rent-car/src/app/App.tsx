@@ -4,6 +4,8 @@ import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { FavoritesProvider } from "@/features/favorites/model/FavoritesProvider";
 import { ThemeProvider } from "@/features/theme/model/ThemeProvider";
 import { BookingPage } from "@/pages/booking/ui/BookingPage";
+import { ReviewPage } from "@/pages/review/ui/ReviewPage";
+import { ConfirmationPage } from "@/pages/confirmation/ui/ConfirmationPage";
 import { CarDetailsPage } from "@/pages/details/ui/CarDetailsPage";
 import { FavoritesPage } from "@/pages/favorites/ui/FavoritesPage";
 import { FleetPage } from "@/pages/fleet/ui/FleetPage";
@@ -43,6 +45,8 @@ function AppLayout() {
           <Route path="/fleet/:id" element={<CarDetailsPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/book/:id" element={<BookingPage />} />
+          <Route path="/review/:id" element={<ReviewPage />} />
+          <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/about" element={<StaticPage kind="about" />} />
           <Route path="/contact" element={<StaticPage kind="contact" />} />
           <Route path="/privacy" element={<StaticPage kind="privacy" />} />
