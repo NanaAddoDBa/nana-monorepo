@@ -20,7 +20,7 @@ Use Node.js 22+, Docker and an isolated development PostgreSQL database.
 ```sh
 cd apps/rent-car-api
 docker compose up -d postgres
-npm install
+npm ci
 ```
 
 Set `DATABASE_URL=postgresql://aventra:dev_only_password@localhost:5432/aventra` and `FRONTEND_ORIGINS=http://localhost:5173` in your shell. Set `ALLOW_SAMPLE_ENQUIRIES=true` **only in isolated development**. Run `npm run migrate` and `npm run dev`. Verify `GET http://localhost:8080/healthz`.

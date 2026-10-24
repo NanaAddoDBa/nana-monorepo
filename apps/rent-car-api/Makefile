@@ -9,7 +9,7 @@ IMAGE ?= $(GCP_REGION)-docker.pkg.dev/$(GCP_PROJECT_ID)/$(ARTIFACT_REGISTRY_REPO
 
 .PHONY: install ci build test dev docker-build docker-push
 install:
-	cd $(APP_DIR) && npm install --no-audit --no-fund
+	cd $(APP_DIR) && npm ci --no-audit --no-fund
 ci:
 	cd $(APP_DIR) && npm run ci
 build:

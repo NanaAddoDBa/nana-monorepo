@@ -22,7 +22,7 @@ Requires Node.js 22 or later.
 
 ```sh
 cd apps/rent-car
-npm install
+npm ci
 cp .env.example .env.local
 npm run dev
 ```

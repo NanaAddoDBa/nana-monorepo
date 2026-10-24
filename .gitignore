@@ -44,6 +44,11 @@ next-env.d.ts
 # local planning notes
 /notes/
 
+# local documents, verification artifacts, and scratch work
+/artifacts/
+/output/
+/tmp/
+
 # terraform
 .terraform/
 *.tfstate
