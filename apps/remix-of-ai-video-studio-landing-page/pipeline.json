@@ -1,0 +1,8 @@
+{
+  "name": "remix-of-ai-video-studio-landing-page",
+  "runtime": "nodejs",
+  "runtime_version": "22",
+  "package_manager": "npm",
+  "lockfile": "package-lock.json",
+  "deploy_enabled": false
+}

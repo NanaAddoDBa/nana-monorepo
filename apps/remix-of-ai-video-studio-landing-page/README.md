@@ -564,8 +564,8 @@ This project was built with [Lovable](https://lovable.dev).
 Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a539b408-cc94-45f8-a7ff-120533b62cd7).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+- **GitHub copies**: this project was exported through the GitHub connector to the standalone repository and the monorepo; these exports are not automatic Lovable Git sync.
+- **Future changes**: changes made in Lovable chat should be pushed to both repositories through the connector. GitHub edits do not automatically sync back into Lovable through this connection.
 
 ## Development
 
@@ -577,3 +577,21 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Monorepo development and deployment
+
+The monorepo app root is `apps/remix-of-ai-video-studio-landing-page`. From the monorepo root:
+
+```sh
+make install APP=remix-of-ai-video-studio-landing-page
+make ci APP=remix-of-ai-video-studio-landing-page
+make dev APP=remix-of-ai-video-studio-landing-page
+```
+
+The same npm commands work after changing into the app root. `npm test` checks local imports, dependency-lock consistency, and Makefile execution from the nested folder. `make ci` also builds the site. The aliases, source paths, and public assets are app-local; the filesystem move does not add `apps/` to browser URLs.
+
+For an external static host, use the app root above, install with `npm ci`, build with `npm run build`, and serve its `dist` directory. When settings are relative to the monorepo root, the output path is `apps/remix-of-ai-video-studio-landing-page/dist`; when settings are relative to the configured app root, it is `dist`. Standalone hosting uses the repository root instead.
+
+`pipeline.json` registers this app for the monorepo's GitHub checks. Automatic Cloud Run deployment remains disabled, as for the other static web apps: no Cloud Run service, container configuration, or Terraform deployment has been provisioned for this project. External hosted settings have not been changed. A future deployment under a URL subpath would require a separate Vite base configuration; merely nesting the source folder does not.
+
+Configure public `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` at build time if using Lovable Cloud from external hosting. Never put private service keys or connector credentials in a frontend build.
