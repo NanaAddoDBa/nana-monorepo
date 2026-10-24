@@ -11,11 +11,16 @@ const contactMethods = contactData.contactInfo
 
 export function ContactSection() {
   return (
-    <section id="contact" aria-labelledby="contact-heading">
+    <section
+      id="contact"
+      tabIndex={-1}
+      aria-labelledby="contact-heading"
+      className="scroll-mt-24 border-t border-border bg-secondary/20"
+    >
       <Container>
         <div className="py-12 md:py-16">
-          <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-12">
-            <div className="space-y-8">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-12">
+            <div className="min-w-0 space-y-8">
               <div className="space-y-3">
                 <h2
                   id="contact-heading"
@@ -58,11 +63,11 @@ export function ContactSection() {
                             <Icon className="h-5 w-5" />
                           </div>
 
-                          <div className="space-y-1">
+                          <div className="min-w-0 space-y-1">
                             <p className="text-[0.68rem] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
                               {method.label}
                             </p>
-                            <p className="text-lg font-semibold text-card-foreground">
+                            <p className="text-base font-semibold break-words text-card-foreground">
                               {method.value}
                             </p>
                           </div>
@@ -101,7 +106,7 @@ export function ContactSection() {
               </div>
             </div>
 
-            <Card className="border-border/60 bg-card/50 shadow-none">
+            <Card className="min-w-0 border-border/60 bg-card/50 shadow-none">
               <CardContent className="space-y-6 p-6 md:p-8">
                 <div className="h-1 w-24 rounded-full bg-primary/80" />
                 <ContactForm />

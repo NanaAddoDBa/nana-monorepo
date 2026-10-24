@@ -1,64 +1,22 @@
-import type { CvDocument, CvDocumentGroup } from "@/types/cvDocumentTypes"
+import type { CvDocumentGroup } from "@/types/cvDocumentTypes"
 
-function resolveGooglePdfUrl(url: string) {
-  try {
-    const parsedUrl = new URL(url)
-
-    if (parsedUrl.hostname === "docs.google.com") {
-      const documentId = parsedUrl.pathname.match(
-        /^\/document\/d\/([^/]+)/
-      )?.[1]
-
-      if (documentId) {
-        return `https://docs.google.com/document/d/${documentId}/export?format=pdf`
-      }
-    }
-
-    if (
-      parsedUrl.hostname === "drive.google.com" ||
-      parsedUrl.hostname === "www.drive.google.com"
-    ) {
-      const fileId =
-        parsedUrl.pathname.match(/^\/file\/d\/([^/]+)/)?.[1] ??
-        parsedUrl.searchParams.get("id")
-
-      if (fileId) {
-        return `https://drive.google.com/uc?export=download&id=${fileId}`
-      }
-    }
-  } catch {
-    return url
-  }
-
-  return url
-}
-
-const availableCvDocuments: CvDocument[] = []
-
-availableCvDocuments.push({
-  id: "cv-en",
-  locale: "en",
-  label: "Software Engineer CV (EN)",
-  href: process.env.NEXT_PUBLIC_CV_EN_URL
-    ? resolveGooglePdfUrl(process.env.NEXT_PUBLIC_CV_EN_URL)
-    : "/documents/nana-addo-cv-software-engineer-en.pdf",
-  updatedAt: process.env.NEXT_PUBLIC_CV_EN_UPDATED,
-})
-
-availableCvDocuments.push({
-  id: "cv-de",
-  locale: "de",
-  label: "Software Engineer CV (DE)",
-  href: process.env.NEXT_PUBLIC_CV_DE_URL
-    ? resolveGooglePdfUrl(process.env.NEXT_PUBLIC_CV_DE_URL)
-    : "/documents/nana-addo-cv-softwareentwickler-de.pdf",
-  updatedAt: process.env.NEXT_PUBLIC_CV_DE_UPDATED,
-})
-
-export const cvDocumentsData = [
+export const cvDocumentsData: CvDocumentGroup[] = [
   {
     id: "primaryCv",
-    label: "Software Engineer CV",
-    documents: availableCvDocuments,
+    label: "Choose a CV · English PDF",
+    documents: [
+      {
+        id: "frontend-engineer",
+        locale: "en",
+        label: "Frontend Engineer",
+        href: "/documents/nana-addo-frontend-engineer.pdf",
+      },
+      {
+        id: "ai-engineer",
+        locale: "en",
+        label: "AI Engineer",
+        href: "/documents/nana-addo-ai-engineer.pdf",
+      },
+    ],
   },
-] satisfies CvDocumentGroup[]
+]

@@ -12,7 +12,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/nana-addo-bampoe-addo-2697b6326/",
+    href: "https://www.linkedin.com/in/nana-addo-bampoe-addo/",
     icon: Briefcase,
     ariaLabel: "Connect with me on LinkedIn for professional networking.",
   },

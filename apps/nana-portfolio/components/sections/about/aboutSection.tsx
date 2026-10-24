@@ -80,16 +80,19 @@ export function AboutSection() {
 
     if (nextTabData) {
       window.history.replaceState(null, "", nextTabData.href)
-
-      document.getElementById(nextTabData.href.slice(1))?.scrollIntoView({
-        block: "start",
-        behavior: "smooth",
-      })
     }
   }
 
   return (
     <SectionShell id="about" aria-labelledby="about-heading">
+      <div className="mb-8 space-y-3">
+        <p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">
+          Background & capabilities
+        </p>
+        <h2 id="about-heading" className="font-heading text-3xl md:text-4xl">
+          The person behind the work.
+        </h2>
+      </div>
       <div className="relative">
         {aboutTabsData.map((tab) => (
           <span
@@ -105,12 +108,15 @@ export function AboutSection() {
           onValueChange={handleTabChange}
           className="w-full"
         >
-          <TabsList className="grid h-12 w-full grid-cols-2 md:grid-cols-4">
+          <TabsList
+            aria-label="About Nana Addo"
+            className="grid w-full grid-cols-2 gap-1 p-1 group-data-horizontal/tabs:h-auto sm:grid-cols-4"
+          >
             {renderedAboutTabs.map((tab) => (
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
-                className="h-full text-muted-foreground transition-colors data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                className="h-11 text-muted-foreground transition-colors data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
               >
                 {tab.label}
               </TabsTrigger>
@@ -120,12 +126,7 @@ export function AboutSection() {
           {renderedAboutTabs.map((tab) => (
             <TabsContent key={tab.id} value={tab.id} className="mt-4">
               <Card>
-                <CardContent className="p-6 md:p-8 lg:p-10">
-                  {tab.id === "overview" ? (
-                    <h2 id="about-heading" className="sr-only">
-                      About Me
-                    </h2>
-                  ) : null}
+                <CardContent className="p-4 md:p-8 lg:p-10">
                   {aboutTabPanels[tab.id]}
                 </CardContent>
               </Card>

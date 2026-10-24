@@ -48,8 +48,9 @@ export function SectionShell({
   return (
     <section
       id={id}
+      tabIndex={-1}
       aria-labelledby={ariaLabelledBy}
-      className={cn("w-full", className)}
+      className={cn("w-full scroll-mt-24", className)}
     >
       {withContainer ? <Container>{content}</Container> : content}
     </section>

@@ -36,8 +36,8 @@ function getButtonSize(size: HeroActionsSize) {
 
 function getButtonClassName(size: HeroActionsSize) {
   return cn(
-    "rounded-full",
-    size === "compact" ? "h-10 px-4 text-sm" : "min-w-fit"
+    "rounded-lg",
+    size === "compact" ? "min-h-11 px-4 text-sm" : "min-h-12 min-w-fit px-5"
   )
 }
 

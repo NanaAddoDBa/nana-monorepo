@@ -12,8 +12,8 @@ export const whatsAppContacts = [
     id: "germany",
     region: "Germany",
     designation: "Primary",
-    phoneNumber: "+49 176 7490 9252",
-    href: createWhatsAppHref("+4917674909252"),
+    phoneNumber: "+49 176 7490 9253",
+    href: createWhatsAppHref("+4917674909253"),
     ariaLabel:
       "Message Nana Addo on WhatsApp using the primary Germany phone number.",
   },

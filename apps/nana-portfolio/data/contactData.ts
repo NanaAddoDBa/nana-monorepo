@@ -4,10 +4,11 @@ import type { ContactData } from "@/types/contactSectionTypes"
 import { whatsAppContacts } from "@/data/whatsAppData"
 
 export const contactData = {
-  title: "Let's Connect",
-  subtitle: "Get in touch for opportunities or collaborations",
+  title: "Let's build something useful.",
+  subtitle:
+    "Have a frontend or applied AI opportunity in mind? I'd love to hear about your team and what you're working on.",
   targetedCvNote:
-    "Need a role-specific CV? Request a targeted version for frontend, full-stack, test, QA, or automation-focused roles.",
+    "Based in Passau, Germany. Available for full-time work immediately.",
   contactInfo: [
     {
       label: "Email",
@@ -32,7 +33,7 @@ export const contactData = {
     },
   ],
   availability: {
-    timezone: "CET (UTC+1)",
+    timezone: "Europe/Berlin (CET / CEST)",
     hours: "9:00 AM - 6:00 PM",
     days: "Monday - Saturday",
     icon: Clock,

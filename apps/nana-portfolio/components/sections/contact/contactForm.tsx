@@ -130,6 +130,8 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
       onSubmit={form.handleSubmit(handleSubmit)}
       noValidate
       className="space-y-6"
+      aria-label="Contact Nana Addo"
+      aria-busy={form.formState.isSubmitting}
     >
       <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-2">
@@ -138,6 +140,10 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
           </Label>
           <Input
             id="contact-name"
+            required
+            aria-describedby={
+              form.formState.errors.name ? "contact-name-error" : undefined
+            }
             placeholder={contactData.formFields.name.placeholder}
             autoComplete="name"
             maxLength={contactFormFieldLimits.name.max}
@@ -145,7 +151,11 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
             {...form.register("name")}
           />
           {form.formState.errors.name ? (
-            <p className="text-sm text-destructive">
+            <p
+              id="contact-name-error"
+              role="alert"
+              className="text-sm text-destructive"
+            >
               {form.formState.errors.name.message}
             </p>
           ) : null}
@@ -159,6 +169,12 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
           </Label>
           <Input
             id="contact-value"
+            required
+            aria-describedby={
+              form.formState.errors.contactValue
+                ? "contact-value-error"
+                : undefined
+            }
             type={isEmailMethod ? "email" : "tel"}
             placeholder={
               isEmailMethod
@@ -175,7 +191,11 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
             {...form.register("contactValue")}
           />
           {form.formState.errors.contactValue ? (
-            <p className="text-sm text-destructive">
+            <p
+              id="contact-value-error"
+              role="alert"
+              className="text-sm text-destructive"
+            >
               {form.formState.errors.contactValue.message}
             </p>
           ) : null}
@@ -188,13 +208,21 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
         </Label>
         <Input
           id="contact-subject"
+          required
+          aria-describedby={
+            form.formState.errors.subject ? "contact-subject-error" : undefined
+          }
           placeholder={contactData.formFields.subject.placeholder}
           maxLength={contactFormFieldLimits.subject.max}
           aria-invalid={form.formState.errors.subject ? "true" : "false"}
           {...form.register("subject")}
         />
         {form.formState.errors.subject ? (
-          <p className="text-sm text-destructive">
+          <p
+            id="contact-subject-error"
+            role="alert"
+            className="text-sm text-destructive"
+          >
             {form.formState.errors.subject.message}
           </p>
         ) : null}
@@ -206,6 +234,10 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
         </Label>
         <Textarea
           id="contact-message"
+          required
+          aria-describedby={
+            form.formState.errors.message ? "contact-message-error" : undefined
+          }
           placeholder={contactData.formFields.message.placeholder}
           className="min-h-40"
           maxLength={contactFormFieldLimits.message.max}
@@ -213,18 +245,22 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
           {...form.register("message")}
         />
         {form.formState.errors.message ? (
-          <p className="text-sm text-destructive">
+          <p
+            id="contact-message-error"
+            role="alert"
+            className="text-sm text-destructive"
+          >
             {form.formState.errors.message.message}
           </p>
         ) : null}
       </div>
 
-      <div className="space-y-3">
-        <p className="text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+      <fieldset className="space-y-3">
+        <legend className="text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">
           Preferred Contact Method
-        </p>
+        </legend>
 
-        <div className="flex flex-wrap gap-x-8 gap-y-3" role="radiogroup">
+        <div className="flex flex-wrap gap-x-8 gap-y-3">
           {contactData.preferredContactMethods.map((method) => (
             <div key={method.id} className="flex items-center space-x-2">
               <input
@@ -246,11 +282,11 @@ export function ContactForm({ onSubmit }: Readonly<ContactFormProps>) {
             {form.formState.errors.preferredContactMethod.message}
           </p>
         ) : null}
-      </div>
+      </fieldset>
 
       <Button
         type="submit"
-        className="w-full"
+        className="min-h-12 w-full"
         disabled={form.formState.isSubmitting}
       >
         {form.formState.isSubmitting ? (
