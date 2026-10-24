@@ -5,18 +5,24 @@ on:
     branches: ["main", "feat/**"]
     paths:
       - "apps/rent-car/**"
+      - "packages/rental-contracts/**"
       - ".github/workflows/rent-car-ci.yml"
       - ".github/workflows/rent-car-pages.yml"
   pull_request:
     branches: ["main"]
     paths:
       - "apps/rent-car/**"
+      - "packages/rental-contracts/**"
       - ".github/workflows/rent-car-ci.yml"
       - ".github/workflows/rent-car-pages.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: aventra-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
@@ -29,7 +35,9 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/rent-car/package-lock.json
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Typecheck, unit tests and production build
         run: npm run check

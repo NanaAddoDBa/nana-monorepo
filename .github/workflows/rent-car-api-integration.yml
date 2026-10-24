@@ -18,6 +18,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: aventra-api-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   postgres:
     runs-on: ubuntu-latest
@@ -44,7 +48,9 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
-      - run: npm install --no-audit --no-fund
+          cache: npm
+          cache-dependency-path: apps/rent-car-api/package-lock.json
+      - run: npm ci --no-audit --no-fund
       - run: npm run ci
       - name: Build deployable API image
         working-directory: .

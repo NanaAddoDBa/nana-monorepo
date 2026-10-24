@@ -114,7 +114,7 @@ if ($App -eq "all") {
       })
 
     $sharedPathChanged = $changedFiles | Where-Object {
-      $_ -match "^(libs/|infra/modules/|infra/scripts/|Makefile$|\.github/workflows/pipeline\.yml$|\.github/scripts/detect-apps\.ps1$)"
+      $_ -match "^(libs/|infra/modules/|infra/scripts/|Makefile$|\.github/workflows/pipeline\.yml$|\.github/scripts/(?:test-)?detect-apps\.ps1$)"
     }
 
     if ($sharedPathChanged) {
@@ -126,6 +126,9 @@ if ($App -eq "all") {
             $Matches[1]
           } elseif ($_ -match "^infra/deployments/[^/]+/([^/]+)/") {
             $Matches[1]
+          } elseif ($_ -match "^packages/rental-contracts/") {
+            "rent-car"
+            "rent-car-api"
           }
         } | Where-Object { $configsByName.ContainsKey($_) } | Sort-Object -Unique
       )

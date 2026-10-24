@@ -63,6 +63,10 @@ jobs:
           "Deployable apps: $deployMatrix" >> $env:GITHUB_STEP_SUMMARY
           "Infrastructure changed: $infraChanged" >> $env:GITHUB_STEP_SUMMARY
 
+      - name: Verify affected-app detection
+        shell: pwsh
+        run: .github/scripts/test-detect-apps.ps1
+
   terraform:
     name: Validate Terraform
     needs: detect
@@ -155,6 +159,7 @@ jobs:
     needs:
       - detect
       - validate
+      - pipeline-success
     if: >-
       needs.detect.outputs.deploy_matrix != '[]' &&
       github.ref == 'refs/heads/main' &&

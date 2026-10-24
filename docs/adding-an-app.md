@@ -408,7 +408,9 @@ The pull request pipeline should:
 
 Do not merge until validation succeeds.
 
-Branch protection requires the stable `Pipeline success` check. This aggregate check evaluates app and Terraform validation even though their individual job names and skip behavior vary by change set.
+Branch protection requires the stable `Pipeline success` check. This aggregate check evaluates app and Terraform validation even though their individual job names and skip behavior vary by change set. Cloud Run deployment also waits for this check, so a Terraform validation failure prevents release.
+
+Changes to `packages/rental-contracts/` validate both Aventra apps and trigger frontend publishing. Node.js apps should commit a lockfile and use frozen installs (`npm ci` or `pnpm install --frozen-lockfile`); dependency caches use that lockfile. Aventra workflows cancel superseded pull-request runs while allowing main-branch validation to finish.
 
 ## 11. Verify the First Automatic Deployment
 

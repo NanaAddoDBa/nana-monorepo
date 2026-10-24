@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "apps/rent-car/**"
+      - "packages/rental-contracts/**"
       - ".github/workflows/rent-car-pages.yml"
   workflow_dispatch:
 
@@ -27,9 +28,11 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/rent-car/package-lock.json
       - name: Install dependencies
         working-directory: apps/rent-car
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Typecheck, test and build for the target project URL
         working-directory: apps/rent-car
         env:
