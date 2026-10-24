@@ -14,7 +14,9 @@ infra/deployments/prod/<app-name>/ Terraform root for the Cloud Run service
 
 The central workflow at `.github/workflows/pipeline.yml` discovers changed apps automatically. Do not add an app-specific workflow file.
 
-Pull requests run `install` and `ci` for affected apps. A merge to `main` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path.
+Pull requests targeting `main` or `master`, and pushes to either branch, run `install` and `ci` for affected apps. Both branches also run the applicable Aventra frontend, API integration and browser checks. `master` requires the central `Pipeline success` check before integration.
+
+Production deployment remains on `main`: a merge to `main` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path. Consolidating branches into `master` runs validation without deploying Cloud Run or publishing the Aventra site. Mirror synchronization continues to open PRs against `main`.
 
 Terraform creates the service and its runtime identity. Terraform apply is manual and never runs in GitHub Actions.
 

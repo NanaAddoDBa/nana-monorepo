@@ -2,12 +2,12 @@ name: Aventra / CI
 
 on:
   push:
-    branches: ["main", "feat/**"]
+    branches: ["main", "master", "feat/**"]
     paths:
       - "apps/rent-car/**"
       - ".github/workflows/rent-car-ci.yml"
   pull_request:
-    branches: ["main"]
+    branches: ["main", "master"]
     paths:
       - "apps/rent-car/**"
       - ".github/workflows/rent-car-ci.yml"

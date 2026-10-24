@@ -2,13 +2,13 @@ name: Aventra / Browser journey
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: ["main", "master"]
     paths:
       - "apps/rent-car/**"
       - "packages/rental-contracts/**"
       - ".github/workflows/rent-car-e2e.yml"
   push:
-    branches: ["main"]
+    branches: ["main", "master"]
     paths:
       - "apps/rent-car/**"
       - "packages/rental-contracts/**"
