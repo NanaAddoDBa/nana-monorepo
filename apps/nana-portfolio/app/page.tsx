@@ -8,12 +8,18 @@ import { ProjectsSection } from "@/components/sections/projects/projectsSection"
 export default function Page() {
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only fixed top-3 left-3 z-50 rounded-lg bg-primary px-5 py-3 font-semibold text-primary-foreground focus:not-sr-only"
+      >
+        Skip to content
+      </a>
       <SiteHeader />
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <HeroSection />
-        <AboutSection />
         <ProjectsSection />
+        <AboutSection />
         <ContactSection />
       </main>
 
