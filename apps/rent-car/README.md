@@ -72,7 +72,9 @@ The guest enquiry journey now contains an editable trip form, a separate review 
 
 Source remains in `NanaAddoDBa/nana-monorepo`; the compiled static site is published to the `gh-pages` branch of the separate [NanaAddoDBa/rent-car-react](https://github.com/NanaAddoDBa/rent-car-react) repository.
 
-The deployment workflow is [Aventra / Publish rent-car-react](https://github.com/NanaAddoDBa/nana-monorepo/actions/workflows/rent-car-pages.yml). It runs when rental source changes are merged to `master`, or manually through **Run workflow**.
+The deployment workflow is [Aventra / Publish rent-car-react](https://github.com/NanaAddoDBa/nana-monorepo/actions/workflows/rent-car-pages.yml). It runs when rental source or publishing-workflow changes are merged to `master`, or manually through **Run workflow** on `master`. Runs on other branches skip publishing. Publishing-workflow pull requests run the Aventra typecheck, tests and build before merge.
+
+Each changed build is committed on top of the existing `gh-pages` history using `NanaAddoDBA <nanaaddoldoe@gmail.com>`, with the source commit SHA in its message. Publishing uses a normal push and preserves previous deployments. If the generated files already match the published site, the workflow skips creating a duplicate deployment commit.
 
 The destination repository exists and its GitHub Pages deployment workflow has succeeded. To configure or rotate publishing credentials:
 

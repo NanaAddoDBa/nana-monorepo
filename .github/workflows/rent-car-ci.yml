@@ -6,11 +6,13 @@ on:
     paths:
       - "apps/rent-car/**"
       - ".github/workflows/rent-car-ci.yml"
+      - ".github/workflows/rent-car-pages.yml"
   pull_request:
     branches: ["main", "master"]
     paths:
       - "apps/rent-car/**"
       - ".github/workflows/rent-car-ci.yml"
+      - ".github/workflows/rent-car-pages.yml"
   workflow_dispatch:
 
 permissions:

@@ -2,7 +2,7 @@ name: Aventra / Publish rent-car-react
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
     paths:
       - "apps/rent-car/**"
       - ".github/workflows/rent-car-pages.yml"
@@ -20,6 +20,7 @@ concurrency:
 jobs:
   publish:
     name: Build and publish generated website
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -73,10 +74,19 @@ jobs:
           set -euo pipefail
           touch .nojekyll
           git init -b gh-pages
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "NanaAddoDBA"
+          git config user.email "nanaaddoldoe@gmail.com"
+          git var GIT_AUTHOR_IDENT
+          git var GIT_COMMITTER_IDENT
+          git remote add publish "https://x-access-token:${DEPLOY_TOKEN}@github.com/NanaAddoDBa/rent-car-react.git"
+          git fetch --depth=1 publish gh-pages
+          git reset --soft FETCH_HEAD
           git add -A
+          if git diff --cached --quiet; then
+            echo "The published site already matches this build." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           git commit -m "deploy: Aventra build from nana-monorepo ${GITHUB_SHA}"
-          git push --force "https://x-access-token:${DEPLOY_TOKEN}@github.com/NanaAddoDBa/rent-car-react.git" HEAD:gh-pages
+          git push publish HEAD:gh-pages
           echo "Published generated files to NanaAddoDBa/rent-car-react branch gh-pages." >> "$GITHUB_STEP_SUMMARY"
           echo "Target site after destination Pages is enabled: https://nanaaddodba.github.io/rent-car-react/" >> "$GITHUB_STEP_SUMMARY"

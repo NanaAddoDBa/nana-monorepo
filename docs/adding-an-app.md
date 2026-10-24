@@ -16,7 +16,7 @@ The central workflow at `.github/workflows/pipeline.yml` discovers changed apps 
 
 Pull requests targeting `main` or `master`, and pushes to either branch, run `install` and `ci` for affected apps. Both branches also run the applicable Aventra frontend, API integration and browser checks. `master` requires the central `Pipeline success` check before integration.
 
-Cloud Run production deployment runs only on `master`: a merge to `master` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path. Pushes to `main` run validation without Cloud Run deployment. The separate Aventra Pages workflow and mirror synchronization PR targets remain on `main`.
+Cloud Run production deployment runs only on `master`: a merge to `master` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path. The separate Aventra Pages workflow also publishes only from `master`, including manual runs. Pushes to `main` run validation without publishing either site. Mirror synchronization PR targets remain on `main`.
 
 Terraform creates the service and its runtime identity. Terraform apply is manual and never runs in GitHub Actions.
 
