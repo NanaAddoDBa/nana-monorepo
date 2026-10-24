@@ -16,7 +16,7 @@ The central workflow at `.github/workflows/pipeline.yml` discovers changed apps 
 
 Pull requests targeting `main` or `master`, and pushes to either branch, run `install` and `ci` for affected apps. Both branches also run the applicable Aventra frontend, API integration and browser checks. `master` requires the central `Pipeline success` check before integration.
 
-Production deployment remains on `main`: a merge to `main` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path. Consolidating branches into `master` runs validation without deploying Cloud Run or publishing the Aventra site. Mirror synchronization continues to open PRs against `main`.
+Cloud Run production deployment runs only on `master`: a merge to `master` builds an image tagged with the Git commit SHA, pushes it to Artifact Registry, updates the existing Cloud Run service, and checks the configured health path. Pushes to `main` run validation without Cloud Run deployment. The separate Aventra Pages workflow and mirror synchronization PR targets remain on `main`.
 
 Terraform creates the service and its runtime identity. Terraform apply is manual and never runs in GitHub Actions.
 
@@ -27,7 +27,7 @@ Validation-only applications still provide `apps/<app-name>/Makefile` and `apps/
 Complete these repository-level steps once, not once per app:
 
 - The GCP project, billing, Artifact Registry repository, and Terraform state bucket exist.
-- GitHub Workload Identity Federation must trust this repository's `main` branch (update any previous `master`-only trust condition before deploying).
+- GitHub Workload Identity Federation must trust only this repository's `master` branch: `assertion.repository == 'NanaAddoDBa/nana-monorepo' && assertion.ref == 'refs/heads/master'`. Update any previous `main`-only condition before merging a deployment change. The existing provider is shared by the deployment and Terraform service accounts; changing its branch condition does not change their IAM roles.
 - GitHub repository secrets `GCP_WORKLOAD_IDENTITY_PROVIDER` and `GCP_DEPLOY_SERVICE_ACCOUNT` exist.
 - Optional GitHub repository variables `GCP_PROJECT_ID`, `GCP_REGION`, and `ARTIFACT_REGISTRY_REPOSITORY` match the target platform. The pipeline has repository defaults when they are absent.
 - `gcloud`, Terraform, and Make are available for initial infrastructure setup.
@@ -412,7 +412,7 @@ Branch protection requires the stable `Pipeline success` check. This aggregate c
 
 ## 11. Verify the First Automatic Deployment
 
-After merge to `main`, the same pipeline should:
+After merge to `master`, the same pipeline should:
 
 1. Detect the changed app.
 2. Repeat validation.
@@ -449,7 +449,7 @@ Terraform checks run only when `infra/**` or `.github/workflows/pipeline.yml` ch
 
 ## Operational Commands
 
-Run one registered app manually from GitHub Actions by selecting the `Monorepo pipeline` workflow, choosing **Run workflow** on `main`, and entering its exact app name. Enter `all` to validate and deploy every registered app.
+Run one registered app manually from GitHub Actions by selecting the `Monorepo pipeline` workflow, choosing **Run workflow** on `master`, and entering its exact app name (for example, `nana-portfolio`). Enter `all` to validate and deploy every registered app. Runs on other branches do not deploy to Cloud Run, and the provider's trust condition also rejects those branches.
 
 Useful local commands:
 

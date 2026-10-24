@@ -159,7 +159,7 @@ jobs:
       - validate
     if: >-
       needs.detect.outputs.deploy_matrix != '[]' &&
-      github.ref == 'refs/heads/main' &&
+      github.ref == 'refs/heads/master' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
