@@ -1,102 +1,103 @@
 import type { SkillsData } from "@/types/aboutSectionTypes"
 
+const items = (names: string[]) =>
+  names.map((name) => ({
+    name,
+    slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+  }))
+
 export const skillsData: SkillsData = {
   programming: [
     {
-      category: "Languages",
-      items: [
-        { name: "JavaScript", slug: "javascript" },
-        { name: "TypeScript", slug: "typescript" },
-        { name: "SQL", slug: "sql" },
-        { name: "HTML", slug: "html5" },
-        { name: "CSS", slug: "css3" },
-      ],
+      category: "Frontend",
+      items: items([
+        "React.js",
+        "Next.js",
+        "TypeScript",
+        "JavaScript (ES6+)",
+        "HTML5",
+        "CSS3",
+        "Tailwind CSS",
+      ]),
     },
     {
-      category: "Frameworks & Libraries",
-      items: [
-        { name: "React", slug: "react" },
-        { name: "Next.js", slug: "next-dot-js" },
-        { name: "Node.js", slug: "node-dot-js" },
-        { name: "Vue.js", slug: "vue-dot-js" },
-      ],
+      category: "APIs & data",
+      items: items([
+        "Python",
+        "SQL",
+        "Node.js",
+        "NestJS",
+        "REST APIs",
+        "PostgreSQL",
+        "Supabase",
+        "Prisma",
+      ]),
     },
     {
-      category: "Styling & UI",
-      items: [
-        { name: "Tailwind CSS", slug: "tailwindcss" },
-        { name: "Bootstrap", slug: "bootstrap" },
-        { name: "shadcn/ui", slug: "shadcn" },
-      ],
-    },
-    {
-      category: "APIs, Data & Workflow",
-      items: [
-        { name: "REST APIs", slug: "rest-apis" },
-        { name: "PostgreSQL", slug: "postgresql" },
-        { name: "Database Management", slug: "database-management" },
-        { name: "Workflow Automation", slug: "workflow-automation" },
-        { name: "GitHub", slug: "github" },
-        { name: "GitLab", slug: "gitlab" },
-        { name: "Figma", slug: "figma" },
-      ],
+      category: "UI engineering",
+      items: items([
+        "Responsive interfaces",
+        "Reusable components",
+        "State management",
+        "Forms",
+        "Component architecture",
+      ]),
     },
   ],
   testing: [
     {
-      category: "Testing & QA",
-      items: [
-        { name: "Jest", slug: "jest" },
-        { name: "Cypress", slug: "cypress" },
-        { name: "Postman", slug: "postman" },
-        { name: "Manual Testing", slug: "manual-testing" },
-        { name: "Debugging", slug: "debugging" },
-        { name: "Regression Testing", slug: "regression-testing" },
-      ],
+      category: "Testing & quality",
+      items: items([
+        "Playwright",
+        "Cypress",
+        "Jest",
+        "Vitest",
+        "Debugging",
+        "Regression testing",
+      ]),
     },
     {
-      category: "AI & Automation",
-      items: [
-        { name: "LLM-Assisted Development", slug: "llm-assisted-development" },
-        { name: "Agentic Coding Tools", slug: "agentic-coding-tools" },
-        { name: "Prompt Engineering", slug: "prompt-engineering" },
-        { name: "Developer Automation", slug: "developer-automation" },
-      ],
+      category: "AI applications",
+      items: items([
+        "LLM APIs",
+        "Retrieval-augmented generation (RAG)",
+        "Prompt engineering",
+        "Output validation",
+        "LangChain",
+        "OpenClaw",
+      ]),
     },
   ],
   productivity: [
     {
-      category: "Collaboration & Documentation",
-      items: [
-        { name: "Slack", slug: "slack" },
-        { name: "Microsoft Teams", slug: "microsoft-teams" },
-        { name: "Zoom", slug: "zoom" },
-        { name: "Notion", slug: "notion" },
-        { name: "Confluence", slug: "confluence" },
-        { name: "Google Docs", slug: "google-docs" },
-      ],
+      category: "Automation",
+      items: items(["n8n", "Power Automate", "SharePoint", "Copilot Studio"]),
+    },
+    {
+      category: "Development & delivery",
+      items: items([
+        "Git",
+        "GitHub Actions",
+        "Vite",
+        "Docker Compose",
+        "CI/CD",
+        "Jira",
+      ]),
     },
   ],
   languageSkills: [
-    { name: "English", slug: "english", level: "Native" },
-    { name: "German", slug: "german", level: "Intermediate (B1)" },
+    { name: "English", slug: "english", level: "Fluent (C2)" },
+    { name: "German", slug: "german", level: "A2" },
+    { name: "Twi", slug: "twi", level: "Native" },
   ],
   softSkills: [
     {
-      category: "Collaboration & Communication",
-      items: [
-        { name: "Communication", slug: "communication" },
-        { name: "Collaboration", slug: "collaboration" },
-      ],
-    },
-    {
-      category: "Execution & Thinking",
-      items: [
-        { name: "Problem Solving", slug: "problem-solving" },
-        { name: "Attention to Detail", slug: "attention-to-detail" },
-        { name: "Adaptability", slug: "adaptability" },
-        { name: "Time Management", slug: "time-management" },
-      ],
+      category: "Working together",
+      items: items([
+        "Stakeholder requirements",
+        "Problem solving",
+        "Technical support",
+      ]),
     },
   ],
 }
@@ -104,31 +105,31 @@ export const skillsData: SkillsData = {
 export const skillsAccordionSectionsData = [
   {
     id: "programming",
-    title: "Programming",
+    title: "Frontend, APIs & data",
     type: "categories",
     dataKey: "programming",
   },
   {
     id: "testing",
-    title: "Testing & QA",
+    title: "AI applications & testing",
     type: "categories",
     dataKey: "testing",
   },
   {
     id: "productivity",
-    title: "Productivity & Tools",
+    title: "Automation & delivery",
     type: "categories",
     dataKey: "productivity",
   },
   {
     id: "languages-spoken",
-    title: "Languages Spoken",
+    title: "Languages",
     type: "languages",
     dataKey: "languageSkills",
   },
   {
     id: "soft-skills",
-    title: "Soft Skills",
+    title: "Collaboration",
     type: "categories",
     dataKey: "softSkills",
   },

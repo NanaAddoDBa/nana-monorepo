@@ -11,6 +11,7 @@ export type ProjectItem = {
   techStack: string[]
   category: string
   featured?: boolean
+  status?: string
   outcomes?: string[]
   links?: ProjectLink[]
   owner?: string

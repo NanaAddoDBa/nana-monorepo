@@ -5,10 +5,10 @@ A personal portfolio built with Next.js App Router, React, TypeScript, Tailwind 
 ## Features
 
 - Responsive portfolio sections for hero, about, experience, education, projects, and contact
-- GitHub-backed project feed with local project data as a fallback
+- Curated frontend and applied AI projects with clear thesis and prototype labels
 - Dark and light theme support
 - Contact form with shared client/server validation
-- Google Docs/Drive-backed Software Engineer CV links for English and German
+- Frontend Engineer and AI Engineer CV downloads (English PDFs)
 
 ## Tech Stack
 
@@ -41,31 +41,22 @@ pnpm lint
 pnpm build
 ```
 
-## CV Links
+## Portfolio content and CVs
 
-The portfolio shows two public CV options:
+The public portfolio uses the supplied Frontend Engineer and AI Engineer CVs
+as the source for experience, education, languages and selected projects.
+Content lives in `data/`; keep dates, role labels and prototype status aligned
+when replacing the PDFs.
 
-- `Software Engineer CV (EN)`
-- `Software Engineer CV (DE)`
+The two current English PDFs are bundled at:
 
-Set these through environment variables:
+- `public/documents/nana-addo-frontend-engineer.pdf`
+- `public/documents/nana-addo-ai-engineer.pdf`
 
-```bash
-NEXT_PUBLIC_CV_EN_URL=
-NEXT_PUBLIC_CV_DE_URL=
-NEXT_PUBLIC_CV_EN_UPDATED=
-NEXT_PUBLIC_CV_DE_UPDATED=
-```
-
-You can paste either:
-
-- a Google Docs link such as `https://docs.google.com/document/d/.../edit`
-- a Google Drive file link such as `https://drive.google.com/file/d/.../view`
-- a direct PDF URL
-
-Google Docs links are converted to PDF export links automatically. Keep the
-Google links stable, then update the document/PDF in Drive when the CV changes.
-The portfolio can keep using the same URL.
+Update `data/cvDocumentsData.ts` when changing those paths. CV selection is
+role-based; legacy `NEXT_PUBLIC_CV_EN_*` and `NEXT_PUBLIC_CV_DE_*` environment
+variables no longer override these downloads. Older document files remain
+available for existing bookmarks, but are not offered in the interface.
 
 ## Project Structure
 

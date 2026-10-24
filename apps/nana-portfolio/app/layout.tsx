@@ -25,13 +25,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
   ),
-  title: "Nana Addo | Software Engineer",
+  title: "Nana Addo | Frontend & AI Engineer",
   description:
-    "Software engineer portfolio for Nana Addo Dankwa Bampoe Addo, featuring React, Next.js, TypeScript, testing, database-backed workflows, LLM-assisted automation, GitHub projects, experience, education, and contact information.",
+    "Nana Addo Dankwa Bampoe Addo is a software developer in Passau, Germany, specialising in React, TypeScript, LLM applications and workflow automation. Explore selected projects, experience and role-specific CVs.",
   openGraph: {
-    title: "Nana Addo | Software Engineer",
+    title: "Nana Addo | Frontend & AI Engineer",
     description:
-      "Software engineering portfolio with front-end depth, testing, database workflow experience, LLM-assisted automation, selected projects, education, and contact information.",
+      "Frontend engineering, LLM applications and workflow automation. Explore Nana Addo's selected projects and download a Frontend Engineer or AI Engineer CV.",
     images: [
       {
         url: "/images/profile/nana-portrait.png",

@@ -50,7 +50,7 @@ function LocationRow({
 }
 
 function EducationCard({ item }: Readonly<{ item: EducationItem }>) {
-  const period = `${item.startDate} - ${item.endDate}`
+  const period = [item.startDate, item.endDate].filter(Boolean).join(" – ")
 
   return (
     <Card className={educationCardClassName}>
@@ -128,7 +128,7 @@ export function EducationTab() {
             Credentials
           </p>
           <h2 className="font-heading text-3xl text-card-foreground md:text-4xl">
-            Academic Background and Certifications
+            Education & technical qualifications
           </h2>
         </div>
 
