@@ -72,7 +72,7 @@ The guest enquiry journey now contains an editable trip form, a separate review 
 
 Source remains in `NanaAddoDBa/nana-monorepo`; the compiled static site is published to the `gh-pages` branch of the separate [NanaAddoDBa/rent-car-react](https://github.com/NanaAddoDBa/rent-car-react) repository.
 
-The deployment workflow is [Aventra / Publish rent-car-react](https://github.com/NanaAddoDBa/nana-monorepo/actions/workflows/rent-car-pages.yml). It runs when rental source or publishing-workflow changes are merged to `master`, or manually through **Run workflow** on `master`. Runs on other branches skip publishing. Publishing-workflow pull requests run the Aventra typecheck, tests and build before merge.
+The deployment workflow is [Aventra / Publish rent-car-react](https://github.com/NanaAddoDBa/nana-monorepo/actions/workflows/rent-car-pages.yml). It runs when rental source or publishing-workflow changes are merged to `main`, or manually through **Run workflow** on `main`. Runs on other branches skip publishing. Publishing-workflow pull requests run the Aventra typecheck, tests and build before merge.
 
 Each changed build is committed on top of the existing `gh-pages` history using `NanaAddoDBA <nanaaddoldoe@gmail.com>`, with the source commit SHA in its message. Publishing uses a normal push and preserves previous deployments. If the generated files already match the published site, the workflow skips creating a duplicate deployment commit.
 
@@ -80,7 +80,7 @@ The destination repository exists and its GitHub Pages deployment workflow has s
 
 1. Create a fine-grained personal access token restricted to `NanaAddoDBa/rent-car-react`, with repository **Contents: Read and write**.
 2. Add that token as the `RENT_CAR_PAGES_TOKEN` **Actions repository secret in `nana-monorepo`**, not in the publishing repository.
-3. Run the publishing workflow on the `master` branch. Confirm that the `gh-pages` branch was populated.
+3. Run the publishing workflow on the `main` branch. Confirm that the `gh-pages` branch was populated.
 4. In `rent-car-react → Settings → Pages`, select **Deploy from a branch**, `gh-pages`, `/(root)`. Review the Pages deployment and verify [the target site](https://nanaaddodba.github.io/rent-car-react/).
 
 A green application build alone does not prove that Pages has published the website. Confirm the destination repository's Pages job separately. Keep the `gh-pages` branch as a generated deployment target; edit the app in the monorepo.

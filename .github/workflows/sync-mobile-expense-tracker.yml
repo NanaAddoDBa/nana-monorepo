@@ -27,6 +27,7 @@ env:
 jobs:
   sync:
     name: Sync standalone source
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the monorepo

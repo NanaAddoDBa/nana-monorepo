@@ -2,7 +2,7 @@ name: Aventra / Publish rent-car-react
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
     paths:
       - "apps/rent-car/**"
       - ".github/workflows/rent-car-pages.yml"
@@ -20,7 +20,7 @@ concurrency:
 jobs:
   publish:
     name: Build and publish generated website
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

@@ -33,6 +33,7 @@ env:
 jobs:
   sync:
     name: Sync exact validated source revision
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Verify the dedicated target credential

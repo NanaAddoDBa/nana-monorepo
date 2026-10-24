@@ -2,13 +2,13 @@ name: Aventra / API integration
 
 on:
   pull_request:
-    branches: ["main", "master"]
+    branches: ["main"]
     paths:
       - "apps/rent-car-api/**"
       - "packages/rental-contracts/**"
       - ".github/workflows/rent-car-api-integration.yml"
   push:
-    branches: ["main", "master"]
+    branches: ["main"]
     paths:
       - "apps/rent-car-api/**"
       - "packages/rental-contracts/**"

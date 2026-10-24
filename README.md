@@ -39,7 +39,7 @@ Its source history was preserved when it moved into this monorepo. App-specific 
 apps/mobile-expense-tracker/README.md
 ```
 
-The standalone [`Mobile-expence-tracker`](https://github.com/NanaAddoDBa/Mobile-expence-tracker) repository is the source of truth for this app. Pushes to its `main` branch trigger a synchronization pull request that is merged after the monorepo pipeline passes. An hourly scheduled check recovers any missed trigger. The monorepo keeps its own `Makefile`, `pipeline.json`, and `.source-revision` integration files.
+The standalone [`Mobile-expence-tracker`](https://github.com/NanaAddoDBa/Mobile-expence-tracker) repository is the source of truth for this app. Pushes to its `main` branch trigger a synchronization pull request targeting this monorepo's `main` branch, which is merged after the monorepo pipeline passes. An hourly scheduled check recovers any missed trigger. The monorepo keeps its own `Makefile`, `pipeline.json`, and `.source-revision` integration files.
 
 ### `apps/authnexus`
 
@@ -120,7 +120,7 @@ GitHub Actions uses one central workflow:
 .github/workflows/pipeline.yml
 ```
 
-Pull requests validate only affected apps. Merges to `master` validate affected apps and deploy only those with deployment enabled, using immutable commit-SHA image tags. Pushes to `main` run validation without Cloud Run deployment. Shared library or infrastructure changes validate every registered app and, on `master`, deploy each deployment-enabled app.
+`main` is the monorepo's default, integration and release branch. Pull requests targeting `main` validate affected apps. Merges to `main` validate affected apps and deploy only those with deployment enabled, using immutable commit-SHA image tags. Shared library or infrastructure changes validate every registered app and deploy each deployment-enabled app. Aventra Pages publishing and mirror synchronization also run from `main`.
 
 Each pipeline-integrated app registers its validation contract in `apps/<app>/pipeline.json`. Apps with `deploy_enabled: true` additionally implement the Docker targets:
 

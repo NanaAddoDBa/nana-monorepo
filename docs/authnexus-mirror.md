@@ -29,9 +29,10 @@ automation boundary. The only AuthNexus-specific monorepo workflow is
    `.source-revision`, and opens a pull request against `main` for review and merging.
 5. The target never dispatches or pushes changes back to `NanaAddoDBa/authnexus`.
 
-An hourly schedule finds the latest valid green source revision if a dispatch was missed. A manual
-workflow run may specify a full source SHA; it is rejected unless the same standalone validation
-evidence exists.
+An hourly schedule finds the latest valid green source revision if a dispatch was missed. Synchronization
+runs from this monorepo's default `main` branch. A manual workflow run on `main` may specify a full source
+SHA; it is rejected unless the same standalone validation evidence exists. Manual runs on other branches
+skip synchronization.
 
 ## Required credentials
 
