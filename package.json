@@ -7,6 +7,14 @@
     "typecheck": "pnpm --dir apps/nana-portfolio typecheck",
     "lint": "pnpm --dir apps/nana-portfolio lint",
     "build": "pnpm --dir apps/nana-portfolio build",
-    "ci": "pnpm typecheck && pnpm lint && pnpm build"
+    "ci": "pnpm typecheck && pnpm lint && pnpm build",
+    "install:studio": "npm --prefix apps/remix-of-ai-video-studio-landing-page ci",
+    "dev:studio": "npm --prefix apps/remix-of-ai-video-studio-landing-page run dev",
+    "check:studio": "npm --prefix apps/remix-of-ai-video-studio-landing-page run check",
+    "test:studio": "npm --prefix apps/remix-of-ai-video-studio-landing-page test",
+    "lint:studio": "npm --prefix apps/remix-of-ai-video-studio-landing-page run lint",
+    "build:studio": "npm --prefix apps/remix-of-ai-video-studio-landing-page run build",
+    "preview:studio": "npm --prefix apps/remix-of-ai-video-studio-landing-page run preview",
+    "ci:studio": "npm run check:studio && npm run lint:studio && npm run build:studio"
   }
 }

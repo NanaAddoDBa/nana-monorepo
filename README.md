@@ -14,6 +14,9 @@ apps/
 |   `-- Makefile
 |-- rent-car/
 |   `-- README.md
+|-- remix-of-ai-video-studio-landing-page/
+|   |-- Makefile
+|   `-- pipeline.json
 `-- threadsofgold/             # Git submodule
 ```
 
@@ -58,6 +61,10 @@ pipeline-boundary rules.
 ### `apps/rent-car`
 
 Aventra is an independent React/Vite car-rental browse-and-inquire site, with an atomic feature architecture, reusable shadcn-style components, and a cross-repository GitHub Pages publishing pipeline targeting `NanaAddoDBa/rent-car-react` (public output only). It intentionally uses illustrative inventory until an operator verifies vehicles, pricing, availability and legal policies. See `apps/rent-car/README.md` for setup and launch gates.
+
+### `apps/remix-of-ai-video-studio-landing-page`
+
+The MOJJU studio site is a standalone React/Vite application mirrored from [its standalone repository](https://github.com/NanaAddoDBa/remix-of-ai-video-studio-landing-page). Its project root is `apps/remix-of-ai-video-studio-landing-page`, with its own npm lockfile, Makefile, and pipeline registration. The central pipeline installs, tests, and builds this app from that directory. Automatic Cloud Run deployment is disabled; static hosting should select this directory as its build root and publish its `dist` output. See its app-local README for public build variables and hosting configuration.
 
 ### `apps/threadsofgold`
 
@@ -109,6 +116,24 @@ The root `Makefile` delegates to the selected app Makefile, and the app Makefile
 make build APP=nana-portfolio
 make ci APP=mobile-expense-tracker
 ```
+
+The studio app has explicit root commands; the existing unqualified commands still select `nana-portfolio`:
+
+```bash
+npm run install:studio
+npm run dev:studio
+npm run check:studio
+npm run test:studio
+npm run lint:studio
+npm run build:studio
+npm run preview:studio
+npm run ci:studio
+# Or, with make installed:
+make build APP=remix-of-ai-video-studio-landing-page
+make ci APP=remix-of-ai-video-studio-landing-page
+```
+
+These commands delegate to the app's own package.json and package-lock.json; dependencies are not hoisted into a shared npm/pnpm workspace. Existing apps keep their independent dependency managers and build/deployment settings.
 
 On Windows, `pnpm` scripts are the primary local workflow unless `make` is installed.
 
